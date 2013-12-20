@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="1175"
+   height="340"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48+devel r"
+   viewBox="0 0 1175 340.00001"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/turbo/Code/aerofiles/img/logo.png"
+   inkscape:export-xdpi="18.536171"
+   inkscape:export-ydpi="18.536171">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.8"
+     inkscape:cx="587.5"
+     inkscape:cy="170"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:object-nodes="true"
+     inkscape:object-paths="true"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Ebene 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-96.974645,-179.00163)">
+    <text
+       xml:space="preserve"
+       style="font-size:187.5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:0%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal'"
+       x="404.28577"
+       y="448.07645"
+       id="text4102"
+       sodipodi:linespacing="0%"><tspan
+         sodipodi:role="line"
+         id="tspan4104"
+         x="404.28577"
+         y="448.07645"><tspan
+           style="fill:#9fc58b;fill-opacity:1"
+           id="tspan4106">aero.</tspan><tspan
+           style="fill:#6f6f6f;fill-opacity:1"
+           id="tspan4110">files</tspan></tspan></text>
+    <g
+       id="g4131">
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4098"
+         d="M 331.39529,347.4804 444.21457,288.05551 171.53652,242.78805 Z"
+         style="fill:#9fc58b;fill-opacity:1;stroke:none" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4096"
+         d="m 347.49247,392.48004 9.76799,-58.62351 -185.72394,-91.06848 z"
+         style="fill:#848484;fill-opacity:1;stroke:none" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4094"
+         d="M 331.39529,347.4804 347.49247,392.48004 171.53652,242.78805 Z"
+         style="fill:#6f6f6f;fill-opacity:1;stroke:none" />
+      <path
+         sodipodi:nodetypes="cccc"
+         inkscape:connector-curvature="0"
+         id="path4092"
+         d="M 171.53652,242.78805 225.32123,404.3125 331.39529,347.4804 Z"
+         style="fill:#9fc58b;fill-opacity:1;stroke:none" />
+    </g>
+  </g>
+</svg>

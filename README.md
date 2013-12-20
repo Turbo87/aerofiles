@@ -1,4 +1,4 @@
-# aerofiles
+# ![aerofiles](img/logo.png)
 
 **a waypoint file parser and writer for aviators**
 
