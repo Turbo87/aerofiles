@@ -66,6 +66,31 @@ def test_manosque():
     }
 
 
+def test_marcoux():
+    line = 'MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'MARCOUX CHAMP 8',
+        'shortname': 'MARCO2',
+        'classifiers': set([
+            'landable',
+        ]),
+        'runways': [
+            {
+                'surface': 'sand',
+                'length': 250,
+                'directions': [130],
+            },
+        ],
+        'frequencies': [],
+        'altitude': 694,
+        'latitude': 44.1275,
+        'longitude': 6.287222222222222,
+        'country': 'FR',
+    }
+
+
 def test_sydney():
     line = 'SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0'
     waypoint = Welt2000Format.parse_waypoint(line)
@@ -96,6 +121,70 @@ def test_sydney():
         'latitude': -33.94611111111111,
         'longitude': 151.1772222222222,
         'country': 'AU',
+    }
+
+
+def test_ulm():
+    line = 'ULMHBF ULM H BF                           480N482358E0095859DEJ0'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'ULM H BF',
+        'shortname': 'ULMHBF',
+        'classifiers': set([
+            'railway-station',
+        ]),
+        'altitude': 480,
+        'latitude': 48.39944444444444,
+        'longitude': 9.983055555555556,
+        'country': 'DE',
+    }
+
+
+def test_vettweis():
+    line = 'VETTW2 VETTWEISS SOLLER*ULM!G 38153312097 159N504451E0063402DEP0'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'VETTWEISS SOLLER',
+        'shortname': 'VETTW2',
+        'classifiers': set([
+            'landable',
+            'ulm',
+        ]),
+        'runways': [
+            {
+                'surface': 'grass',
+                'length': 380,
+                'directions': [150, 330],
+            },
+        ],
+        'frequencies': [
+            {
+                'frequency': '120.975',
+            },
+        ],
+        'altitude': 159,
+        'latitude': 50.7475,
+        'longitude': 6.567222222222222,
+        'country': 'DE',
+    }
+
+
+def test_weisweiler():
+    line = 'WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'WEISWEILER KW 1011FT WESTL KUEHLT',
+        'shortname': 'WEISWE',
+        'classifiers': set([
+            'power-plant',
+        ]),
+        'altitude': 144,
+        'latitude': 50.83972222222222,
+        'longitude': 6.322777777777778,
+        'country': 'DE',
     }
 
 
