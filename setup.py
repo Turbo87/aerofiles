@@ -1,4 +1,5 @@
 import os
+import re
 
 from setuptools import setup, find_packages
 
@@ -15,6 +16,8 @@ def read(*paths):
 
 def read_markdown(*paths):
     content = read(*paths)
+    content = re.sub(r'\]\([^(http)]',
+                     '](' + about['__uri__'] + 'blob/master/', content)
     try:
         import pypandoc
         return pypandoc.convert(content, 'rst', format='md')
