@@ -1,5 +1,7 @@
 import re
 
+from .base import Format
+
 RE_WHITESPACE = re.compile(r'\s+')
 RE_COORDINATES = re.compile(
     r'([NS])([\d]{2})([\d]{2})([\d]{2})([EW])([\d]{3})([\d]{2})([\d]{2})')
@@ -58,7 +60,7 @@ class ParserError(RuntimeError):
     pass
 
 
-class Welt2000Format:
+class Welt2000Format(Format):
     """
     A reader for the WELT2000 waypoint file format.
 
