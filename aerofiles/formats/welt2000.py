@@ -5,6 +5,8 @@ from .base import Format
 RE_WHITESPACE = re.compile(r'\s+')
 RE_COORDINATES = re.compile(
     r'([NS])([\d]{2})([\d]{2})([\d]{2})([EW])([\d]{3})([\d]{2})([\d]{2})')
+RE_ICAO = re.compile(r'[\w\d]{4}')
+RE_FIELD_NUMBER = re.compile(r'FL[\d]{2}')
 
 RE_CLASSIFIERS = [
     (re.compile(r'\bA[\d]+ B?AB[\d]*[abc]?\b'), ['highway-exit']),
@@ -155,7 +157,18 @@ class Welt2000Format(Format):
                 line[23:27] == '#ULM' or line[23:28] == '# ULM'):
             classifiers.add('ulm')
 
+        # Read ICAO code
         if has_metadata:
+            code = line[24:28]
+
+            waypoint['icao'] = None
+            if line[23] == '#' and RE_ICAO.match(line[24:28]):
+                waypoint['icao'] = code
+
+            if line[23] == '*' and RE_FIELD_NUMBER.match(code):
+                classifiers.add('catalogued')
+                waypoint['field_number'] = int(code[2:])
+
             waypoint['runways'] = cls.parse_runways(line)
             waypoint['frequencies'] = cls.parse_frequencies(line)
 

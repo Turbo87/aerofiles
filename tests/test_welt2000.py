@@ -25,6 +25,7 @@ def test_parse_meiersberg():
     assert waypoint == {
         'name': 'MEIERSBERG',
         'shortname': 'MEIER1',
+        'icao': None,
         'classifiers': set([
             'airfield',
             'glidersite',
@@ -73,8 +74,11 @@ def test_marcoux():
     assert waypoint == {
         'name': 'MARCOUX CHAMP 8',
         'shortname': 'MARCO2',
+        'icao': None,
+        'field_number': 8,
         'classifiers': set([
             'landable',
+            'catalogued',
         ]),
         'runways': [
             {
@@ -98,6 +102,7 @@ def test_sydney():
     assert waypoint == {
         'name': 'SYDNEY NSW KINSS',
         'shortname': 'SYDNE1',
+        'icao': 'YSSY',
         'classifiers': set([
             'airfield',
             'landable',
@@ -148,6 +153,7 @@ def test_vettweis():
     assert waypoint == {
         'name': 'VETTWEISS SOLLER',
         'shortname': 'VETTW2',
+        'icao': None,
         'classifiers': set([
             'landable',
             'ulm',
@@ -230,6 +236,9 @@ def check_waypoint(line):
 
     assert 'classifiers' in waypoint
     assert isinstance(waypoint['classifiers'], set)
+
+    if 'icao' in waypoint and waypoint['icao']:
+        assert 'airfield' in waypoint['classifiers']
 
     if '*ULM' in line or '#ULM' in line or '# ULM' in line:
         assert 'ulm' in waypoint['classifiers']
