@@ -40,6 +40,7 @@ RE_CLASSIFIERS = [
     (re.compile(r'\b(VOR)\b'), ['vor']),
     (re.compile(r'\b(NDB)\b'), ['ndb']),
     (re.compile(r'\b(TUNNEL)\b'), ['tunnel']),
+    (re.compile(r'\b(PFLICHTMELDEPUNKT)\b'), ['reporting-point']),
 ]
 
 SURFACES = {
