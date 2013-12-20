@@ -7,7 +7,9 @@ python:
   - "3.3"
   - "pypy"
 
-install: "pip install -r requirements-test.txt"
+install:
+  - pip install -r requirements-test.txt
+  - ./download_test_data.sh
 
 script:
   - flake8 .

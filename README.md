@@ -13,6 +13,10 @@ You can run the testsuite with:
 
     $ py.test
 
+To run the whole testsuite you need to download some processable data like this:
+
+    $ ./download_test_data.sh
+
 
 ## License
 
