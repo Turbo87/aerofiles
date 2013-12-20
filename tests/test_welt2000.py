@@ -55,8 +55,6 @@ def test_original():
         for line in f:
             check_waypoint(line)
 
-    #assert False
-
 
 def check_waypoint(line):
     waypoint = Welt2000Format.parse_waypoint(line)
