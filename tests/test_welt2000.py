@@ -49,6 +49,40 @@ def test_parse_meiersberg():
     }
 
 
+def test_manosque():
+    line = 'MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'MANOSQUE PONT D907XDURANCE',
+        'shortname': 'MANOSQ',
+        'classifiers': set([
+            'bridge',
+        ]),
+        'altitude': 295,
+        'latitude': 43.80444444444444,
+        'longitude': 5.8244444444444445,
+        'country': 'FR',
+    }
+
+
+def test_eddl_n():
+    line = 'EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'EDDLN0 EDDL N PFLICHTMELDEPUNKT',
+        'shortname': 'EDDLN0',
+        'classifiers': set([
+            'reporting-point',
+        ]),
+        'altitude': 28,
+        'latitude': 51.406666666666666,
+        'longitude': 6.748333333333333,
+        'country': 'DE',
+    }
+
+
 @data_available
 def test_original():
     with open(DATA_PATH) as f:
