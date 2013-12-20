@@ -2,6 +2,8 @@
 
 **a waypoint file parser and writer for aviators**
 
+[![Build Status](https://travis-ci.org/Turbo87/aerofiles.png?branch=master)](https://travis-ci.org/Turbo87/aerofiles)
+
 
 ## Development Environment
 
