@@ -1,4 +1,14 @@
-from aerofiles.formats import Welt2000Format
+import pytest
+from os import path
+from aerofiles.formats import Welt2000Format, welt2000
+
+FOLDER = path.dirname(path.realpath(__file__))
+DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
+
+data_available = pytest.mark.skipif(
+    not path.exists(DATA_PATH),
+    reason="requires WELT2000.TXT"
+)
 
 
 def test_comments():
@@ -37,3 +47,70 @@ def test_parse_meiersberg():
         'longitude': 6.956388888888889,
         'country': 'DE',
     }
+
+
+@data_available
+def test_original():
+    with open(DATA_PATH) as f:
+        for line in f:
+            check_waypoint(line)
+
+    #assert False
+
+
+def check_waypoint(line):
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    if not waypoint:
+        assert line.startswith('$') or line.strip() == ''
+        return
+
+    # Check name
+    assert 'name' in waypoint
+    assert ('A' <= waypoint['name'][0] <= 'Z' or
+            '0' <= waypoint['name'][0] <= '9')
+    assert not waypoint['name'].endswith(' ?')
+    assert not waypoint['name'].endswith(' !')
+    assert not waypoint['name'].endswith('+')
+
+    assert 'shortname' in waypoint
+    assert len(waypoint['shortname']) == 6
+
+    assert 'classifiers' in waypoint
+    assert isinstance(waypoint['classifiers'], list)
+
+    if '*ULM' in line or '#ULM' in line or '# ULM' in line:
+        assert 'ulm' in waypoint['classifiers']
+
+    if 'runways' in waypoint:
+        assert isinstance(waypoint['runways'], list)
+        assert 0 <= len(waypoint['runways']) <= 2
+        for runway in waypoint['runways']:
+            assert isinstance(runway, dict)
+            if 'surface' in runway:
+                assert runway['surface'] in welt2000.SURFACES.values()
+            if 'length' in runway:
+                assert 0 < runway['length'] <= 9999
+            if 'directions' in runway:
+                assert isinstance(runway['directions'], list)
+                assert 1 <= len(runway['directions']) <= 2
+
+    if 'frequencies' in waypoint:
+        assert isinstance(waypoint['frequencies'], list)
+        assert 0 <= len(waypoint['frequencies']) <= 1
+        for frq in waypoint['frequencies']:
+            assert 'frequency' in frq
+            assert len(frq['frequency']) == 7
+            assert frq['frequency'][3] == '.'
+
+    assert 'altitude' in waypoint
+    assert -999 <= waypoint['altitude'] <= 9999
+
+    assert 'latitude' in waypoint
+    assert -90 <= waypoint['latitude'] <= 90
+
+    assert 'longitude' in waypoint
+    assert -180 <= waypoint['longitude'] <= 180
+
+    assert 'country' in waypoint
+    assert len(waypoint['country']) == 2
