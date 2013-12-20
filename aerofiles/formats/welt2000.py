@@ -143,8 +143,7 @@ class Welt2000Format(Format):
         if name.endswith('+'):
             name = name[:-3]
 
-        name = RE_WHITESPACE.sub(' ', name.rstrip())
-        waypoint['name'] = name.capitalize()
+        waypoint['name'] = name = RE_WHITESPACE.sub(' ', name.rstrip())
 
         # Detect glider sites
         if line[23] == '#' or line[23] == '*':

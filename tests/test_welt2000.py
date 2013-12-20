@@ -23,7 +23,7 @@ def test_parse_meiersberg():
     waypoint = Welt2000Format.parse_waypoint(line)
 
     assert waypoint == {
-        'name': 'Meiersberg',
+        'name': 'MEIERSBERG',
         'shortname': 'MEIER1',
         'classifiers': set([
             'airfield',
@@ -65,8 +65,6 @@ def check_waypoint(line):
 
     # Check name
     assert 'name' in waypoint
-    assert ('A' <= waypoint['name'][0] <= 'Z' or
-            '0' <= waypoint['name'][0] <= '9')
     assert not waypoint['name'].endswith(' ?')
     assert not waypoint['name'].endswith(' !')
     assert not waypoint['name'].endswith('+')
