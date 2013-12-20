@@ -173,7 +173,7 @@ class Welt2000Format(Format):
             if regex.search(name):
                 classifiers.update(values)
 
-        waypoint['classifiers'] = list(classifiers)
+        waypoint['classifiers'] = classifiers
 
         return waypoint
 

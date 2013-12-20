@@ -25,11 +25,11 @@ def test_parse_meiersberg():
     assert waypoint == {
         'name': 'Meiersberg',
         'shortname': 'MEIER1',
-        'classifiers': [
+        'classifiers': set([
             'airfield',
             'glidersite',
             'landable',
-        ],
+        ]),
         'runways': [
             {
                 'surface': 'grass',
@@ -77,7 +77,7 @@ def check_waypoint(line):
     assert len(waypoint['shortname']) == 6
 
     assert 'classifiers' in waypoint
-    assert isinstance(waypoint['classifiers'], list)
+    assert isinstance(waypoint['classifiers'], set)
 
     if '*ULM' in line or '#ULM' in line or '# ULM' in line:
         assert 'ulm' in waypoint['classifiers']
