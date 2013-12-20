@@ -1,0 +1,5 @@
+# Install aerofiles package
+-e .
+
+# Additional requirements for running the testsuite
+pytest==2.5.1
