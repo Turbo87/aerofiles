@@ -70,6 +70,8 @@ class Welt2000Format(Format):
     see http://www.segelflug.de/vereine/welt2000/download/WELT2000-SPEC.TXT
     """
 
+    CAN_READ_WAYPOINTS = True
+
     @classmethod
     def parse_waypoint(cls, line):
         """
