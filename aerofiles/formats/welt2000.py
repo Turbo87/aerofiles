@@ -220,7 +220,7 @@ class Welt2000Format(Format):
 
         if (r2 or r2 == 0) and r2 != r1 and r2 != r1 + 18:
             runways.append({
-                'directions': [r2 * 10],
+                'directions': [r2 * 10, (r2 + 18) * 10],
             })
 
         return runways

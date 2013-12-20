@@ -66,6 +66,39 @@ def test_manosque():
     }
 
 
+def test_sydney():
+    line = 'SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0'
+    waypoint = Welt2000Format.parse_waypoint(line)
+
+    assert waypoint == {
+        'name': 'SYDNEY NSW KINSS',
+        'shortname': 'SYDNE1',
+        'classifiers': set([
+            'airfield',
+            'landable',
+        ]),
+        'runways': [
+            {
+                'surface': 'asphalt',
+                'length': 3950,
+                'directions': [160, 340],
+            },
+            {
+                'directions': [70, 250],
+            },
+        ],
+        'frequencies': [
+            {
+                'frequency': '120.500',
+            },
+        ],
+        'altitude': 6,
+        'latitude': -33.94611111111111,
+        'longitude': 151.1772222222222,
+        'country': 'AU',
+    }
+
+
 def test_eddl_n():
     line = 'EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4'
     waypoint = Welt2000Format.parse_waypoint(line)
