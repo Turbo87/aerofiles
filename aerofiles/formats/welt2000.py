@@ -76,12 +76,12 @@ class Welt2000Reader:
 
     def next(self):
         for line in self.fp:
-            wp = self.parse_waypoint(line)
+            wp = self.line_to_waypoint(line)
             if wp:
                 yield wp
 
     @classmethod
-    def parse_waypoint(cls, line):
+    def line_to_waypoint(cls, line):
         """
         Parses a single waypoint from the specified input.
 
