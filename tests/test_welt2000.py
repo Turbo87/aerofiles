@@ -1,6 +1,6 @@
 import pytest
 from os import path
-from aerofiles.formats import Welt2000Format, welt2000, Welt2000Reader
+from aerofiles.formats import Welt2000Reader, welt2000
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
@@ -13,14 +13,14 @@ data_available = pytest.mark.skipif(
 
 def test_comments():
     line = '$ this is a comment'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint is None
 
 
 def test_parse_meiersberg():
     line = 'MEIER1 MEIERSBERG      #GLD!G 80133113012 164N511759E0065723DEP0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'MEIERSBERG',
@@ -52,7 +52,7 @@ def test_parse_meiersberg():
 
 def test_manosque():
     line = 'MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'MANOSQUE PONT D907XDURANCE',
@@ -69,7 +69,7 @@ def test_manosque():
 
 def test_marcoux():
     line = 'MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'MARCOUX CHAMP 8',
@@ -97,7 +97,7 @@ def test_marcoux():
 
 def test_sydney():
     line = 'SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'SYDNEY NSW KINSS',
@@ -131,7 +131,7 @@ def test_sydney():
 
 def test_ulm():
     line = 'ULMHBF ULM H BF                           480N482358E0095859DEJ0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'ULM H BF',
@@ -148,7 +148,7 @@ def test_ulm():
 
 def test_vettweis():
     line = 'VETTW2 VETTWEISS SOLLER*ULM!G 38153312097 159N504451E0063402DEP0'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'VETTWEISS SOLLER',
@@ -179,7 +179,7 @@ def test_vettweis():
 
 def test_weisweiler():
     line = 'WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'WEISWEILER KW 1011FT WESTL KUEHLT',
@@ -196,7 +196,7 @@ def test_weisweiler():
 
 def test_eddl_n():
     line = 'EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4'
-    waypoint = Welt2000Format.parse_waypoint(line)
+    waypoint = Welt2000Reader.parse_waypoint(line)
 
     assert waypoint == {
         'name': 'EDDLN0 EDDL N PFLICHTMELDEPUNKT',

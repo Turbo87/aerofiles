@@ -1,3 +1,3 @@
 # flake8: noqa
 
-from .welt2000 import Welt2000Format, Welt2000Reader
+from .welt2000 import Welt2000Reader

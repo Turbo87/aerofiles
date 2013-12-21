@@ -1,7 +1,5 @@
 import re
 
-from .base import Format
-
 RE_WHITESPACE = re.compile(r'\s+')
 RE_COORDINATES = re.compile(
     r'([NS])([\d]{2})([\d]{2})([\d]{2})([EW])([\d]{3})([\d]{2})([\d]{2})')
@@ -64,6 +62,12 @@ class ParserError(RuntimeError):
 
 
 class Welt2000Reader:
+    """
+    A reader for the WELT2000 waypoint file format.
+
+    see http://www.segelflug.de/vereine/welt2000/download/WELT2000-SPEC.TXT
+    """
+
     def __init__(self, fp):
         self.fp = fp
 
@@ -72,19 +76,9 @@ class Welt2000Reader:
 
     def next(self):
         for line in self.fp:
-            wp = Welt2000Format.parse_waypoint(line)
+            wp = self.parse_waypoint(line)
             if wp:
                 yield wp
-
-
-class Welt2000Format(Format):
-    """
-    A reader for the WELT2000 waypoint file format.
-
-    see http://www.segelflug.de/vereine/welt2000/download/WELT2000-SPEC.TXT
-    """
-
-    CAN_READ_WAYPOINTS = True
 
     @classmethod
     def parse_waypoint(cls, line):
