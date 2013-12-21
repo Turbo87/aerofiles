@@ -1,6 +1,6 @@
 import pytest
 from os import path
-from aerofiles.formats import Welt2000Format, welt2000
+from aerofiles.formats import Welt2000Format, welt2000, Welt2000Reader
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
@@ -214,17 +214,11 @@ def test_eddl_n():
 @data_available
 def test_original():
     with open(DATA_PATH) as f:
-        for line in f:
-            check_waypoint(line)
+        for waypoint in Welt2000Reader(f):
+            check_waypoint(waypoint)
 
 
-def check_waypoint(line):
-    waypoint = Welt2000Format.parse_waypoint(line)
-
-    if not waypoint:
-        assert line.startswith('$') or line.strip() == ''
-        return
-
+def check_waypoint(waypoint):
     # Check name
     assert 'name' in waypoint
     assert not waypoint['name'].endswith(' ?')
@@ -239,9 +233,6 @@ def check_waypoint(line):
 
     if 'icao' in waypoint and waypoint['icao']:
         assert 'airfield' in waypoint['classifiers']
-
-    if '*ULM' in line or '#ULM' in line or '# ULM' in line:
-        assert 'ulm' in waypoint['classifiers']
 
     if 'runways' in waypoint:
         assert isinstance(waypoint['runways'], list)

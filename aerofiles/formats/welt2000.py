@@ -63,6 +63,20 @@ class ParserError(RuntimeError):
     pass
 
 
+class Welt2000Reader:
+    def __init__(self, fp):
+        self.fp = fp
+
+    def __iter__(self):
+        return self.next()
+
+    def next(self):
+        for line in self.fp:
+            wp = Welt2000Format.parse_waypoint(line)
+            if wp:
+                yield wp
+
+
 class Welt2000Format(Format):
     """
     A reader for the WELT2000 waypoint file format.
