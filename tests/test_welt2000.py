@@ -31,18 +31,14 @@ def test_parse_meiersberg():
             'glidersite',
             'landable',
         ]),
-        'runways': [
-            {
-                'surface': 'grass',
-                'length': 800,
-                'directions': [130, 310],
-            },
-        ],
-        'frequencies': [
-            {
-                'frequency': '130.125',
-            },
-        ],
+        'runways': [{
+            'surface': 'grass',
+            'length': 800,
+            'directions': [130, 310],
+        }],
+        'frequencies': [{
+            'frequency': '130.125',
+        }],
         'altitude': 164,
         'latitude': 51.29972222222222,
         'longitude': 6.956388888888889,
@@ -82,13 +78,11 @@ def test_marcoux():
             'landable',
             'catalogued',
         ]),
-        'runways': [
-            {
-                'surface': 'sand',
-                'length': 250,
-                'directions': [130],
-            },
-        ],
+        'runways': [{
+            'surface': 'sand',
+            'length': 250,
+            'directions': [130],
+        }],
         'frequencies': [],
         'altitude': 694,
         'latitude': 44.1275,
@@ -110,21 +104,16 @@ def test_sydney():
             'airfield',
             'landable',
         ]),
-        'runways': [
-            {
-                'surface': 'asphalt',
-                'length': 3950,
-                'directions': [160, 340],
-            },
-            {
-                'directions': [70, 250],
-            },
-        ],
-        'frequencies': [
-            {
-                'frequency': '120.500',
-            },
-        ],
+        'runways': [{
+            'surface': 'asphalt',
+            'length': 3950,
+            'directions': [160, 340],
+        }, {
+            'directions': [70, 250],
+        }],
+        'frequencies': [{
+            'frequency': '120.500',
+        }],
         'altitude': 6,
         'latitude': -33.94611111111111,
         'longitude': 151.1772222222222,
@@ -163,18 +152,14 @@ def test_vettweis():
             'landable',
             'ulm',
         ]),
-        'runways': [
-            {
-                'surface': 'grass',
-                'length': 380,
-                'directions': [150, 330],
-            },
-        ],
-        'frequencies': [
-            {
-                'frequency': '120.975',
-            },
-        ],
+        'runways': [{
+            'surface': 'grass',
+            'length': 380,
+            'directions': [150, 330],
+        }],
+        'frequencies': [{
+            'frequency': '120.975',
+        }],
         'altitude': 159,
         'latitude': 50.7475,
         'longitude': 6.567222222222222,
