@@ -13,16 +13,16 @@ data_available = pytest.mark.skipif(
 
 def test_comments():
     line = '$ this is a comment'
-    waypoint = Welt2000Reader.parse_waypoint(line)
-
-    assert waypoint is None
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 0
 
 
 def test_parse_meiersberg():
     line = 'MEIER1 MEIERSBERG      #GLD!G 80133113012 164N511759E0065723DEP0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'MEIERSBERG',
         'shortname': 'MEIER1',
         'icao': None,
@@ -52,9 +52,10 @@ def test_parse_meiersberg():
 
 def test_manosque():
     line = 'MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'MANOSQUE PONT D907XDURANCE',
         'shortname': 'MANOSQ',
         'classifiers': set([
@@ -69,9 +70,10 @@ def test_manosque():
 
 def test_marcoux():
     line = 'MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'MARCOUX CHAMP 8',
         'shortname': 'MARCO2',
         'icao': None,
@@ -97,9 +99,10 @@ def test_marcoux():
 
 def test_sydney():
     line = 'SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'SYDNEY NSW KINSS',
         'shortname': 'SYDNE1',
         'icao': 'YSSY',
@@ -131,9 +134,10 @@ def test_sydney():
 
 def test_ulm():
     line = 'ULMHBF ULM H BF                           480N482358E0095859DEJ0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'ULM H BF',
         'shortname': 'ULMHBF',
         'classifiers': set([
@@ -148,9 +152,10 @@ def test_ulm():
 
 def test_vettweis():
     line = 'VETTW2 VETTWEISS SOLLER*ULM!G 38153312097 159N504451E0063402DEP0'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'VETTWEISS SOLLER',
         'shortname': 'VETTW2',
         'icao': None,
@@ -179,9 +184,10 @@ def test_vettweis():
 
 def test_weisweiler():
     line = 'WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'WEISWEILER KW 1011FT WESTL KUEHLT',
         'shortname': 'WEISWE',
         'classifiers': set([
@@ -196,9 +202,10 @@ def test_weisweiler():
 
 def test_eddl_n():
     line = 'EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4'
-    waypoint = Welt2000Reader.parse_waypoint(line)
+    waypoints = list(Welt2000Reader([line]))
+    assert len(waypoints) == 1
 
-    assert waypoint == {
+    assert waypoints[0] == {
         'name': 'EDDLN0 EDDL N PFLICHTMELDEPUNKT',
         'shortname': 'EDDLN0',
         'classifiers': set([
