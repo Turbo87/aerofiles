@@ -89,7 +89,7 @@ class SeeYouReader:
         waypoint = {}
 
         waypoint['longitude'], waypoint['latitude'] = \
-            cls.parse_coordinates(fields)
+            cls.parse_coordinates(fields[3], fields[4])
 
         waypoint['name'] = fields[0].strip()
         waypoint['shortname'] = fields[1].strip()
@@ -164,9 +164,9 @@ class SeeYouReader:
         }]
 
     @classmethod
-    def parse_coordinates(cls, fields):
-        lat_match = RE_LATITUDE.match(fields[3])
-        lon_match = RE_LONGITUDE.match(fields[4])
+    def parse_coordinates(cls, lat, lon):
+        lat_match = RE_LATITUDE.match(lat)
+        lon_match = RE_LONGITUDE.match(lon)
         if not (lat_match and lon_match):
             raise ParserError('Reading coordinates failed')
 
