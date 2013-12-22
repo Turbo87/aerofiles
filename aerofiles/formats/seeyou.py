@@ -103,13 +103,7 @@ class SeeYouReader:
         waypoint['name'] = fields[0].strip()
         waypoint['shortname'] = fields[1].strip()
         waypoint['country'] = fields[2].strip()
-
-        # todo feet/float
-        alt_match = RE_ALTITUDE.match(fields[5])
-        if not alt_match:
-            raise ParserError('Reading altitude failed')
-
-        waypoint['altitude'] = int(alt_match.group(1) or '0')
+        waypoint['altitude'] = cls.parse_altitude(fields[5])
 
         try:
             style = int(fields[6])
@@ -130,6 +124,15 @@ class SeeYouReader:
         waypoint['description'] = fields[10].strip()
 
         return waypoint
+
+    @classmethod
+    def parse_altitude(cls, alt):
+        # todo feet/float
+        alt_match = RE_ALTITUDE.match(alt)
+        if not alt_match:
+            raise ParserError('Reading altitude failed')
+
+        return int(alt_match.group(1) or '0')
 
     @classmethod
     def parse_runways(cls, style, dir, length):
