@@ -16,8 +16,15 @@ def read(*paths):
 
 def read_markdown(*paths):
     content = read(*paths)
-    content = re.sub(r'\]\([^(http)]',
-                     '](' + about['__uri__'] + 'blob/master/', content)
+
+    # Change relative links to github links
+    content = re.sub(r'\]\(([^(http)])',
+                     '](' + about['__uri__'] + r'blob/master/\1', content)
+
+    # Strip images
+    content = re.sub(r'!\[([^\[\]\(\)]+)\]\([^\[\]\(\)]+\)', r'\1', content)
+
+    # Convert to rST if pypandoc available
     try:
         import pypandoc
         return pypandoc.convert(content, 'rst', format='md')
