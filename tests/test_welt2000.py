@@ -41,7 +41,7 @@ def test_parse_meiersberg():
         'frequencies': [{
             'frequency': '130.125',
         }],
-        'altitude': 164,
+        'elevation': 164,
         'latitude': 51.2997222,
         'longitude': 6.9563888,
         'country': 'DE',
@@ -59,7 +59,7 @@ def test_manosque():
         'classifiers': set([
             'bridge',
         ]),
-        'altitude': 295,
+        'elevation': 295,
         'latitude': 43.8044444,
         'longitude': 5.8244444,
         'country': 'FR',
@@ -86,7 +86,7 @@ def test_marcoux():
             'directions': [130],
         }],
         'frequencies': [],
-        'altitude': 694,
+        'elevation': 694,
         'latitude': 44.1275,
         'longitude': 6.2872222,
         'country': 'FR',
@@ -116,7 +116,7 @@ def test_sydney():
         'frequencies': [{
             'frequency': '120.500',
         }],
-        'altitude': 6,
+        'elevation': 6,
         'latitude': -33.9461111,
         'longitude': 151.1772222,
         'country': 'AU',
@@ -134,7 +134,7 @@ def test_ulm():
         'classifiers': set([
             'railway-station',
         ]),
-        'altitude': 480,
+        'elevation': 480,
         'latitude': 48.3994444,
         'longitude': 9.9830555,
         'country': 'DE',
@@ -162,7 +162,7 @@ def test_vettweis():
         'frequencies': [{
             'frequency': '120.975',
         }],
-        'altitude': 159,
+        'elevation': 159,
         'latitude': 50.7475,
         'longitude': 6.5672222,
         'country': 'DE',
@@ -180,7 +180,7 @@ def test_weisweiler():
         'classifiers': set([
             'power-plant',
         ]),
-        'altitude': 144,
+        'elevation': 144,
         'latitude': 50.8397222,
         'longitude': 6.3227777,
         'country': 'DE',
@@ -198,7 +198,7 @@ def test_eddl_n():
         'classifiers': set([
             'reporting-point',
         ]),
-        'altitude': 28,
+        'elevation': 28,
         'latitude': 51.4066666,
         'longitude': 6.7483333,
         'country': 'DE',
@@ -249,8 +249,8 @@ def check_waypoint(waypoint):
             assert len(frq['frequency']) == 7
             assert frq['frequency'][3] == '.'
 
-    assert 'altitude' in waypoint
-    assert -999 <= waypoint['altitude'] <= 9999
+    assert 'elevation' in waypoint
+    assert -999 <= waypoint['elevation'] <= 9999
 
     assert 'latitude' in waypoint
     assert -90 <= waypoint['latitude'] <= 90

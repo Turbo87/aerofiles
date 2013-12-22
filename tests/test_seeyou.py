@@ -19,14 +19,14 @@ def test_comments():
     assert len(waypoints) == 0
 
 
-def test_parse_altitude():
-    assert abs(SeeYouReader.parse_altitude('125m') - 125) < 0.1
-    assert abs(SeeYouReader.parse_altitude('300ft') - 91.44) < 0.1
-    assert abs(SeeYouReader.parse_altitude('300 m') - 300) < 0.1
-    assert abs(SeeYouReader.parse_altitude('m') - 0) < 0.1
-    assert abs(SeeYouReader.parse_altitude('23') - 23) < 0.1
-    assert abs(SeeYouReader.parse_altitude('') - 0) < 0.1
-    assert abs(SeeYouReader.parse_altitude('  ') - 0) < 0.1
+def test_parse_elevation():
+    assert abs(SeeYouReader.parse_elevation('125m') - 125) < 0.1
+    assert abs(SeeYouReader.parse_elevation('300ft') - 91.44) < 0.1
+    assert abs(SeeYouReader.parse_elevation('300 m') - 300) < 0.1
+    assert abs(SeeYouReader.parse_elevation('m') - 0) < 0.1
+    assert abs(SeeYouReader.parse_elevation('23') - 23) < 0.1
+    assert abs(SeeYouReader.parse_elevation('') - 0) < 0.1
+    assert abs(SeeYouReader.parse_elevation('  ') - 0) < 0.1
 
 
 def test_parse_runways():
@@ -87,7 +87,7 @@ def test_meiersberg():
         'frequencies': [{
             'frequency': '130.125',
         }],
-        'altitude': 164,
+        'elevation': 164,
         'latitude': 51.29972222222222,
         'longitude': 6.956388888888889,
         'country': 'DE',
@@ -106,7 +106,7 @@ def test_manosque():
         'classifiers': set([
             'bridge',
         ]),
-        'altitude': 295,
+        'elevation': 295,
         'latitude': 43.80444444444444,
         'longitude': 5.8244444444444445,
         'country': 'FR',
@@ -131,7 +131,7 @@ def test_marcoux():
             'directions': [130, 310],
         }],
         'frequencies': [],
-        'altitude': 694,
+        'elevation': 694,
         'latitude': 44.1275,
         'longitude': 6.287222222222222,
         'country': 'FR',
@@ -160,7 +160,7 @@ def test_sydney():
         'frequencies': [{
             'frequency': '120.500',
         }],
-        'altitude': 6,
+        'elevation': 6,
         'latitude': -33.94611111111111,
         'longitude': 151.1772222222222,
         'country': 'AU',
@@ -178,7 +178,7 @@ def test_ulm():
         'description': 'BAHNHOF',
         'classifiers': set([
         ]),
-        'altitude': 480,
+        'elevation': 480,
         'latitude': 48.39944444444444,
         'longitude': 9.983055555555556,
         'country': 'DE',
@@ -205,7 +205,7 @@ def test_vettweis():
         'frequencies': [{
             'frequency': '120.975',
         }],
-        'altitude': 159,
+        'elevation': 159,
         'latitude': 50.7475,
         'longitude': 6.567222222222222,
         'country': 'DE',
@@ -224,7 +224,7 @@ def test_weisweiler():
         'classifiers': set([
             'power-plant',
         ]),
-        'altitude': 144,
+        'elevation': 144,
         'latitude': 50.83972222222222,
         'longitude': 6.322777777777778,
         'country': 'DE',
@@ -242,7 +242,7 @@ def test_eddl_n():
         'description': 'EDDLN P',
         'classifiers': set([
         ]),
-        'altitude': 28,
+        'elevation': 28,
         'latitude': 51.406666666666666,
         'longitude': 6.748333333333333,
         'country': 'DE',
@@ -287,7 +287,7 @@ def check_waypoint(waypoint):
             assert len(frq['frequency']) == 7
             assert frq['frequency'][3] == '.'
 
-    assert 'altitude' in waypoint
+    assert 'elevation' in waypoint
 
     assert 'latitude' in waypoint
     assert -90 <= waypoint['latitude'] <= 90

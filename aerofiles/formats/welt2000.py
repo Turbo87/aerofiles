@@ -185,7 +185,7 @@ class Welt2000Reader:
         # COL 42 - 45       ELEVATION IN METER
         # COL 42 - 42  0 =  ELEVATION IN METER NOT PROVED
         alt = line[41:45].strip() or '0'
-        waypoint['altitude'] = int(alt)
+        waypoint['elevation'] = int(alt)
 
         waypoint['longitude'], waypoint['latitude'] = \
             cls.parse_coordinates(line)

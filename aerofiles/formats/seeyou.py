@@ -4,7 +4,7 @@ from aerofiles import units
 
 RE_LATITUDE = re.compile(r'([\d]{2})([\d]{2}.[\d]{3})([NS])', re.I)
 RE_LONGITUDE = re.compile(r'([\d]{3})([\d]{2}.[\d]{3})([EW])', re.I)
-RE_ALTITUDE = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
+RE_ELEVATION = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
 RE_FREQUENCY = re.compile(r'1[\d]{2}.[\d][0257][05]?')
 RE_RUNWAY_LENGTH = re.compile(r'([\d]+(?:.[\d]+)?)(ml|nm|m|ft)?', re.I)
 
@@ -103,7 +103,7 @@ class SeeYouReader:
         waypoint['name'] = fields[0].strip()
         waypoint['shortname'] = fields[1].strip()
         waypoint['country'] = fields[2].strip()
-        waypoint['altitude'] = cls.parse_altitude(fields[5])
+        waypoint['elevation'] = cls.parse_elevation(fields[5])
 
         try:
             style = int(fields[6])
@@ -126,10 +126,10 @@ class SeeYouReader:
         return waypoint
 
     @classmethod
-    def parse_altitude(cls, alt):
-        alt_match = RE_ALTITUDE.match(alt.strip())
+    def parse_elevation(cls, alt):
+        alt_match = RE_ELEVATION.match(alt.strip())
         if not alt_match:
-            raise ParserError('Reading altitude failed')
+            raise ParserError('Reading elevation failed')
 
         unit = UNITS_MAPPING.get(alt_match.group(2), units.METER)
         alt = float(alt_match.group(1) or '0')
