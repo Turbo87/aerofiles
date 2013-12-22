@@ -19,6 +19,16 @@ def test_comments():
     assert len(waypoints) == 0
 
 
+def test_parse_altitude():
+    assert abs(SeeYouReader.parse_altitude('125m') - 125) < 0.1
+    assert abs(SeeYouReader.parse_altitude('300ft') - 91.44) < 0.1
+    assert abs(SeeYouReader.parse_altitude('300 m') - 300) < 0.1
+    assert abs(SeeYouReader.parse_altitude('m') - 0) < 0.1
+    assert abs(SeeYouReader.parse_altitude('23') - 23) < 0.1
+    assert abs(SeeYouReader.parse_altitude('') - 0) < 0.1
+    assert abs(SeeYouReader.parse_altitude('  ') - 0) < 0.1
+
+
 def test_parse_runways():
     r = SeeYouReader.parse_runways(
         WaypointStyles.AIRFIELD_SOLID, '120', '30.5m')

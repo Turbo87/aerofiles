@@ -4,9 +4,9 @@ from aerofiles import units
 
 RE_LATITUDE = re.compile(r'([\d]{2})([\d]{2}.[\d]{3})([NS])', re.I)
 RE_LONGITUDE = re.compile(r'([\d]{3})([\d]{2}.[\d]{3})([EW])', re.I)
-RE_ALTITUDE = re.compile(r'(-?[\d]*)(m|ft)', re.I)
+RE_ALTITUDE = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
 RE_FREQUENCY = re.compile(r'1[\d]{2}.[\d][0257][05]?')
-RE_RUNWAY_LENGTH = re.compile(r'([\d]+(?:.[\d]+))(ml|nm|m|ft)?', re.I)
+RE_RUNWAY_LENGTH = re.compile(r'([\d]+(?:.[\d]+)?)(ml|nm|m|ft)?', re.I)
 
 
 class WaypointStyles:
@@ -127,12 +127,13 @@ class SeeYouReader:
 
     @classmethod
     def parse_altitude(cls, alt):
-        # todo feet/float
-        alt_match = RE_ALTITUDE.match(alt)
+        alt_match = RE_ALTITUDE.match(alt.strip())
         if not alt_match:
             raise ParserError('Reading altitude failed')
 
-        return int(alt_match.group(1) or '0')
+        unit = UNITS_MAPPING.get(alt_match.group(2), units.METER)
+        alt = float(alt_match.group(1) or '0')
+        return units.to_SI(alt, unit)
 
     @classmethod
     def parse_runways(cls, style, dir, length):
