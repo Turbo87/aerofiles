@@ -11,6 +11,26 @@ data_available = pytest.mark.skipif(
 )
 
 
+def assert_waypoint(value, expected):
+    # copy arguments to be able to modify them
+    value, expected = dict(value), dict(expected)
+
+    # save latitudes and longitudes
+    value_lon, value_lat = value['longitude'], value['latitude']
+    expected_lon, expected_lat = expected['longitude'], expected['latitude']
+
+    # remove floats from the dicts
+    del value['longitude']
+    del value['latitude']
+    del expected['longitude']
+    del expected['latitude']
+
+    # compare
+    assert value == expected
+    assert abs(value_lat - expected_lat) < 0.000001
+    assert abs(value_lon - expected_lon) < 0.000001
+
+
 def test_comments():
     line = '$ this is a comment'
     waypoints = list(Welt2000Reader([line]))
@@ -22,7 +42,7 @@ def test_parse_meiersberg():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'MEIERSBERG',
         'shortname': 'MEIER1',
         'icao': None,
@@ -40,10 +60,10 @@ def test_parse_meiersberg():
             'frequency': '130.125',
         }],
         'altitude': 164,
-        'latitude': 51.29972222222222,
-        'longitude': 6.956388888888889,
+        'latitude': 51.2997222,
+        'longitude': 6.9563888,
         'country': 'DE',
-    }
+    })
 
 
 def test_manosque():
@@ -51,17 +71,17 @@ def test_manosque():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'MANOSQUE PONT D907XDURANCE',
         'shortname': 'MANOSQ',
         'classifiers': set([
             'bridge',
         ]),
         'altitude': 295,
-        'latitude': 43.80444444444444,
-        'longitude': 5.8244444444444445,
+        'latitude': 43.8044444,
+        'longitude': 5.8244444,
         'country': 'FR',
-    }
+    })
 
 
 def test_marcoux():
@@ -69,7 +89,7 @@ def test_marcoux():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'MARCOUX CHAMP 8',
         'shortname': 'MARCO2',
         'icao': None,
@@ -86,9 +106,9 @@ def test_marcoux():
         'frequencies': [],
         'altitude': 694,
         'latitude': 44.1275,
-        'longitude': 6.287222222222222,
+        'longitude': 6.2872222,
         'country': 'FR',
-    }
+    })
 
 
 def test_sydney():
@@ -96,7 +116,7 @@ def test_sydney():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'SYDNEY NSW KINSS',
         'shortname': 'SYDNE1',
         'icao': 'YSSY',
@@ -115,10 +135,10 @@ def test_sydney():
             'frequency': '120.500',
         }],
         'altitude': 6,
-        'latitude': -33.94611111111111,
-        'longitude': 151.1772222222222,
+        'latitude': -33.9461111,
+        'longitude': 151.1772222,
         'country': 'AU',
-    }
+    })
 
 
 def test_ulm():
@@ -126,17 +146,17 @@ def test_ulm():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'ULM H BF',
         'shortname': 'ULMHBF',
         'classifiers': set([
             'railway-station',
         ]),
         'altitude': 480,
-        'latitude': 48.39944444444444,
-        'longitude': 9.983055555555556,
+        'latitude': 48.3994444,
+        'longitude': 9.9830555,
         'country': 'DE',
-    }
+    })
 
 
 def test_vettweis():
@@ -144,7 +164,7 @@ def test_vettweis():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'VETTWEISS SOLLER',
         'shortname': 'VETTW2',
         'icao': None,
@@ -162,9 +182,9 @@ def test_vettweis():
         }],
         'altitude': 159,
         'latitude': 50.7475,
-        'longitude': 6.567222222222222,
+        'longitude': 6.5672222,
         'country': 'DE',
-    }
+    })
 
 
 def test_weisweiler():
@@ -172,17 +192,17 @@ def test_weisweiler():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'WEISWEILER KW 1011FT WESTL KUEHLT',
         'shortname': 'WEISWE',
         'classifiers': set([
             'power-plant',
         ]),
         'altitude': 144,
-        'latitude': 50.83972222222222,
-        'longitude': 6.322777777777778,
+        'latitude': 50.8397222,
+        'longitude': 6.3227777,
         'country': 'DE',
-    }
+    })
 
 
 def test_eddl_n():
@@ -190,17 +210,17 @@ def test_eddl_n():
     waypoints = list(Welt2000Reader([line]))
     assert len(waypoints) == 1
 
-    assert waypoints[0] == {
+    assert_waypoint(waypoints[0], {
         'name': 'EDDLN0 EDDL N PFLICHTMELDEPUNKT',
         'shortname': 'EDDLN0',
         'classifiers': set([
             'reporting-point',
         ]),
         'altitude': 28,
-        'latitude': 51.406666666666666,
-        'longitude': 6.748333333333333,
+        'latitude': 51.4066666,
+        'longitude': 6.7483333,
         'country': 'DE',
-    }
+    })
 
 
 @data_available
