@@ -1,8 +1,8 @@
 import pytest
-from . import assert_waypoint
+from . import assert_waypoint, assert_runway
 
 from os import path
-from aerofiles.formats import SeeYouReader
+from aerofiles.formats.seeyou import SeeYouReader, WaypointStyles
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
@@ -17,6 +17,32 @@ def test_comments():
     line = '* this is a comment'
     waypoints = list(SeeYouReader([line]))
     assert len(waypoints) == 0
+
+
+def test_parse_runways():
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.AIRFIELD_SOLID, '120', '300m')
+    assert len(r) == 1
+    assert_runway(r[0], [120, 300], 300, 'solid')
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.AIRFIELD_GRASS, '360', '1500m')
+    assert len(r) == 1
+    assert_runway(r[0], [0, 180], 1500, 'grass')
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.OUTLANDING, '', '')
+    assert len(r) == 0
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.OUTLANDING, '', '1234m')
+    assert len(r) == 1
+    assert_runway(r[0], None, 1234, None)
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.GLIDERSITE, '75', '')
+    assert len(r) == 1
+    assert_runway(r[0], [75, 255], None, None)
 
 
 def test_meiersberg():
