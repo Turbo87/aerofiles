@@ -1,6 +1,6 @@
 # ![aerofiles](img/logo.png)
 
-**a waypoint file parser and writer for aviators**
+**waypoint file readers and writers for aviators**
 
 [![Build Status](https://travis-ci.org/Turbo87/aerofiles.png?branch=master)](https://travis-ci.org/Turbo87/aerofiles)
 
