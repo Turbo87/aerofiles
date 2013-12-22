@@ -1,11 +1,12 @@
 import csv
 import re
+from aerofiles import units
 
 RE_LATITUDE = re.compile(r'([\d]{2})([\d]{2}.[\d]{3})([NS])', re.I)
 RE_LONGITUDE = re.compile(r'([\d]{3})([\d]{2}.[\d]{3})([EW])', re.I)
 RE_ALTITUDE = re.compile(r'(-?[\d]*)(m|ft)', re.I)
 RE_FREQUENCY = re.compile(r'1[\d]{2}.[\d][0257][05]?')
-RE_RUNWAY_LENGTH = re.compile(r'([\d]+)(m|ml|nm|ft)', re.I)
+RE_RUNWAY_LENGTH = re.compile(r'([\d]+(?:.[\d]+))(ml|nm|m|ft)?', re.I)
 
 
 class WaypointStyles:
@@ -46,6 +47,14 @@ WAYPOINT_STYLE_MAPPING = {
     WaypointStyles.POWER_PLANT: ['power-plant'],
     WaypointStyles.CASTLE: ['castle'],
     WaypointStyles.INTERSECTION: ['intersection'],
+}
+
+UNITS_MAPPING = {
+    'm': units.METER,
+    'ft': units.FEET,
+    'km': units.KILOMETER,
+    'ml': units.STATUTE_MILE,
+    'nm': units.NAUTICAL_MILE,
 }
 
 
@@ -138,12 +147,13 @@ class SeeYouReader:
         except ValueError:
             pass
 
-        # todo floats / ml / NM
         len_match = RE_RUNWAY_LENGTH.match(length)
         if len_match:
             length = float(len_match.group(1))
+            unit = UNITS_MAPPING.get(len_match.group(2), units.METER)
+
             if length > 0:
-                runway['length'] = length
+                runway['length'] = units.to_SI(length, unit)
 
         if runway:
             runways.append(runway)

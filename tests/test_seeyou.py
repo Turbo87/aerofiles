@@ -21,9 +21,9 @@ def test_comments():
 
 def test_parse_runways():
     r = SeeYouReader.parse_runways(
-        WaypointStyles.AIRFIELD_SOLID, '120', '300m')
+        WaypointStyles.AIRFIELD_SOLID, '120', '30.5m')
     assert len(r) == 1
-    assert_runway(r[0], [120, 300], 300, 'solid')
+    assert_runway(r[0], [120, 300], 30.5, 'solid')
 
     r = SeeYouReader.parse_runways(
         WaypointStyles.AIRFIELD_GRASS, '360', '1500m')
@@ -43,6 +43,16 @@ def test_parse_runways():
         WaypointStyles.GLIDERSITE, '75', '')
     assert len(r) == 1
     assert_runway(r[0], [75, 255], None, None)
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.OUTLANDING, '', '1.2ml')
+    assert len(r) == 1
+    assert_runway(r[0], None, 1931.21, None)
+
+    r = SeeYouReader.parse_runways(
+        WaypointStyles.OUTLANDING, '', '0.7nm')
+    assert len(r) == 1
+    assert_runway(r[0], None, 1296.4, None)
 
 
 def test_meiersberg():
