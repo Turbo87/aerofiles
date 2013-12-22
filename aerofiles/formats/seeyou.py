@@ -114,21 +114,9 @@ class SeeYouReader:
 
         if 'landable' in waypoint['classifiers']:
             waypoint['icao'] = None
-
             waypoint['runways'] = cls.parse_runways(
                 style, fields[7], fields[8])
-
-            waypoint['frequencies'] = []
-
-            frq = fields[9]
-            if RE_FREQUENCY.match(frq):
-                if len(frq) < 7:
-                    frq += \
-                        '5' if frq.endswith('2') or frq.endswith('7') else '0'
-
-                waypoint['frequencies'].append({
-                    'frequency': frq,
-                })
+            waypoint['frequencies'] = cls.parse_frequencies(fields[9])
 
         waypoint['description'] = fields[10].strip()
 
@@ -163,8 +151,17 @@ class SeeYouReader:
         return runways
 
     @classmethod
-    def parse_frequencies(cls, line):
-        return []
+    def parse_frequencies(cls, frq):
+        if not RE_FREQUENCY.match(frq):
+            return []
+
+        if len(frq) < 7:
+            frq += \
+                '5' if frq.endswith('2') or frq.endswith('7') else '0'
+
+        return [{
+            'frequency': frq,
+        }]
 
     @classmethod
     def parse_coordinates(cls, fields):
