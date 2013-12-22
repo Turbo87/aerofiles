@@ -115,29 +115,8 @@ class SeeYouReader:
         if 'landable' in waypoint['classifiers']:
             waypoint['icao'] = None
 
-            waypoint['runways'] = []
-            runway = {}
-
-            if style == WaypointStyles.AIRFIELD_GRASS:
-                runway['surface'] = 'grass'
-            elif style == WaypointStyles.AIRFIELD_SOLID:
-                runway['surface'] = 'solid'
-
-            try:
-                dir = int(fields[7])
-                runway['directions'] = [dir % 360, (dir + 180) % 360]
-            except ValueError:
-                pass
-
-            # todo floats / ml / NM
-            len_match = RE_RUNWAY_LENGTH.match(fields[8])
-            if len_match:
-                length = float(len_match.group(1))
-                if length > 0:
-                    runway['length'] = length
-
-            if runway:
-                waypoint['runways'].append(runway)
+            waypoint['runways'] = cls.parse_runways(
+                style, fields[7], fields[8])
 
             waypoint['frequencies'] = []
 
@@ -156,8 +135,32 @@ class SeeYouReader:
         return waypoint
 
     @classmethod
-    def parse_runways(cls, line):
-        return []
+    def parse_runways(cls, style, dir, length):
+        runways = []
+        runway = {}
+
+        if style == WaypointStyles.AIRFIELD_GRASS:
+            runway['surface'] = 'grass'
+        elif style == WaypointStyles.AIRFIELD_SOLID:
+            runway['surface'] = 'solid'
+
+        try:
+            dir = int(dir)
+            runway['directions'] = [dir % 360, (dir + 180) % 360]
+        except ValueError:
+            pass
+
+        # todo floats / ml / NM
+        len_match = RE_RUNWAY_LENGTH.match(length)
+        if len_match:
+            length = float(len_match.group(1))
+            if length > 0:
+                runway['length'] = length
+
+        if runway:
+            runways.append(runway)
+
+        return runways
 
     @classmethod
     def parse_frequencies(cls, line):
