@@ -1,4 +1,5 @@
 import re
+from . import ParserError
 
 RE_WHITESPACE = re.compile(r'\s+')
 RE_COORDINATES = re.compile(
@@ -55,10 +56,6 @@ SURFACES = {
     'D': 'dirt',
     'W': 'meadow',
 }
-
-
-class ParserError(RuntimeError):
-    pass
 
 
 class Welt2000Reader:

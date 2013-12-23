@@ -1,6 +1,7 @@
 import csv
 import re
 from aerofiles import units
+from . import ParserError
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
 RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}.[\d]{3})([NS])$', re.I)
@@ -57,10 +58,6 @@ UNITS_MAPPING = {
     'ml': units.STATUTE_MILE,
     'nm': units.NAUTICAL_MILE,
 }
-
-
-class ParserError(RuntimeError):
-    pass
 
 
 class SeeYouBaseReader:
