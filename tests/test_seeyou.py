@@ -41,7 +41,7 @@ def test_decode_elevation():
     assert_elevation(SeeYouBaseReader.decode_elevation(''), None, None)
 
     with pytest.raises(ParserError):
-        print SeeYouBaseReader.decode_elevation('x')
+        SeeYouBaseReader.decode_elevation('x')
 
 
 def test_decode_runway_length():
@@ -53,7 +53,7 @@ def test_decode_runway_length():
     assert_elevation(SeeYouBaseReader.decode_runway_length(''), None, None)
 
     with pytest.raises(ParserError):
-        print SeeYouBaseReader.decode_runway_length('x')
+        SeeYouBaseReader.decode_runway_length('x')
 
 
 def test_base_meiersberg():
