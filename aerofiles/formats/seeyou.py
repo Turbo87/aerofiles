@@ -2,11 +2,12 @@ import csv
 import re
 from aerofiles import units
 
-RE_LATITUDE = re.compile(r'([\d]{2})([\d]{2}.[\d]{3})([NS])', re.I)
-RE_LONGITUDE = re.compile(r'([\d]{3})([\d]{2}.[\d]{3})([EW])', re.I)
+RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
+RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}.[\d]{3})([NS])$', re.I)
+RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}.[\d]{3})([EW])$', re.I)
 RE_ELEVATION = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
-RE_FREQUENCY = re.compile(r'1[\d]{2}.[\d][0257][05]?')
-RE_RUNWAY_LENGTH = re.compile(r'([\d]+(?:.[\d]+)?)(ml|nm|m|ft)?', re.I)
+RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
+RE_FREQUENCY = re.compile(r'^1[\d]{2}.[\d]+?$')
 
 
 class WaypointStyles:
@@ -62,7 +63,7 @@ class ParserError(RuntimeError):
     pass
 
 
-class SeeYouReader:
+class SeeYouBaseReader:
     """
     A reader for the SeeYou CUP waypoint file format.
 
@@ -77,66 +78,243 @@ class SeeYouReader:
 
     def next(self):
         for fields in csv.reader(self.fp):
-            wp = self.fields_to_waypoint(fields)
+            wp = self.decode_waypoint(fields)
             if wp:
                 yield wp
 
     @classmethod
-    def fields_to_waypoint(cls, fields):
-        """
-        Parses a single waypoint from the specified input.
-        """
-
-        #print fields
+    def decode_waypoint(cls, fields):
+        # Ignore header line
         if fields == ['name', 'code', 'country', 'lat', 'lon', 'elev',
                       'style', 'rwdir', 'rwlen', 'freq', 'desc']:
             return
 
-        if len(fields) != 11:
+        # Ignore empty lines
+        num_fields = len(fields)
+        if num_fields == 0:
             return
 
-        waypoint = {}
+        # Ignore comments
+        if fields[0].startswith('*'):
+            return
 
-        waypoint['longitude'], waypoint['latitude'] = \
-            cls.parse_coordinates(fields[3], fields[4])
+        if num_fields != 11:
+            raise ParserError('Fields are missing')
 
-        waypoint['name'] = fields[0].strip()
-        waypoint['shortname'] = fields[1].strip()
-        waypoint['country'] = fields[2].strip()
-        waypoint['elevation'] = cls.parse_elevation(fields[5])
+        fields = [field.strip() for field in fields]
+
+        return {
+            'name': cls.decode_name(fields[0]),
+            'code': cls.decode_code(fields[1]),
+            'country': cls.decode_country(fields[2]),
+            'latitude': cls.decode_latitude(fields[3]),
+            'longitude': cls.decode_longitude(fields[4]),
+            'elevation': cls.decode_elevation(fields[5]),
+            'style': cls.decode_style(fields[6]),
+            'runway_direction': cls.decode_runway_direction(fields[7]),
+            'runway_length': cls.decode_runway_length(fields[8]),
+            'frequency': cls.decode_frequency(fields[9]),
+            'description': cls.decode_description(fields[10]),
+        }
+
+    @classmethod
+    def decode_name(cls, name):
+        if not name:
+            raise ParserError('Name field must not be empty')
+
+        return name
+
+    @classmethod
+    def decode_code(cls, code):
+        if not code:
+            return None
+
+        return code
+
+    @classmethod
+    def decode_country(cls, country):
+        if RE_COUNTRY.match(country):
+            return country
+        else:
+            raise ParserError('Invalid country code')
+
+    @classmethod
+    def decode_latitude(cls, latitude):
+        match = RE_LATITUDE.match(latitude)
+        if not match:
+            raise ParserError('Reading latitude failed')
+
+        latitude = int(match.group(1)) + float(match.group(2)) / 60.
+
+        if not (0 <= latitude <= 90):
+            raise ParserError('Latitude out of bounds')
+
+        if match.group(3).upper() == 'S':
+            latitude = -latitude
+
+        return latitude
+
+    @classmethod
+    def decode_longitude(cls, longitude):
+        match = RE_LONGITUDE.match(longitude)
+        if not match:
+            raise ParserError('Reading longitude failed')
+
+        longitude = int(match.group(1)) + float(match.group(2)) / 60.
+
+        if not (0 <= longitude <= 180):
+            raise ParserError('Longitude out of bounds')
+
+        if match.group(3).upper() == 'W':
+            longitude = -longitude
+
+        return longitude
+
+    @classmethod
+    def decode_elevation(cls, elevation):
+        match = RE_ELEVATION.match(elevation)
+        if not match:
+            raise ParserError('Reading elevation failed')
 
         try:
-            style = int(fields[6])
+            value = float(match.group(1))
         except ValueError:
-            style = 1
+            value = None
 
-        if style not in WAYPOINT_STYLE_MAPPING:
+        unit = match.group(2)
+        if unit and unit.lower() not in ('m', 'ft'):
+            raise ParserError('Unknown elevation unit')
+
+        return {
+            'value': value,
+            'unit': unit,
+        }
+
+    @classmethod
+    def decode_style(cls, style):
+        try:
+            style = int(style)
+        except ValueError:
+            raise ParserError('Reading style failed')
+
+        if not (1 <= style <= 17):
             raise ParserError('Unknown waypoint style')
 
-        waypoint['classifiers'] = set(WAYPOINT_STYLE_MAPPING[style])
+        return style
+
+    @classmethod
+    def decode_runway_direction(cls, runway_direction):
+        if not runway_direction:
+            return None
+
+        try:
+            runway_direction = int(runway_direction)
+        except ValueError:
+            raise ParserError('Reading runway direction failed')
+
+        return runway_direction
+
+    @classmethod
+    def decode_runway_length(cls, runway_length):
+        if not runway_length:
+            return {
+                'value': None,
+                'unit': None,
+            }
+
+        match = RE_RUNWAY_LENGTH.match(runway_length)
+        if not match:
+            raise ParserError('Reading runway length failed')
+
+        try:
+            value = float(match.group(1))
+        except ValueError:
+            value = None
+
+        unit = match.group(2)
+        if unit and unit.lower() not in ('m', 'nm', 'ml'):
+            raise ParserError('Unknown runway length unit')
+
+        return {
+            'value': value,
+            'unit': unit,
+        }
+
+    @classmethod
+    def decode_frequency(cls, frequency):
+        if not frequency:
+            return None
+
+        if not RE_FREQUENCY.match(frequency):
+            raise ParserError('Reading frequency failed')
+
+        return frequency
+
+    @classmethod
+    def decode_description(cls, description):
+        if not description:
+            return None
+
+        return description
+
+
+class SeeYouReader:
+    """
+    A reader for the SeeYou CUP waypoint file format.
+
+    see http://www.keepitsoaring.com/LKSC/Downloads/cup_format.pdf
+    """
+
+    def __init__(self, fp):
+        self.fp = fp
+
+    def __iter__(self):
+        return self.next()
+
+    def next(self):
+        for old in SeeYouBaseReader(self.fp):
+            new = self.convert_waypoint(old)
+            if new:
+                yield new
+
+    @classmethod
+    def convert_waypoint(cls, old):
+        waypoint = {}
+
+        waypoint['name'] = old['name']
+        waypoint['shortname'] = old['code']
+        waypoint['country'] = old['country']
+        waypoint['description'] = old['description']
+
+        waypoint['latitude'] = old['latitude']
+        waypoint['longitude'] = old['longitude']
+
+        waypoint['elevation'] = cls.convert_elevation(old['elevation'])
+
+        if old['style'] not in WAYPOINT_STYLE_MAPPING:
+            raise ParserError('Unknown waypoint style')
+
+        waypoint['classifiers'] = set(WAYPOINT_STYLE_MAPPING[old['style']])
 
         if 'landable' in waypoint['classifiers']:
             waypoint['icao'] = None
-            waypoint['runways'] = cls.parse_runways(
-                style, fields[7], fields[8])
-            waypoint['frequencies'] = cls.parse_frequencies(fields[9])
-
-        waypoint['description'] = fields[10].strip()
+            waypoint['runways'] = cls.convert_runways(
+                old['style'], old['runway_direction'], old['runway_length'])
+            waypoint['frequencies'] = cls.convert_frequencies(
+                old['frequency'])
 
         return waypoint
 
     @classmethod
-    def parse_elevation(cls, alt):
-        alt_match = RE_ELEVATION.match(alt.strip())
-        if not alt_match:
-            raise ParserError('Reading elevation failed')
+    def convert_elevation(cls, elevation):
+        if elevation['value'] is None and elevation['unit'] is None:
+            return None
 
-        unit = UNITS_MAPPING.get(alt_match.group(2), units.METER)
-        alt = float(alt_match.group(1) or '0')
-        return units.to_SI(alt, unit)
+        unit = UNITS_MAPPING.get(elevation['unit'].lower(), units.METER)
+        return units.to_SI(elevation['value'] or 0, unit)
 
     @classmethod
-    def parse_runways(cls, style, dir, length):
+    def convert_runways(cls, style, dir, length):
         runways = []
         runway = {}
 
@@ -145,19 +323,12 @@ class SeeYouReader:
         elif style == WaypointStyles.AIRFIELD_SOLID:
             runway['surface'] = 'solid'
 
-        try:
-            dir = int(dir)
+        if dir is not None:
             runway['directions'] = [dir % 360, (dir + 180) % 360]
-        except ValueError:
-            pass
 
-        len_match = RE_RUNWAY_LENGTH.match(length)
-        if len_match:
-            length = float(len_match.group(1))
-            unit = UNITS_MAPPING.get(len_match.group(2), units.METER)
-
-            if length > 0:
-                runway['length'] = units.to_SI(length, unit)
+        if length['value']:
+            unit = UNITS_MAPPING.get(length['unit'].lower(), units.METER)
+            runway['length'] = units.to_SI(length['value'], unit)
 
         if runway:
             runways.append(runway)
@@ -165,8 +336,8 @@ class SeeYouReader:
         return runways
 
     @classmethod
-    def parse_frequencies(cls, frq):
-        if not RE_FREQUENCY.match(frq):
+    def convert_frequencies(cls, frq):
+        if not frq:
             return []
 
         if len(frq) < 7:
@@ -176,30 +347,3 @@ class SeeYouReader:
         return [{
             'frequency': frq,
         }]
-
-    @classmethod
-    def parse_coordinates(cls, lat, lon):
-        lat_match = RE_LATITUDE.match(lat)
-        lon_match = RE_LONGITUDE.match(lon)
-        if not (lat_match and lon_match):
-            raise ParserError('Reading coordinates failed')
-
-        lat = (
-            int(lat_match.group(1)) +
-            float(lat_match.group(2)) / 60.
-        )
-        if not (0 <= lat <= 90):
-            raise ParserError('Latitude out of bounds')
-        if lat_match.group(3) == 'S':
-            lat = -lat
-
-        lon = (
-            int(lon_match.group(1)) +
-            float(lon_match.group(2)) / 60.
-        )
-        if not (0 <= lon <= 180):
-            raise ParserError('Longitude out of bounds')
-        if lon_match.group(3) == 'W':
-            lon = -lon
-
-        return lon, lat

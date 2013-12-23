@@ -1,8 +1,10 @@
 import pytest
-from . import assert_waypoint, assert_runway
+from . import assert_waypoint
 
 from os import path
-from aerofiles.formats.seeyou import SeeYouReader, WaypointStyles
+from aerofiles.formats.seeyou import (
+    SeeYouReader, SeeYouBaseReader, ParserError
+)
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
@@ -19,50 +21,65 @@ def test_comments():
     assert len(waypoints) == 0
 
 
-def test_parse_elevation():
-    assert abs(SeeYouReader.parse_elevation('125m') - 125) < 0.1
-    assert abs(SeeYouReader.parse_elevation('300ft') - 91.44) < 0.1
-    assert abs(SeeYouReader.parse_elevation('300 m') - 300) < 0.1
-    assert abs(SeeYouReader.parse_elevation('m') - 0) < 0.1
-    assert abs(SeeYouReader.parse_elevation('23') - 23) < 0.1
-    assert abs(SeeYouReader.parse_elevation('') - 0) < 0.1
-    assert abs(SeeYouReader.parse_elevation('  ') - 0) < 0.1
+def assert_elevation(elevation, expected_value, expected_unit):
+    assert 'value' in elevation
+    if expected_value is None:
+        assert elevation['value'] is None
+    else:
+        assert abs(elevation['value'] - expected_value) < 0.0001
+    assert 'unit' in elevation
+    assert elevation['unit'] == expected_unit
 
 
-def test_parse_runways():
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.AIRFIELD_SOLID, '120', '30.5m')
-    assert len(r) == 1
-    assert_runway(r[0], [120, 300], 30.5, 'solid')
+def test_decode_elevation():
+    assert_elevation(SeeYouBaseReader.decode_elevation('125m'), 125, 'm')
+    assert_elevation(SeeYouBaseReader.decode_elevation('300ft'), 300, 'ft')
+    assert_elevation(SeeYouBaseReader.decode_elevation('300 m'), 300, 'm')
+    assert_elevation(SeeYouBaseReader.decode_elevation('-25.4m'), -25.4, 'm')
+    assert_elevation(SeeYouBaseReader.decode_elevation('m'), None, 'm')
+    assert_elevation(SeeYouBaseReader.decode_elevation('23'), 23, None)
+    assert_elevation(SeeYouBaseReader.decode_elevation(''), None, None)
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.AIRFIELD_GRASS, '360', '1500m')
-    assert len(r) == 1
-    assert_runway(r[0], [0, 180], 1500, 'grass')
+    with pytest.raises(ParserError):
+        print SeeYouBaseReader.decode_elevation('x')
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.OUTLANDING, '', '')
-    assert len(r) == 0
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.OUTLANDING, '', '1234m')
-    assert len(r) == 1
-    assert_runway(r[0], None, 1234, None)
+def test_decode_runway_length():
+    assert_elevation(SeeYouBaseReader.decode_runway_length('1250m'), 1250, 'm')
+    assert_elevation(SeeYouBaseReader.decode_runway_length('3.5ml'), 3.5, 'ml')
+    assert_elevation(SeeYouBaseReader.decode_runway_length('0 m'), 0, 'm')
+    assert_elevation(SeeYouBaseReader.decode_runway_length('2.4NM'), 2.4, 'NM')
+    assert_elevation(SeeYouBaseReader.decode_runway_length('23'), 23, None)
+    assert_elevation(SeeYouBaseReader.decode_runway_length(''), None, None)
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.GLIDERSITE, '75', '')
-    assert len(r) == 1
-    assert_runway(r[0], [75, 255], None, None)
+    with pytest.raises(ParserError):
+        print SeeYouBaseReader.decode_runway_length('x')
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.OUTLANDING, '', '1.2ml')
-    assert len(r) == 1
-    assert_runway(r[0], None, 1931.21, None)
 
-    r = SeeYouReader.parse_runways(
-        WaypointStyles.OUTLANDING, '', '0.7nm')
-    assert len(r) == 1
-    assert_runway(r[0], None, 1296.4, None)
+def test_base_meiersberg():
+    line = '"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"'  # noqa
+    waypoints = list(SeeYouBaseReader([line]))
+    assert len(waypoints) == 1
+
+    assert_waypoint(waypoints[0], {
+        'name': 'Meiersberg',
+        'code': 'MEIER',
+        'country': 'DE',
+        'latitude': 51.29972222222222,
+        'longitude': 6.956388888888889,
+        'elevation': {
+            'value': 164,
+            'unit': 'm',
+        },
+        'style': 4,
+        'runway_direction': 130,
+        'runway_length': {
+            'value': 800,
+            'unit': 'm',
+        },
+        'frequency': '130.125',
+        'description': 'Flugplatz',
+    })
 
 
 def test_meiersberg():
@@ -247,6 +264,13 @@ def test_eddl_n():
         'longitude': 6.748333333333333,
         'country': 'DE',
     })
+
+
+@data_available
+def test_base_original():
+    with open(DATA_PATH) as f:
+        for waypoint in SeeYouBaseReader(f):
+            assert waypoint is not None
 
 
 @data_available
