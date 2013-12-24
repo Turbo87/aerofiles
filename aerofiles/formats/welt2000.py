@@ -2,10 +2,14 @@ import re
 from . import ParserError
 
 RE_WHITESPACE = re.compile(r'\s+')
-RE_COORDINATES = re.compile(
-    r'([NS])([\d]{2})([\d]{2})([\d]{2})([EW])([\d]{3})([\d]{2})([\d]{2})')
-RE_ICAO = re.compile(r'[\w\d]{4}')
-RE_FIELD_NUMBER = re.compile(r'FL[\d]{2}')
+RE_LATITUDE = re.compile(r'^([NS])([\d]{2})([\d]{2})([\d]{2})$')
+RE_LONGITUDE = re.compile(r'^([EW])([\d]{3})([\d]{2})([\d]{2})$')
+RE_ICAO = re.compile(r'^[\w\d]{4}$')
+RE_FIELD_NUMBER = re.compile(r'^\*FL([\d]+)$')
+RE_RUNWAY_LENGTH = re.compile(r'^\s*([\d]+)\s*$')
+RE_RUNWAY_DIRECTION = re.compile(r'^\s*([\d]+)\s*$')
+RE_FREQUENCY = re.compile(r'^(1[\d]{2})([\d]{2})$')
+RE_ELEVATION = re.compile(r'^[\s]*(-?[\d]+)')
 
 RE_CLASSIFIERS = [
     (re.compile(r'\bA[\d]+ B?AB[\d]*[abc]?\b'), ['highway-exit']),
@@ -45,7 +49,6 @@ RE_CLASSIFIERS = [
 ]
 
 SURFACES = {
-    ' ': None,
     'A': 'asphalt',
     'C': 'concrete',
     'L': 'loam',
@@ -58,7 +61,7 @@ SURFACES = {
 }
 
 
-class Welt2000Reader:
+class Welt2000BaseReader:
     """
     A reader for the WELT2000 waypoint file format.
 
@@ -73,219 +76,332 @@ class Welt2000Reader:
 
     def next(self):
         for line in self.fp:
-            wp = self.line_to_waypoint(line)
+            wp = self.decode_waypoint(line)
             if wp:
                 yield wp
 
     @classmethod
-    def line_to_waypoint(cls, line):
-        """
-        Parses a single waypoint from the specified input.
-
-        Examples:
-
-        03VBTN 03VBT NADRAZI                      414N494931E0163518CZP5
-        1111N2 1111 N HWY      *    A 8018361    1274N314405W1052217USQ0
-        BALDI2 BALDISSERO     ?*ULM G 3013311     329N444633E0075247ITN0
-        BRCK12 BRECKENRIDG OLD ?   !S 9916341    2860N393036W1060302USO0
-        CHRRT2 CHARRAT         *FL34S 30062411    459N460704E0070726CHP6
-        CRAZC2 CRAZY CREEK R1  #    G1030         305N384610W1223410USQ0
-        MEIER1 MEIERSBERG      #GLD!G 80133113012 164N511759E0065723DEP0
-        MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0
-        MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0
-        MASER1 MASERA AVIOSUPE!# ULMA 80011913000 283N460800E0081821ITZ6
-        RSTCKR ROSTOCK RITZ 25+*ULM  120    12470 892S233227E0155033NAP9
-        SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0
-        VARRAI VARRAINS SILOS                  !   38N471303W0000407FRQ0
-        VOGEL2 VOGELSBERG WIESE*FL03W 2529291     680N482345E0082657DEJ0
-        WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5
-        YLIKIB YLIKI BR A1 AB KANAL             ! 114N382615E0231350GRY0
-        """
-
-        # THE DOLLAR SIGN ($) AS FIRST CHARACTER MEANS: IGNORE LINE
-        if line.startswith('$'):
-            return None
-
-        # Ignore empty lines
+    def decode_waypoint(cls, line):
         line = line.strip()
-        if line == '':
-            return None
+
+        if not line or line.startswith('$'):
+            return
 
         # Check valid line length
         if len(line) != 64:
             raise ParserError('Line length does not match 64')
 
-        waypoint = {}
-        classifiers = set()
-        has_metadata = False
+        return {
+            'shortform': cls.decode_shortform(line),
+            'is_airfield': cls.decode_is_airfield(line),
+            'is_unclear': cls.decode_is_unclear(line),
+            'is_outlanding': cls.decode_is_outlanding(line),
+            'shortform_zander': cls.decode_shortform_zander(line),
+            'text': cls.decode_text(line),
+            'icao': cls.decode_icao(line),
+            'is_ulm': cls.decode_is_ulm(line),
+            'field_number': cls.decode_field_number(line),
+            'is_glidersite': cls.decode_is_glidersite(line),
+            'runway_surface': cls.decode_runway_surface(line),
+            'runway_length': cls.decode_runway_length(line),
+            'runway_directions': cls.decode_runway_directions(line),
+            'frequency': cls.decode_frequency(line),
+            'elevation': cls.decode_elevation(line),
+            'elevation_proved': cls.decode_elevation_proved(line),
+            'latitude': cls.decode_latitude(line),
+            'longitude': cls.decode_longitude(line),
+            'ground_check_necessary': cls.decode_ground_check_necessary(line),
+            'better_coordinates': cls.decode_better_coordinates(line),
+            'country': cls.decode_country(line),
+            'year_code': cls.decode_year_code(line),
+            'source_code': cls.decode_source_code(line),
+        }
 
-        # COLUMN 1-6:    SHORTFORM FOR GPS INPUT 6 CHARACTERS
-        waypoint['shortname'] = line[0:6]
+    @classmethod
+    def has_metadata(cls, line):
+        return line[23] == '#' or line[23] == '*' or line[23] == '?'
 
-        # NAMES FOR AIRFIELDS ARE 5 CHARS LONG YOU CAN DELETE THE '1'
-        if line[5] == '1':
-            classifiers.add('landable')
-            classifiers.add('airfield')
+    @classmethod
+    def decode_shortform(cls, line):
+        return line[0:6]
 
-        # ALL OUTLANDING FIELDS HAVE NUMBER '2' IN COL 6
-        elif line[5] == '2':
-            classifiers.add('landable')
+    @classmethod
+    def decode_is_airfield(cls, line):
+        return line[5] == '1'
 
-        # Read waypoint name
+    @classmethod
+    def decode_is_unclear(cls, line):
+        return line[4] == '2'
 
-        # If '#' or '*' at char 23 this is a short name
-        if line[23] == '#' or line[23] == '*' or line[23] == '?':
-            if line[20:23] == 'GLD':
-                name = line[7:20].rstrip()
-            else:
-                name = line[7:23].rstrip()
+    @classmethod
+    def decode_is_outlanding(cls, line):
+        return line[5] == '2'
 
-            has_metadata = True
+    @classmethod
+    def decode_shortform_zander(cls, line):
+        if line[6] == ' ' or line[6] == '-':
+            return line[7:19].rstrip()
         else:
-            name = line[7:41].rstrip()
-
-        # Drop '?' or '!' at the end
-        if name.endswith('?') or name.endswith('!'):
-            name = name[:-1]
-
-        # Drop e.g. '20+' at the end
-        if name.endswith('+'):
-            name = name[:-3]
-
-        waypoint['name'] = name = RE_WHITESPACE.sub(' ', name.rstrip())
-
-        # Detect glider sites
-        if line[23] == '#' or line[23] == '*':
-            if line[20:23] == 'GLD' or line[24:27] == 'GLD':
-                classifiers.add('glidersite')
-
-        # Detect ULM fields
-        if (line[23:27] == '*ULM' or
-                line[23:27] == '#ULM' or line[23:28] == '# ULM'):
-            classifiers.add('ulm')
-
-        # Read ICAO code
-        if has_metadata:
-            code = line[24:28]
-
-            waypoint['icao'] = None
-            if line[23] == '#' and RE_ICAO.match(line[24:28]):
-                waypoint['icao'] = code
-
-            if line[23] == '*' and RE_FIELD_NUMBER.match(code):
-                classifiers.add('catalogued')
-                waypoint['field_number'] = int(code[2:])
-
-            waypoint['runways'] = cls.parse_runways(line)
-            waypoint['frequencies'] = cls.parse_frequencies(line)
-
-        # COL 42 - 45       ELEVATION IN METER
-        # COL 42 - 42  0 =  ELEVATION IN METER NOT PROVED
-        alt = line[41:45].strip() or '0'
-        waypoint['elevation'] = int(alt)
-
-        waypoint['longitude'], waypoint['latitude'] = \
-            cls.parse_coordinates(line)
-
-        waypoint['country'] = line[60:62]
-
-        for regex, values in RE_CLASSIFIERS:
-            if regex.search(name):
-                classifiers.update(values)
-
-        waypoint['classifiers'] = classifiers
-
-        return waypoint
+            return line[7:19] + line[6]
 
     @classmethod
-    def parse_runways(cls, line):
-        # COL29: A=ASPH C=CONC L=LOAM S=SAND Y=CLAY G=GRAS V=GRAVEL D=DIRT
-        surface = SURFACES.get(line[28])
-        if not surface and line[24:29] == 'WIESE':
-            surface = 'meadow'
-
-        # 30 - 32 LENGTH OF RUNWAY IN METERS TO MULTIPLY BY 10
-        length = line[29:32].strip()
-        length = int(length) * 10 if length != '' else None
-
-        # 33 - 34  AND 35-36 DIRECTION OF RUNWAYS:
-        #              INCLUDES SOME FURTHER INFORMATION:
-        #           A: 08/26 MEANS THAT THERE IS ONLY ONE RUNWAYS
-        #              08 AND (26=08 + 18)
-        #           B: 17/07 MEANS THAT THERE ARE TWO RUNWAYS,
-        #                    BUT 17 IS THE MAIN RWY SURFACE LENGTH
-        #          C: IF BOTH DIRECTIONS ARE IDENTICAL (04/04)
-        #              THIS DIRECTION IS STRONGLY RECOMMENDED
-        r1 = line[32:34].strip()
-        r2 = line[34:36].strip()
-
-        if not (r1 and r2):
-            r1 = r2 = None
+    def decode_text(cls, line):
+        if not cls.has_metadata(line):
+            return line[7:41].rstrip('?! ')
+        elif line[20:23] == 'GLD':
+            return line[7:20].rstrip('?! ')
         else:
-            r1 = int(r1) % 36
-            r2 = int(r2) % 36
-
-        runways = []
-        if surface or length or r1 or r1 == 0:
-            runway = {}
-            if surface:
-                runway['surface'] = surface
-            if length:
-                runway['length'] = length
-            if r1 or r1 == 0:
-                runway['directions'] = \
-                    [r1 * 10] if r1 == r2 else [r1 * 10, (r1 + 18) * 10]
-
-            runways.append(runway)
-
-        if (r2 or r2 == 0) and r2 != r1 and r2 != r1 + 18:
-            runways.append({
-                'directions': [r2 * 10, (r2 + 18) * 10],
-            })
-
-        return runways
+            return line[7:23].rstrip('?! ')
 
     @classmethod
-    def parse_frequencies(cls, line):
-        # 37 - 41   FREQUENCY THE BEST FOR GLIDERS
-        # 41 - 41   12337 BECOMES 123.375, 13102 IS 131.025
-        frq = line[36:41].strip()
-        if not frq or len(frq) != 5:
-            return []
-
-        frq += '5' if frq.endswith('2') or frq.endswith('7') else '0'
-
-        return [{
-            'frequency': frq[0:3] + '.' + frq[3:6],
-        }]
+    def decode_icao(cls, line):
+        if (line[23] == '#' and line[24] != ' ' and
+                line[27] != '?' and line[27] != '!'):
+            return line[24:28].rstrip()
 
     @classmethod
-    def parse_coordinates(cls, line):
-        # COL 46 - 62  KOORDINATEN  GRAD  MIN  SEC   DEG/MIN/SEC
-        # e.g. N382615E0231350
+    def decode_is_ulm(cls, line):
+        return (
+            line[23:27] == '*ULM' or
+            line[23:27] == '#ULM' or
+            line[23:28] == '# ULM'
+        )
 
-        match = RE_COORDINATES.match(line[45:60])
+    @classmethod
+    def decode_field_number(cls, line):
+        match = RE_FIELD_NUMBER.match(line[23:28])
+        if match:
+            return int(match.group(1))
+
+    @classmethod
+    def decode_is_glidersite(cls, line):
+        return (
+            line[23:28] == '# GLD' or
+            line[23:27] == '#GLD' or
+            line[23:27] == '*GLD' or
+            line[19:24] == 'GLD #' or
+            line[20:24] == 'GLD#' or
+            line[20:24] == 'GLD*'
+        )
+
+    @classmethod
+    def decode_runway_surface(cls, line):
+        if cls.has_metadata(line):
+            return SURFACES.get(line[28], None)
+
+    @classmethod
+    def decode_runway_length(cls, line):
+        if cls.has_metadata(line):
+            match = RE_RUNWAY_LENGTH.match(line[29:32])
+            if match:
+                return int(match.group(1)) * 10
+
+    @classmethod
+    def decode_runway_directions(cls, line):
+        if cls.has_metadata(line):
+            directions = []
+
+            match = RE_RUNWAY_DIRECTION.match(line[32:34])
+            if match:
+                direction = int(match.group(1)) * 10
+                directions.append(direction)
+
+            match = RE_RUNWAY_DIRECTION.match(line[34:36])
+            if match:
+                direction = int(match.group(1)) * 10
+                if direction not in directions:
+                    directions.append(direction)
+
+            return directions or None
+
+    @classmethod
+    def decode_frequency(cls, line):
+        if cls.has_metadata(line):
+            match = RE_FREQUENCY.match(line[36:41])
+            if match:
+                frq = match.group(1) + '.' + match.group(2)
+                frq += '5' if frq.endswith('2') or frq.endswith('7') else '0'
+                return frq
+
+    @classmethod
+    def decode_elevation(cls, line):
+        match = RE_ELEVATION.match(line[41:45])
+        if match:
+            return int(match.group(1))
+
+    @classmethod
+    def decode_elevation_proved(cls, line):
+        return line[41] == '0'
+
+    @classmethod
+    def decode_latitude(cls, line):
+        match = RE_LATITUDE.match(line[45:52])
         if not match:
-            raise ParserError('Reading coordinates failed')
+            raise ParserError('Reading latitude failed')
 
         lat = (
             int(match.group(2)) +
             int(match.group(3)) / 60. +
             int(match.group(4)) / 3600.
         )
+
         if not (0 <= lat <= 90):
             raise ParserError('Latitude out of bounds')
+
         if match.group(1) == 'S':
             lat = -lat
 
+        return lat
+
+    @classmethod
+    def decode_longitude(cls, line):
+        match = RE_LONGITUDE.match(line[52:60])
+        if not match:
+            raise ParserError('Reading longitude failed')
+
         lon = (
-            int(match.group(6)) +
-            int(match.group(7)) / 60. +
-            int(match.group(8)) / 3600.
+            int(match.group(2)) +
+            int(match.group(3)) / 60. +
+            int(match.group(4)) / 3600.
         )
+
         if not (0 <= lon <= 180):
             raise ParserError('Longitude out of bounds')
-        if match.group(5) == 'W':
+
+        if match.group(1) == 'W':
             lon = -lon
 
-        return lon, lat
+        return lon
+
+    @classmethod
+    def decode_ground_check_necessary(cls, line):
+        return '?' in line
+
+    @classmethod
+    def decode_better_coordinates(cls, line):
+        return line[6] == '-'
+
+    @classmethod
+    def decode_country(cls, line):
+        return line[60:62].strip()
+
+    @classmethod
+    def decode_year_code(cls, line):
+        return line[62].strip()
+
+    @classmethod
+    def decode_source_code(cls, line):
+        return line[63].strip()
+
+
+class Welt2000Reader:
+    """
+    A reader for the WELT2000 waypoint file forrmat.
+
+    see http://www.segelflug.de/vereine/welt2000/download/WELT2000-SPEC.TXT
+    """
+
+    def __init__(self, fp):
+        self.fp = fp
+
+    def __iter__(self):
+        return self.next()
+
+    def next(self):
+        for old in Welt2000BaseReader(self.fp):
+            new = self.convert_waypoint(old)
+            if new:
+                yield new
+
+    @classmethod
+    def convert_waypoint(cls, old):
+        waypoint = {}
+
+        waypoint['name'] = old['text']
+        waypoint['shortname'] = old['shortform']
+        waypoint['country'] = old['country']
+        waypoint['description'] = None
+
+        waypoint['latitude'] = old['latitude']
+        waypoint['longitude'] = old['longitude']
+
+        waypoint['elevation'] = old['elevation']
+
+        waypoint['classifiers'] = set()
+
+        if old['is_glidersite']:
+            waypoint['classifiers'].add('glidersite')
+
+        if old['is_ulm']:
+            waypoint['classifiers'].add('ulm')
+
+        if old['is_airfield']:
+            waypoint['classifiers'].add('landable')
+            waypoint['classifiers'].add('airfield')
+
+        if old['is_outlanding']:
+            waypoint['classifiers'].add('landable')
+
+        if 'landable' in waypoint['classifiers']:
+            waypoint['icao'] = cls.convert_icao(old['icao'])
+            waypoint['runways'] = cls.convert_runways(
+                old['runway_surface'],
+                old['runway_directions'],
+                old['runway_length']
+            )
+            waypoint['frequencies'] = cls.convert_frequencies(
+                old['frequency']
+            )
+
+            if old['field_number'] is not None:
+                waypoint['classifiers'].add('catalogued')
+                waypoint['field_number'] = old['field_number']
+
+        for regex, values in RE_CLASSIFIERS:
+            if regex.search(old['text']):
+                waypoint['classifiers'].update(values)
+
+        return waypoint
+
+    @classmethod
+    def convert_icao(cls, icao):
+        if icao and RE_ICAO.match(icao):
+            return icao
+
+    @classmethod
+    def convert_runways(cls, surface, directions, length):
+        runways = []
+        if surface or length or directions:
+            runway = {}
+            if surface:
+                runway['surface'] = surface
+            if length:
+                runway['length'] = length
+            if directions:
+                if len(directions) == 1:
+                    runway['directions'] = [directions[0] % 360]
+                else:
+                    runway['directions'] = \
+                        [directions[0] % 360, (directions[0] + 180) % 360]
+
+            runways.append(runway)
+
+        if (directions and len(directions) == 2 and
+                (directions[0] + 180) % 360 != directions[1]):
+            runways.append({
+                'directions': [
+                    directions[1] % 360,
+                    (directions[1] + 180) % 360
+                ],
+            })
+
+        return runways
+
+    @classmethod
+    def convert_frequencies(cls, frq):
+        if not frq:
+            return []
+
+        return [{
+            'frequency': frq,
+        }]

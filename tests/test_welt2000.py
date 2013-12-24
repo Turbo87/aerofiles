@@ -2,7 +2,9 @@ import pytest
 from . import assert_waypoint
 
 from os import path
-from aerofiles.formats import Welt2000Reader, welt2000
+from aerofiles.formats.welt2000 import (
+    Welt2000Reader, Welt2000BaseReader, SURFACES
+)
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
@@ -27,6 +29,7 @@ def test_parse_meiersberg():
     assert_waypoint(waypoints[0], {
         'name': 'MEIERSBERG',
         'shortname': 'MEIER1',
+        'description': None,
         'icao': None,
         'classifiers': set([
             'airfield',
@@ -56,6 +59,7 @@ def test_manosque():
     assert_waypoint(waypoints[0], {
         'name': 'MANOSQUE PONT D907XDURANCE',
         'shortname': 'MANOSQ',
+        'description': None,
         'classifiers': set([
             'bridge',
         ]),
@@ -74,6 +78,7 @@ def test_marcoux():
     assert_waypoint(waypoints[0], {
         'name': 'MARCOUX CHAMP 8',
         'shortname': 'MARCO2',
+        'description': None,
         'icao': None,
         'field_number': 8,
         'classifiers': set([
@@ -101,6 +106,7 @@ def test_sydney():
     assert_waypoint(waypoints[0], {
         'name': 'SYDNEY NSW KINSS',
         'shortname': 'SYDNE1',
+        'description': None,
         'icao': 'YSSY',
         'classifiers': set([
             'airfield',
@@ -131,6 +137,7 @@ def test_ulm():
     assert_waypoint(waypoints[0], {
         'name': 'ULM H BF',
         'shortname': 'ULMHBF',
+        'description': None,
         'classifiers': set([
             'railway-station',
         ]),
@@ -149,6 +156,7 @@ def test_vettweis():
     assert_waypoint(waypoints[0], {
         'name': 'VETTWEISS SOLLER',
         'shortname': 'VETTW2',
+        'description': None,
         'icao': None,
         'classifiers': set([
             'landable',
@@ -177,6 +185,7 @@ def test_weisweiler():
     assert_waypoint(waypoints[0], {
         'name': 'WEISWEILER KW 1011FT WESTL KUEHLT',
         'shortname': 'WEISWE',
+        'description': None,
         'classifiers': set([
             'power-plant',
         ]),
@@ -193,8 +202,9 @@ def test_eddl_n():
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
-        'name': 'EDDLN0 EDDL N PFLICHTMELDEPUNKT',
+        'name': 'EDDLN0 EDDL N  PFLICHTMELDEPUNKT',
         'shortname': 'EDDLN0',
+        'description': None,
         'classifiers': set([
             'reporting-point',
         ]),
@@ -203,6 +213,13 @@ def test_eddl_n():
         'longitude': 6.7483333,
         'country': 'DE',
     })
+
+
+@data_available
+def test_base_original():
+    with open(DATA_PATH) as f:
+        for waypoint in Welt2000BaseReader(f):
+            assert waypoint is not None
 
 
 @data_available
@@ -217,7 +234,6 @@ def check_waypoint(waypoint):
     assert 'name' in waypoint
     assert not waypoint['name'].endswith(' ?')
     assert not waypoint['name'].endswith(' !')
-    assert not waypoint['name'].endswith('+')
 
     assert 'shortname' in waypoint
     assert len(waypoint['shortname']) == 6
@@ -234,7 +250,7 @@ def check_waypoint(waypoint):
         for runway in waypoint['runways']:
             assert isinstance(runway, dict)
             if 'surface' in runway:
-                assert runway['surface'] in welt2000.SURFACES.values()
+                assert runway['surface'] in SURFACES.values()
             if 'length' in runway:
                 assert 0 < runway['length'] <= 9999
             if 'directions' in runway:
@@ -250,7 +266,10 @@ def check_waypoint(waypoint):
             assert frq['frequency'][3] == '.'
 
     assert 'elevation' in waypoint
-    assert -999 <= waypoint['elevation'] <= 9999
+    assert (
+        waypoint['elevation'] is None or
+        -999 <= waypoint['elevation'] <= 9999
+    )
 
     assert 'latitude' in waypoint
     assert -90 <= waypoint['latitude'] <= 90
