@@ -67,7 +67,7 @@ class Reader:
     see http://www.keepitsoaring.com/LKSC/Downloads/cup_format.pdf
     """
 
-    def __init__(self, fp):
+    def __init__(self, fp=None):
         self.fp = fp
 
     def __iter__(self):
@@ -79,8 +79,7 @@ class Reader:
             if wp:
                 yield wp
 
-    @classmethod
-    def decode_waypoint(cls, fields):
+    def decode_waypoint(self, fields):
         # Ignore header line
         if fields == ['name', 'code', 'country', 'lat', 'lon', 'elev',
                       'style', 'rwdir', 'rwlen', 'freq', 'desc']:
@@ -101,42 +100,38 @@ class Reader:
         fields = [field.strip() for field in fields]
 
         return {
-            'name': cls.decode_name(fields[0]),
-            'code': cls.decode_code(fields[1]),
-            'country': cls.decode_country(fields[2]),
-            'latitude': cls.decode_latitude(fields[3]),
-            'longitude': cls.decode_longitude(fields[4]),
-            'elevation': cls.decode_elevation(fields[5]),
-            'style': cls.decode_style(fields[6]),
-            'runway_direction': cls.decode_runway_direction(fields[7]),
-            'runway_length': cls.decode_runway_length(fields[8]),
-            'frequency': cls.decode_frequency(fields[9]),
-            'description': cls.decode_description(fields[10]),
+            'name': self.decode_name(fields[0]),
+            'code': self.decode_code(fields[1]),
+            'country': self.decode_country(fields[2]),
+            'latitude': self.decode_latitude(fields[3]),
+            'longitude': self.decode_longitude(fields[4]),
+            'elevation': self.decode_elevation(fields[5]),
+            'style': self.decode_style(fields[6]),
+            'runway_direction': self.decode_runway_direction(fields[7]),
+            'runway_length': self.decode_runway_length(fields[8]),
+            'frequency': self.decode_frequency(fields[9]),
+            'description': self.decode_description(fields[10]),
         }
 
-    @classmethod
-    def decode_name(cls, name):
+    def decode_name(self, name):
         if not name:
             raise ParserError('Name field must not be empty')
 
         return name
 
-    @classmethod
-    def decode_code(cls, code):
+    def decode_code(self, code):
         if not code:
             return None
 
         return code
 
-    @classmethod
-    def decode_country(cls, country):
+    def decode_country(self, country):
         if RE_COUNTRY.match(country):
             return country
         else:
             raise ParserError('Invalid country code')
 
-    @classmethod
-    def decode_latitude(cls, latitude):
+    def decode_latitude(self, latitude):
         match = RE_LATITUDE.match(latitude)
         if not match:
             raise ParserError('Reading latitude failed')
@@ -151,8 +146,7 @@ class Reader:
 
         return latitude
 
-    @classmethod
-    def decode_longitude(cls, longitude):
+    def decode_longitude(self, longitude):
         match = RE_LONGITUDE.match(longitude)
         if not match:
             raise ParserError('Reading longitude failed')
@@ -167,8 +161,7 @@ class Reader:
 
         return longitude
 
-    @classmethod
-    def decode_elevation(cls, elevation):
+    def decode_elevation(self, elevation):
         match = RE_ELEVATION.match(elevation)
         if not match:
             raise ParserError('Reading elevation failed')
@@ -187,8 +180,7 @@ class Reader:
             'unit': unit,
         }
 
-    @classmethod
-    def decode_style(cls, style):
+    def decode_style(self, style):
         try:
             style = int(style)
         except ValueError:
@@ -199,8 +191,7 @@ class Reader:
 
         return style
 
-    @classmethod
-    def decode_runway_direction(cls, runway_direction):
+    def decode_runway_direction(self, runway_direction):
         if not runway_direction:
             return None
 
@@ -211,8 +202,7 @@ class Reader:
 
         return runway_direction
 
-    @classmethod
-    def decode_runway_length(cls, runway_length):
+    def decode_runway_length(self, runway_length):
         if not runway_length:
             return {
                 'value': None,
@@ -237,8 +227,7 @@ class Reader:
             'unit': unit,
         }
 
-    @classmethod
-    def decode_frequency(cls, frequency):
+    def decode_frequency(self, frequency):
         if not frequency:
             return None
 
@@ -247,8 +236,7 @@ class Reader:
 
         return frequency
 
-    @classmethod
-    def decode_description(cls, description):
+    def decode_description(self, description):
         if not description:
             return None
 
@@ -274,8 +262,7 @@ class Converter:
             if new:
                 yield new
 
-    @classmethod
-    def convert_waypoint(cls, old):
+    def convert_waypoint(self, old):
         waypoint = {}
 
         waypoint['name'] = old['name']
@@ -286,7 +273,7 @@ class Converter:
         waypoint['latitude'] = old['latitude']
         waypoint['longitude'] = old['longitude']
 
-        waypoint['elevation'] = cls.convert_elevation(old['elevation'])
+        waypoint['elevation'] = self.convert_elevation(old['elevation'])
 
         if old['style'] not in WAYPOINT_STYLE_MAPPING:
             raise ParserError('Unknown waypoint style')
@@ -295,23 +282,21 @@ class Converter:
 
         if 'landable' in waypoint['classifiers']:
             waypoint['icao'] = None
-            waypoint['runways'] = cls.convert_runways(
+            waypoint['runways'] = self.convert_runways(
                 old['style'], old['runway_direction'], old['runway_length'])
-            waypoint['frequencies'] = cls.convert_frequencies(
+            waypoint['frequencies'] = self.convert_frequencies(
                 old['frequency'])
 
         return waypoint
 
-    @classmethod
-    def convert_elevation(cls, elevation):
+    def convert_elevation(self, elevation):
         if elevation['value'] is None and elevation['unit'] is None:
             return None
 
         unit = UNITS_MAPPING.get(elevation['unit'].lower(), units.METER)
         return units.to_SI(elevation['value'] or 0, unit)
 
-    @classmethod
-    def convert_runways(cls, style, dir, length):
+    def convert_runways(self, style, dir, length):
         runways = []
         runway = {}
 
@@ -332,8 +317,7 @@ class Converter:
 
         return runways
 
-    @classmethod
-    def convert_frequencies(cls, frq):
+    def convert_frequencies(self, frq):
         if not frq:
             return []
 

@@ -32,28 +32,28 @@ def assert_elevation(elevation, expected_value, expected_unit):
 
 
 def test_decode_elevation():
-    assert_elevation(Reader.decode_elevation('125m'), 125, 'm')
-    assert_elevation(Reader.decode_elevation('300ft'), 300, 'ft')
-    assert_elevation(Reader.decode_elevation('300 m'), 300, 'm')
-    assert_elevation(Reader.decode_elevation('-25.4m'), -25.4, 'm')
-    assert_elevation(Reader.decode_elevation('m'), None, 'm')
-    assert_elevation(Reader.decode_elevation('23'), 23, None)
-    assert_elevation(Reader.decode_elevation(''), None, None)
+    assert_elevation(Reader().decode_elevation('125m'), 125, 'm')
+    assert_elevation(Reader().decode_elevation('300ft'), 300, 'ft')
+    assert_elevation(Reader().decode_elevation('300 m'), 300, 'm')
+    assert_elevation(Reader().decode_elevation('-25.4m'), -25.4, 'm')
+    assert_elevation(Reader().decode_elevation('m'), None, 'm')
+    assert_elevation(Reader().decode_elevation('23'), 23, None)
+    assert_elevation(Reader().decode_elevation(''), None, None)
 
     with pytest.raises(ParserError):
-        Reader.decode_elevation('x')
+        Reader().decode_elevation('x')
 
 
 def test_decode_runway_length():
-    assert_elevation(Reader.decode_runway_length('1250m'), 1250, 'm')
-    assert_elevation(Reader.decode_runway_length('3.5ml'), 3.5, 'ml')
-    assert_elevation(Reader.decode_runway_length('0 m'), 0, 'm')
-    assert_elevation(Reader.decode_runway_length('2.4NM'), 2.4, 'NM')
-    assert_elevation(Reader.decode_runway_length('23'), 23, None)
-    assert_elevation(Reader.decode_runway_length(''), None, None)
+    assert_elevation(Reader().decode_runway_length('1250m'), 1250, 'm')
+    assert_elevation(Reader().decode_runway_length('3.5ml'), 3.5, 'ml')
+    assert_elevation(Reader().decode_runway_length('0 m'), 0, 'm')
+    assert_elevation(Reader().decode_runway_length('2.4NM'), 2.4, 'NM')
+    assert_elevation(Reader().decode_runway_length('23'), 23, None)
+    assert_elevation(Reader().decode_runway_length(''), None, None)
 
     with pytest.raises(ParserError):
-        Reader.decode_runway_length('x')
+        Reader().decode_runway_length('x')
 
 
 def test_base_meiersberg():
