@@ -82,187 +82,186 @@ def test_base_meiersberg():
     })
 
 
-def test_meiersberg():
-    line = '"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"'  # noqa
-    waypoints = list(Converter([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
-        'name': 'Meiersberg',
-        'shortname': 'MEIER',
-        'description': 'Flugplatz',
-        'icao': None,
-        'classifiers': set([
-            'airfield',
-            'glidersite',
-            'landable',
-        ]),
-        'runways': [{
-            'length': 800,
-            'directions': [130, 310],
-        }],
-        'frequencies': [{
-            'frequency': '130.125',
-        }],
-        'elevation': 164,
-        'latitude': 51.29972222222222,
-        'longitude': 6.956388888888889,
-        'country': 'DE',
-    })
-
-
 def test_manosque():
     line = '"Manosque Pont D9","MANOSQ",FR,4348.267N,00549.467E,295m,14,,,,"PONT D907"'  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Manosque Pont D9',
-        'shortname': 'MANOSQ',
-        'description': 'PONT D907',
-        'classifiers': set([
-            'bridge',
-        ]),
-        'elevation': 295,
+        'code': 'MANOSQ',
+        'country': 'FR',
         'latitude': 43.80444444444444,
         'longitude': 5.8244444444444445,
-        'country': 'FR',
+        'elevation': {
+            'value': 295,
+            'unit': 'm',
+        },
+        'style': 14,
+        'runway_direction': None,
+        'runway_length': {
+            'value': None,
+            'unit': None,
+        },
+        'frequency': None,
+        'description': 'PONT D907',
     })
 
 
 def test_marcoux():
     line = '"MarcouX Champ 8","MARCO2",FR,4407.650N,00617.233E,694m,3,130,250m,,"Landefeld"'  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'MarcouX Champ 8',
-        'shortname': 'MARCO2',
-        'description': 'Landefeld',
-        'icao': None,
-        'classifiers': set([
-            'landable',
-        ]),
-        'runways': [{
-            'length': 250,
-            'directions': [130, 310],
-        }],
-        'frequencies': [],
-        'elevation': 694,
+        'code': 'MARCO2',
+        'country': 'FR',
         'latitude': 44.1275,
         'longitude': 6.287222222222222,
-        'country': 'FR',
+        'elevation': {
+            'value': 694,
+            'unit': 'm',
+        },
+        'style': 3,
+        'runway_direction': 130,
+        'runway_length': {
+            'value': 250,
+            'unit': 'm',
+        },
+        'frequency': None,
+        'description': 'Landefeld',
     })
 
 
 def test_sydney():
     line = '"Sydney Nsw Kinss","SYDNE",AU,3356.767S,15110.633E,6m,5,160,3950m,120.500,"Flugplatz"   '  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Sydney Nsw Kinss',
-        'shortname': 'SYDNE',
-        'description': 'Flugplatz',
-        'icao': None,
-        'classifiers': set([
-            'airfield',
-            'landable',
-        ]),
-        'runways': [{
-            'surface': 'solid',
-            'length': 3950,
-            'directions': [160, 340],
-        }],
-        'frequencies': [{
-            'frequency': '120.500',
-        }],
-        'elevation': 6,
+        'code': 'SYDNE',
+        'country': 'AU',
         'latitude': -33.94611111111111,
         'longitude': 151.1772222222222,
-        'country': 'AU',
+        'elevation': {
+            'value': 6,
+            'unit': 'm',
+        },
+        'style': 5,
+        'runway_direction': 160,
+        'runway_length': {
+            'value': 3950,
+            'unit': 'm',
+        },
+        'frequency': '120.500',
+        'description': 'Flugplatz',
     })
 
 
 def test_ulm():
     line = '"Ulm H Bf","ULMHBF",DE,4823.967N,00958.983E,480m,1,,,,"BAHNHOF"'
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Ulm H Bf',
-        'shortname': 'ULMHBF',
-        'description': 'BAHNHOF',
-        'classifiers': set([
-        ]),
-        'elevation': 480,
+        'code': 'ULMHBF',
+        'country': 'DE',
         'latitude': 48.39944444444444,
         'longitude': 9.983055555555556,
-        'country': 'DE',
+        'elevation': {
+            'value': 480,
+            'unit': 'm',
+        },
+        'style': 1,
+        'runway_direction': None,
+        'runway_length': {
+            'value': None,
+            'unit': None,
+        },
+        'frequency': None,
+        'description': 'BAHNHOF',
     })
 
 
 def test_vettweis():
     line = '"Vettweiss Soller","VETTW2",DE,5044.850N,00634.033E,159m,3,150,380m,120.975,"Landefeld"'  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Vettweiss Soller',
-        'shortname': 'VETTW2',
-        'description': 'Landefeld',
-        'icao': None,
-        'classifiers': set([
-            'landable',
-        ]),
-        'runways': [{
-            'length': 380,
-            'directions': [150, 330],
-        }],
-        'frequencies': [{
-            'frequency': '120.975',
-        }],
-        'elevation': 159,
+        'code': 'VETTW2',
+        'country': 'DE',
         'latitude': 50.7475,
         'longitude': 6.567222222222222,
-        'country': 'DE',
+        'elevation': {
+            'value': 159,
+            'unit': 'm',
+        },
+        'style': 3,
+        'runway_direction': 150,
+        'runway_length': {
+            'value': 380,
+            'unit': 'm',
+        },
+        'frequency': '120.975',
+        'description': 'Landefeld',
     })
 
 
 def test_weisweiler():
     line = '"Weisweiler Kw 10","WEISWE",DE,5050.383N,00619.367E,144m,15,,,,"KW1011FT"'  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Weisweiler Kw 10',
-        'shortname': 'WEISWE',
-        'description': 'KW1011FT',
-        'classifiers': set([
-            'power-plant',
-        ]),
-        'elevation': 144,
+        'code': 'WEISWE',
+        'country': 'DE',
         'latitude': 50.83972222222222,
         'longitude': 6.322777777777778,
-        'country': 'DE',
+        'elevation': {
+            'value': 144,
+            'unit': 'm',
+        },
+        'style': 15,
+        'runway_direction': None,
+        'runway_length': {
+            'value': None,
+            'unit': None,
+        },
+        'frequency': None,
+        'description': 'KW1011FT',
     })
 
 
 def test_eddl_n():
     line = '"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"'  # noqa
-    waypoints = list(Converter([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
         'name': 'Eddln0 Eddl N P',
-        'shortname': 'EDDLN0',
-        'description': 'EDDLN P',
-        'classifiers': set([
-        ]),
+        'code': 'EDDLN0',
         'elevation': 28,
         'latitude': 51.406666666666666,
         'longitude': 6.748333333333333,
         'country': 'DE',
+        'elevation': {
+            'value': 28,
+            'unit': 'm',
+        },
+        'style': 1,
+        'runway_direction': None,
+        'runway_length': {
+            'value': None,
+            'unit': None,
+        },
+        'frequency': None,
+        'description': 'EDDLN P',
     })
 
 
