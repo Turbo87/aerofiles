@@ -4,5 +4,12 @@
 class ParserError(RuntimeError):
     pass
 
-from .seeyou import SeeYouReader
-from .welt2000 import Welt2000Reader
+from .seeyou import (
+    Reader as SeeYouReader,
+    Converter as SeeYouConverter,
+)
+
+from .welt2000 import (
+    Reader as Welt2000Reader,
+    Converter as Welt2000Converter,
+)

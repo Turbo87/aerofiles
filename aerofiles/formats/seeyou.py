@@ -60,7 +60,7 @@ UNITS_MAPPING = {
 }
 
 
-class SeeYouBaseReader:
+class Reader:
     """
     A reader for the SeeYou CUP waypoint file format.
 
@@ -255,7 +255,7 @@ class SeeYouBaseReader:
         return description
 
 
-class SeeYouReader:
+class Converter:
     """
     A reader for the SeeYou CUP waypoint file format.
 
@@ -269,7 +269,7 @@ class SeeYouReader:
         return self.next()
 
     def next(self):
-        for old in SeeYouBaseReader(self.fp):
+        for old in Reader(self.fp):
             new = self.convert_waypoint(old)
             if new:
                 yield new

@@ -3,7 +3,7 @@ from . import assert_waypoint
 
 from os import path
 from aerofiles.formats.seeyou import (
-    SeeYouReader, SeeYouBaseReader, ParserError
+    Reader, Converter, ParserError
 )
 
 FOLDER = path.dirname(path.realpath(__file__))
@@ -17,7 +17,7 @@ if_data_available = pytest.mark.skipif(
 
 def test_comments():
     line = '* this is a comment'
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 0
 
 
@@ -32,33 +32,33 @@ def assert_elevation(elevation, expected_value, expected_unit):
 
 
 def test_decode_elevation():
-    assert_elevation(SeeYouBaseReader.decode_elevation('125m'), 125, 'm')
-    assert_elevation(SeeYouBaseReader.decode_elevation('300ft'), 300, 'ft')
-    assert_elevation(SeeYouBaseReader.decode_elevation('300 m'), 300, 'm')
-    assert_elevation(SeeYouBaseReader.decode_elevation('-25.4m'), -25.4, 'm')
-    assert_elevation(SeeYouBaseReader.decode_elevation('m'), None, 'm')
-    assert_elevation(SeeYouBaseReader.decode_elevation('23'), 23, None)
-    assert_elevation(SeeYouBaseReader.decode_elevation(''), None, None)
+    assert_elevation(Reader.decode_elevation('125m'), 125, 'm')
+    assert_elevation(Reader.decode_elevation('300ft'), 300, 'ft')
+    assert_elevation(Reader.decode_elevation('300 m'), 300, 'm')
+    assert_elevation(Reader.decode_elevation('-25.4m'), -25.4, 'm')
+    assert_elevation(Reader.decode_elevation('m'), None, 'm')
+    assert_elevation(Reader.decode_elevation('23'), 23, None)
+    assert_elevation(Reader.decode_elevation(''), None, None)
 
     with pytest.raises(ParserError):
-        SeeYouBaseReader.decode_elevation('x')
+        Reader.decode_elevation('x')
 
 
 def test_decode_runway_length():
-    assert_elevation(SeeYouBaseReader.decode_runway_length('1250m'), 1250, 'm')
-    assert_elevation(SeeYouBaseReader.decode_runway_length('3.5ml'), 3.5, 'ml')
-    assert_elevation(SeeYouBaseReader.decode_runway_length('0 m'), 0, 'm')
-    assert_elevation(SeeYouBaseReader.decode_runway_length('2.4NM'), 2.4, 'NM')
-    assert_elevation(SeeYouBaseReader.decode_runway_length('23'), 23, None)
-    assert_elevation(SeeYouBaseReader.decode_runway_length(''), None, None)
+    assert_elevation(Reader.decode_runway_length('1250m'), 1250, 'm')
+    assert_elevation(Reader.decode_runway_length('3.5ml'), 3.5, 'ml')
+    assert_elevation(Reader.decode_runway_length('0 m'), 0, 'm')
+    assert_elevation(Reader.decode_runway_length('2.4NM'), 2.4, 'NM')
+    assert_elevation(Reader.decode_runway_length('23'), 23, None)
+    assert_elevation(Reader.decode_runway_length(''), None, None)
 
     with pytest.raises(ParserError):
-        SeeYouBaseReader.decode_runway_length('x')
+        Reader.decode_runway_length('x')
 
 
 def test_base_meiersberg():
     line = '"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"'  # noqa
-    waypoints = list(SeeYouBaseReader([line]))
+    waypoints = list(Reader([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -84,7 +84,7 @@ def test_base_meiersberg():
 
 def test_meiersberg():
     line = '"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -113,7 +113,7 @@ def test_meiersberg():
 
 def test_manosque():
     line = '"Manosque Pont D9","MANOSQ",FR,4348.267N,00549.467E,295m,14,,,,"PONT D907"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -132,7 +132,7 @@ def test_manosque():
 
 def test_marcoux():
     line = '"MarcouX Champ 8","MARCO2",FR,4407.650N,00617.233E,694m,3,130,250m,,"Landefeld"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -157,7 +157,7 @@ def test_marcoux():
 
 def test_sydney():
     line = '"Sydney Nsw Kinss","SYDNE",AU,3356.767S,15110.633E,6m,5,160,3950m,120.500,"Flugplatz"   '  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -186,7 +186,7 @@ def test_sydney():
 
 def test_ulm():
     line = '"Ulm H Bf","ULMHBF",DE,4823.967N,00958.983E,480m,1,,,,"BAHNHOF"'
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -204,7 +204,7 @@ def test_ulm():
 
 def test_vettweis():
     line = '"Vettweiss Soller","VETTW2",DE,5044.850N,00634.033E,159m,3,150,380m,120.975,"Landefeld"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -231,7 +231,7 @@ def test_vettweis():
 
 def test_weisweiler():
     line = '"Weisweiler Kw 10","WEISWE",DE,5050.383N,00619.367E,144m,15,,,,"KW1011FT"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -250,7 +250,7 @@ def test_weisweiler():
 
 def test_eddl_n():
     line = '"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"'  # noqa
-    waypoints = list(SeeYouReader([line]))
+    waypoints = list(Converter([line]))
     assert len(waypoints) == 1
 
     assert_waypoint(waypoints[0], {
@@ -269,14 +269,14 @@ def test_eddl_n():
 @if_data_available
 def test_base_original():
     with open(DATA_PATH) as f:
-        for waypoint in SeeYouBaseReader(f):
+        for waypoint in Reader(f):
             assert waypoint is not None
 
 
 @if_data_available
 def test_original():
     with open(DATA_PATH) as f:
-        for waypoint in SeeYouReader(f):
+        for waypoint in Converter(f):
             check_waypoint(waypoint)
 
 

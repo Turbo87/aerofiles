@@ -61,7 +61,7 @@ SURFACES = {
 }
 
 
-class Welt2000BaseReader:
+class Reader:
     """
     A reader for the WELT2000 waypoint file format.
 
@@ -294,7 +294,7 @@ class Welt2000BaseReader:
         return line[63].strip()
 
 
-class Welt2000Reader:
+class Converter:
     """
     A reader for the WELT2000 waypoint file forrmat.
 
@@ -308,7 +308,7 @@ class Welt2000Reader:
         return self.next()
 
     def next(self):
-        for old in Welt2000BaseReader(self.fp):
+        for old in Reader(self.fp):
             new = self.convert_waypoint(old)
             if new:
                 yield new
