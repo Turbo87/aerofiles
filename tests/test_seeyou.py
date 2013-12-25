@@ -9,7 +9,7 @@ from aerofiles.formats.seeyou import (
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
 
-data_available = pytest.mark.skipif(
+if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
     reason="requires SEEYOU.CUP"
 )
@@ -266,14 +266,14 @@ def test_eddl_n():
     })
 
 
-@data_available
+@if_data_available
 def test_base_original():
     with open(DATA_PATH) as f:
         for waypoint in SeeYouBaseReader(f):
             assert waypoint is not None
 
 
-@data_available
+@if_data_available
 def test_original():
     with open(DATA_PATH) as f:
         for waypoint in SeeYouReader(f):

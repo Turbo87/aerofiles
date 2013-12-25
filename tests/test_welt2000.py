@@ -9,7 +9,7 @@ from aerofiles.formats.welt2000 import (
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
 
-data_available = pytest.mark.skipif(
+if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
     reason="requires WELT2000.TXT"
 )
@@ -278,14 +278,14 @@ def test_eddl_n():
         })
 
 
-@data_available
+@if_data_available
 def test_base_original():
     with open(DATA_PATH) as f:
         for waypoint in Welt2000BaseReader(f):
             assert waypoint is not None
 
 
-@data_available
+@if_data_available
 def test_original():
     with open(DATA_PATH) as f:
         for waypoint in Welt2000Reader(f):
