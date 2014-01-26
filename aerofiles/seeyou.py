@@ -1,6 +1,6 @@
 import csv
 import re
-from aerofiles import units
+from .util import units
 from . import ParserError
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)

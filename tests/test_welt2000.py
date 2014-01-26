@@ -2,7 +2,7 @@ import pytest
 from . import assert_waypoint
 
 from os import path
-from aerofiles.formats.welt2000 import (
+from aerofiles.welt2000 import (
     Reader, Converter, SURFACES
 )
 
