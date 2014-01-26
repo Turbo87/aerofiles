@@ -14,19 +14,8 @@ if_data_available = pytest.mark.skipif(
     reason="requires WELT2000.TXT"
 )
 
-
-def test_comments():
-    line = '$ this is a comment'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 0
-
-
-def test_parse_meiersberg():
-    line = 'MEIER1 MEIERSBERG      #GLD!G 80133113012 164N511759E0065723DEP0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+WAYPOINTS = [
+    ('MEIER1 MEIERSBERG      #GLD!G 80133113012 164N511759E0065723DEP0', {
         'shortform': 'MEIER1',
         'is_airfield': True,
         'is_unclear': False,
@@ -50,15 +39,8 @@ def test_parse_meiersberg():
         'country': 'DE',
         'year_code': 'P',
         'source_code': '0',
-    })
-
-
-def test_manosque():
-    line = 'MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('MANOSQ MANOSQUE PONT D907XDURANCE         295N434816E0054928FRQ0', {
         'shortform': 'MANOSQ',
         'is_airfield': False,
         'is_unclear': False,
@@ -82,15 +64,8 @@ def test_manosque():
         'country': 'FR',
         'year_code': 'Q',
         'source_code': '0',
-    })
-
-
-def test_marcoux():
-    line = 'MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('MARCO2 MARCOUX CHAMP 8!*FL08S 2513131     694N440739E0061714FRP0', {
         'shortform': 'MARCO2',
         'is_airfield': False,
         'is_unclear': False,
@@ -114,15 +89,8 @@ def test_marcoux():
         'country': 'FR',
         'year_code': 'P',
         'source_code': '0',
-    })
-
-
-def test_sydney():
-    line = 'SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('SYDNE1 SYDNEY NSW KINSS#YSSYA395160712050   6S335646E1511038AUQ0', {
         'shortform': 'SYDNE1',
         'is_airfield': True,
         'is_unclear': False,
@@ -146,15 +114,8 @@ def test_sydney():
         'country': 'AU',
         'year_code': 'Q',
         'source_code': '0',
-    })
-
-
-def test_ulm():
-    line = 'ULMHBF ULM H BF                           480N482358E0095859DEJ0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('ULMHBF ULM H BF                           480N482358E0095859DEJ0', {
         'shortform': 'ULMHBF',
         'is_airfield': False,
         'is_unclear': False,
@@ -178,15 +139,8 @@ def test_ulm():
         'country': 'DE',
         'year_code': 'J',
         'source_code': '0',
-    })
-
-
-def test_vettweis():
-    line = 'VETTW2 VETTWEISS SOLLER*ULM!G 38153312097 159N504451E0063402DEP0'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('VETTW2 VETTWEISS SOLLER*ULM!G 38153312097 159N504451E0063402DEP0', {
         'shortform': 'VETTW2',
         'is_airfield': False,
         'is_unclear': False,
@@ -210,15 +164,8 @@ def test_vettweis():
         'country': 'DE',
         'year_code': 'P',
         'source_code': '0',
-    })
-
-
-def test_weisweiler():
-    line = 'WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5'
-    waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
-
-    assert_waypoint(waypoints[0], {
+    }),
+    ('WEISWE WEISWEILER KW 1011FT WESTL KUEHLT  144N505023E0061922DEP5', {
         'shortform': 'WEISWE',
         'is_airfield': False,
         'is_unclear': False,
@@ -242,40 +189,50 @@ def test_weisweiler():
         'country': 'DE',
         'year_code': 'P',
         'source_code': '5',
-    })
+    }),
+    ('EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4', {
+        'shortform': 'EDDLN0',
+        'is_airfield': False,
+        'is_unclear': False,
+        'is_outlanding': False,
+        'shortform_zander': 'EDDLN0 EDDL',
+        'text': 'EDDLN0 EDDL N  PFLICHTMELDEPUNKT',
+        'icao': None,
+        'is_ulm': False,
+        'field_number': None,
+        'is_glidersite': False,
+        'runway_surface': None,
+        'runway_length': None,
+        'runway_directions': None,
+        'frequency': None,
+        'elevation': 28,
+        'elevation_proved': False,
+        'latitude': 51.406666666666666,
+        'longitude': 6.748333333333333,
+        'ground_check_necessary': False,
+        'better_coordinates': False,
+        'country': 'DE',
+        'year_code': 'Q',
+        'source_code': '4',
+    }),
+]
 
 
-def test_eddl_n():
-    line = 'EDDLN0 EDDLN0 EDDL N  PFLICHTMELDEPUNKT    28N512424E0064454DEQ4'
+def test_comments():
+    line = '$ this is a comment'
     waypoints = list(Reader([line]))
-    assert len(waypoints) == 1
+    assert len(waypoints) == 0
 
-    assert_waypoint(
-        waypoints[0], {
-            'shortform': 'EDDLN0',
-            'is_airfield': False,
-            'is_unclear': False,
-            'is_outlanding': False,
-            'shortform_zander': 'EDDLN0 EDDL',
-            'text': 'EDDLN0 EDDL N  PFLICHTMELDEPUNKT',
-            'icao': None,
-            'is_ulm': False,
-            'field_number': None,
-            'is_glidersite': False,
-            'runway_surface': None,
-            'runway_length': None,
-            'runway_directions': None,
-            'frequency': None,
-            'elevation': 28,
-            'elevation_proved': False,
-            'latitude': 51.406666666666666,
-            'longitude': 6.748333333333333,
-            'ground_check_necessary': False,
-            'better_coordinates': False,
-            'country': 'DE',
-            'year_code': 'Q',
-            'source_code': '4',
-        })
+
+@pytest.fixture(params=WAYPOINTS)
+def waypoint(request):
+    return request.param
+
+
+def test_parse_waypoint(waypoint):
+    waypoints = list(Reader([waypoint[0]]))
+    assert len(waypoints) == 1
+    assert_waypoint(waypoints[0], waypoint[1])
 
 
 @if_data_available
