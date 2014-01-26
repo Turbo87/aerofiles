@@ -1,5 +1,5 @@
 import re
-from . import ParserError
+from aerofiles import ParserError
 
 RE_WHITESPACE = re.compile(r'\s+')
 RE_LATITUDE = re.compile(r'^([NS])([\d]{2})([\d]{2})([\d]{2})$')

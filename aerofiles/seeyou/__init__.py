@@ -1,7 +1,7 @@
 import csv
 import re
-from .util import units
-from . import ParserError
+from aerofiles import ParserError
+from aerofiles.util import units
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
 RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}.[\d]{3})([NS])$', re.I)
