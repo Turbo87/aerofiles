@@ -1,10 +1,12 @@
+from os import path
+
 import pytest
+
+from aerofiles import ParserError
+from aerofiles.seeyou import Reader, Converter
+
 from . import assert_waypoint
 
-from os import path
-from aerofiles.seeyou import (
-    Reader, Converter, ParserError
-)
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
