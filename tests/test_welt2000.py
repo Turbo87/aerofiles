@@ -1,10 +1,12 @@
+from os import path
+
 import pytest
+
+from aerofiles.welt2000 import Reader, Converter
+from aerofiles.welt2000.reader import SURFACES
+
 from . import assert_waypoint
 
-from os import path
-from aerofiles.welt2000 import (
-    Reader, Converter, SURFACES
-)
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'WELT2000.TXT')
