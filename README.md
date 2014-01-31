@@ -5,6 +5,12 @@
 [![Build Status](https://travis-ci.org/Turbo87/aerofiles.png?branch=master)](https://travis-ci.org/Turbo87/aerofiles)
 
 
+## Features
+
+* SeeYou CUP file reader (`aerofiles.seeyou`)
+* WELT2000 file reader (`aerofiles.welt2000`)
+
+
 ## Development Environment
 
 If you want to work on aerofiles you should install the necessary dependencies using:
