@@ -179,3 +179,18 @@ def logger_type(request):
 def test_logger_type(writer, logger_type):
     writer.write_logger_type(logger_type)
     assert writer.fp.getvalue() == 'HFFTYFRTYPE:%s\r\n' % logger_type
+
+
+@pytest.fixture(params=[
+    'uBLOX LEA-4S-2,16,max9000m',
+    'JRC/CCA-450',
+    'u-blox:LEA-4P,16,8191',
+    'Internal GPS (Android)',
+])
+def gps_receiver(request):
+    return request.param
+
+
+def test_gps_receiver(writer, gps_receiver):
+    writer.write_gps_receiver(gps_receiver)
+    assert writer.fp.getvalue() == 'HFGPS%s\r\n' % gps_receiver

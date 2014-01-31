@@ -87,3 +87,6 @@ class Writer:
 
     def write_logger_type(self, logger_type):
         self.write_fr_header('FTY', logger_type, subtype_long='FRTYPE')
+
+    def write_gps_receiver(self, gps_receiver):
+        self.write_fr_header('GPS', gps_receiver)
