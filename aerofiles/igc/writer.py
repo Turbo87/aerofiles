@@ -102,3 +102,6 @@ class Writer:
     def write_competition_class(self, competition_class):
         self.write_fr_header(
             'CCL', competition_class, subtype_long='COMPETITIONCLASS')
+
+    def write_club(self, club):
+        self.write_fr_header('CLB', club, subtype_long='CLUB')

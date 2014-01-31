@@ -230,3 +230,14 @@ def test_competition_class(writer, competition_class):
     writer.write_competition_class(competition_class)
     assert writer.fp.getvalue() == \
         'HFCCLCOMPETITIONCLASS:%s\r\n' % competition_class
+
+
+@pytest.fixture(params=['SFN', 'LV Aachen'])
+def club(request):
+    return request.param
+
+
+def test_club(writer, club):
+    writer.write_club(club)
+    assert writer.fp.getvalue() == \
+        'HFCLBCLUB:%s\r\n' % club
