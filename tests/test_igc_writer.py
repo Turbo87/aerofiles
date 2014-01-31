@@ -1,5 +1,6 @@
 import pytest
 
+import datetime
 from StringIO import StringIO
 
 from aerofiles.igc import Writer
@@ -50,3 +51,17 @@ def test_logger_id_with_invalid_manufacturer_code(writer):
 def test_logger_id_with_invalid_logger_id(writer):
     with pytest.raises(ValueError):
         writer.write_logger_id('XXX', '12345')
+
+
+@pytest.fixture(params=[
+    (1996, 12, 24),
+    (2014, 1, 31),
+    (2032, 8, 5),
+])
+def date(request):
+    return datetime.date(*request.param)
+
+
+def test_date(writer, date):
+    writer.write_date(date)
+    assert writer.fp.getvalue() == date.strftime('HFDTE%y%m%d\r\n')

@@ -26,3 +26,9 @@ class Writer:
             line = line + extension
 
         self.write_line(line)
+
+    def write_header(self, type, value):
+        self.write_line('H%s%s' % (type, value))
+
+    def write_date(self, date):
+        self.write_header('FDTE', date.strftime('%y%m%d'))
