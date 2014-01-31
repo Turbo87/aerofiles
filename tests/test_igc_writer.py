@@ -208,3 +208,14 @@ def test_pressure_sensor(writer, pressure_sensor):
     writer.write_pressure_sensor(pressure_sensor)
     assert writer.fp.getvalue() == \
         'HFPRSPRESSALTSENSOR:%s\r\n' % pressure_sensor
+
+
+@pytest.fixture(params=['TH', '6H', '37', 'B', 'FUN'])
+def competition_id(request):
+    return request.param
+
+
+def test_competition_id(writer, competition_id):
+    writer.write_competition_id(competition_id)
+    assert writer.fp.getvalue() == \
+        'HFCIDCOMPETITIONID:%s\r\n' % competition_id

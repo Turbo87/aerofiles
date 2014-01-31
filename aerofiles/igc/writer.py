@@ -94,3 +94,7 @@ class Writer:
     def write_pressure_sensor(self, pressure_sensor):
         self.write_fr_header(
             'PRS', pressure_sensor, subtype_long='PRESSALTSENSOR')
+
+    def write_competition_id(self, competition_id):
+        self.write_fr_header(
+            'CID', competition_id, subtype_long='COMPETITIONID')
