@@ -132,3 +132,8 @@ def glider_id(request):
 def test_glider_id(writer, glider_id):
     writer.write_glider_id(glider_id)
     assert writer.fp.getvalue() == 'HFGIDGLIDERID:%s\r\n' % glider_id
+
+
+def test_gps_datum(writer):
+    writer.write_gps_datum(100, 'WGS-1984')
+    assert writer.fp.getvalue() == 'HFDTM100GPSDATUM:WGS-1984\r\n'

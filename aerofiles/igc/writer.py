@@ -29,19 +29,27 @@ class Writer:
 
         self.write_line(line)
 
-    def write_header(self, source, subtype, value, subtype_long=None):
+    def write_header(self, source, subtype, value,
+                     subtype_long=None, value_long=None):
         if source not in ('F', 'O'):
             raise ValueError('Invalid source')
 
-        if subtype_long:
+        if not subtype_long:
+            line = 'H%s%s%s' % (source, subtype, value)
+        elif not value_long:
             line = 'H%s%s%s:%s' % (source, subtype, subtype_long, value)
         else:
-            line = 'H%s%s%s' % (source, subtype, value)
+            line = 'H%s%s%s%s:%s' % \
+                (source, subtype, value, subtype_long, value_long)
 
         self.write_line(line)
 
-    def write_fr_header(self, subtype, value, subtype_long=None):
-        self.write_header('F', subtype, value, subtype_long=subtype_long)
+    def write_fr_header(self, subtype, value,
+                        subtype_long=None, value_long=None):
+        self.write_header(
+            'F', subtype, value,
+            subtype_long=subtype_long, value_long=value_long
+        )
 
     def write_date(self, date):
         self.write_fr_header('DTE', date.strftime('%y%m%d'))
@@ -64,3 +72,7 @@ class Writer:
 
     def write_glider_id(self, glider_id):
         self.write_fr_header('GID', glider_id, subtype_long='GLIDERID')
+
+    def write_gps_datum(self, code, gps_datum):
+        self.write_fr_header(
+            'DTM', code, subtype_long='GPSDATUM', value_long=gps_datum)
