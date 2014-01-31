@@ -90,3 +90,7 @@ class Writer:
 
     def write_gps_receiver(self, gps_receiver):
         self.write_fr_header('GPS', gps_receiver)
+
+    def write_pressure_sensor(self, pressure_sensor):
+        self.write_fr_header(
+            'PRS', pressure_sensor, subtype_long='PRESSALTSENSOR')

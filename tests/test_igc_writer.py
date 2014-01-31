@@ -194,3 +194,17 @@ def gps_receiver(request):
 def test_gps_receiver(writer, gps_receiver):
     writer.write_gps_receiver(gps_receiver)
     assert writer.fp.getvalue() == 'HFGPS%s\r\n' % gps_receiver
+
+
+@pytest.fixture(params=[
+    'INTERSEMA,MS5534A,max10000m',
+    'Intersema MS5534B,8191',
+])
+def pressure_sensor(request):
+    return request.param
+
+
+def test_pressure_sensor(writer, pressure_sensor):
+    writer.write_pressure_sensor(pressure_sensor)
+    assert writer.fp.getvalue() == \
+        'HFPRSPRESSALTSENSOR:%s\r\n' % pressure_sensor
