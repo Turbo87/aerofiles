@@ -112,3 +112,13 @@ def test_pilot(writer, pilot):
 def test_copilot(writer, pilot):
     writer.write_copilot(pilot)
     assert writer.fp.getvalue() == 'HFCM2CREW2:%s\r\n' % pilot
+
+
+@pytest.fixture(params=['Hornet', 'JS1', 'ASW-22 BLE'])
+def glider_type(request):
+    return request.param
+
+
+def test_glider_type(writer, glider_type):
+    writer.write_glider_type(glider_type)
+    assert writer.fp.getvalue() == 'HFGTYGLIDERTYPE:%s\r\n' % glider_type

@@ -58,3 +58,6 @@ class Writer:
 
     def write_copilot(self, copilot):
         self.write_fr_header('CM2', copilot, subtype_long='CREW2')
+
+    def write_glider_type(self, glider_type):
+        self.write_fr_header('GTY', glider_type, subtype_long='GLIDERTYPE')
