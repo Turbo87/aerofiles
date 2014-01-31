@@ -54,7 +54,10 @@ class Writer:
     def write_date(self, date):
         self.write_fr_header('DTE', date.strftime('%y%m%d'))
 
-    def write_fix_accuracy(self, accuracy=500):
+    def write_fix_accuracy(self, accuracy=None):
+        if accuracy is None:
+            accuracy = 500
+
         accuracy = int(accuracy)
         if not 0 < accuracy < 1000:
             raise ValueError('Invalid fix accuracy')
