@@ -76,7 +76,13 @@ class Writer:
     def write_glider_id(self, glider_id):
         self.write_fr_header('GID', glider_id, subtype_long='GLIDERID')
 
-    def write_gps_datum(self, code=100, gps_datum='WGS-1984'):
+    def write_gps_datum(self, code=None, gps_datum=None):
+        if code is None:
+            code = 100
+
+        if gps_datum is None:
+            gps_datum = 'WGS-1984'
+
         self.write_fr_header(
             'DTM', code, subtype_long='GPSDATUM', value_long=gps_datum)
 
