@@ -72,6 +72,29 @@ def test_date(writer, date):
     assert writer.fp.getvalue() == date.strftime('HFDTE%y%m%d\r\n')
 
 
+@pytest.fixture(params=[20, 500, 999])
+def fix_accuracy(request):
+    return request.param
+
+
+def test_fix_accuracy(writer, fix_accuracy):
+    writer.write_fix_accuracy(fix_accuracy)
+    assert writer.fp.getvalue() == 'HFFXA%d\r\n' % fix_accuracy
+
+
+def test_default_fix_accuracy(writer):
+    writer.write_fix_accuracy()
+    assert writer.fp.getvalue() == 'HFFXA500\r\n'
+
+
+def test_invalid_fix_accuracy(writer):
+    with pytest.raises(ValueError):
+        writer.write_fix_accuracy(0)
+
+    with pytest.raises(ValueError):
+        writer.write_fix_accuracy(1000)
+
+
 @pytest.fixture(params=[
     'Tobias Bieniek',
     'Some guy named FOO',
