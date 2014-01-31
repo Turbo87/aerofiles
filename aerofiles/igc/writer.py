@@ -84,3 +84,6 @@ class Writer:
     def write_hardware_version(self, hardware_version):
         self.write_fr_header(
             'RHW', hardware_version, subtype_long='HARDWAREVERSION')
+
+    def write_logger_type(self, logger_type):
+        self.write_fr_header('FTY', logger_type, subtype_long='FRTYPE')

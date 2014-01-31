@@ -164,3 +164,18 @@ def test_hardware_version(writer, hardware_version):
     writer.write_hardware_version(hardware_version)
     assert writer.fp.getvalue() == \
         'HFRHWHARDWAREVERSION:%s\r\n' % hardware_version
+
+
+@pytest.fixture(params=[
+    'Flarm-IGC',
+    'FILSER,LX5000IGC-2',
+    'LXNAVIGATION,LX8000F',
+    'XCSOAR XCSOAR Android 6.4.3 Nov  1 2012',
+])
+def logger_type(request):
+    return request.param
+
+
+def test_logger_type(writer, logger_type):
+    writer.write_logger_type(logger_type)
+    assert writer.fp.getvalue() == 'HFFTYFRTYPE:%s\r\n' % logger_type
