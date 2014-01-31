@@ -219,3 +219,14 @@ def test_competition_id(writer, competition_id):
     writer.write_competition_id(competition_id)
     assert writer.fp.getvalue() == \
         'HFCIDCOMPETITIONID:%s\r\n' % competition_id
+
+
+@pytest.fixture(params=['Std', 'CLUB', '15M', 'Open'])
+def competition_class(request):
+    return request.param
+
+
+def test_competition_class(writer, competition_class):
+    writer.write_competition_class(competition_class)
+    assert writer.fp.getvalue() == \
+        'HFCCLCOMPETITIONCLASS:%s\r\n' % competition_class

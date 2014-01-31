@@ -98,3 +98,7 @@ class Writer:
     def write_competition_id(self, competition_id):
         self.write_fr_header(
             'CID', competition_id, subtype_long='COMPETITIONID')
+
+    def write_competition_class(self, competition_class):
+        self.write_fr_header(
+            'CCL', competition_class, subtype_long='COMPETITIONCLASS')
