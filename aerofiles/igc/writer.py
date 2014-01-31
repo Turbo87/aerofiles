@@ -80,3 +80,7 @@ class Writer:
     def write_firmware_version(self, firmware_version):
         self.write_fr_header(
             'RFW', firmware_version, subtype_long='FIRMWAREVERSION')
+
+    def write_hardware_version(self, hardware_version):
+        self.write_fr_header(
+            'RHW', hardware_version, subtype_long='HARDWAREVERSION')

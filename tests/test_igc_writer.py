@@ -153,3 +153,14 @@ def test_firmware_version(writer, firmware_version):
     writer.write_firmware_version(firmware_version)
     assert writer.fp.getvalue() == \
         'HFRFWFIRMWAREVERSION:%s\r\n' % firmware_version
+
+
+@pytest.fixture(params=['1.2', 'Flarm-IGC06'])
+def hardware_version(request):
+    return request.param
+
+
+def test_hardware_version(writer, hardware_version):
+    writer.write_hardware_version(hardware_version)
+    assert writer.fp.getvalue() == \
+        'HFRHWHARDWAREVERSION:%s\r\n' % hardware_version
