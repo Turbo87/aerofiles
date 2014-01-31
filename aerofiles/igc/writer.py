@@ -48,3 +48,6 @@ class Writer:
 
     def write_pilot(self, pilot):
         self.write_fr_header('PLT', pilot, subtype_long='PILOTINCHARGE')
+
+    def write_copilot(self, copilot):
+        self.write_fr_header('CM2', copilot, subtype_long='CREW2')

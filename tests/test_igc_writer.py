@@ -84,3 +84,8 @@ def pilot(request):
 def test_pilot(writer, pilot):
     writer.write_pilot(pilot)
     assert writer.fp.getvalue() == 'HFPLTPILOTINCHARGE:%s\r\n' % pilot
+
+
+def test_copilot(writer, pilot):
+    writer.write_copilot(pilot)
+    assert writer.fp.getvalue() == 'HFCM2CREW2:%s\r\n' % pilot
