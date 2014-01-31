@@ -53,6 +53,11 @@ def test_logger_id_with_invalid_logger_id(writer):
         writer.write_logger_id('XXX', '12345')
 
 
+def test_logger_id_without_validation(writer):
+    writer.write_logger_id('a4%', '12345', validate=False)
+    assert writer.fp.getvalue() == 'Aa4%12345\r\n'
+
+
 @pytest.fixture(params=[
     (1996, 12, 24),
     (2014, 1, 31),

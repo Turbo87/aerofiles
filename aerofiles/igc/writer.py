@@ -15,11 +15,13 @@ class Writer:
     def write_line(self, line):
         self.fp.write(line + '\r\n')
 
-    def write_logger_id(self, manufacturer, logger_id, extension=None):
-        if not patterns.MANUFACTURER_CODE.match(manufacturer):
-            raise ValueError('Invalid manufacturer code')
-        if not patterns.LOGGER_ID.match(logger_id):
-            raise ValueError('Invalid logger id')
+    def write_logger_id(self, manufacturer, logger_id, extension=None,
+                        validate=True):
+        if validate:
+            if not patterns.MANUFACTURER_CODE.match(manufacturer):
+                raise ValueError('Invalid manufacturer code')
+            if not patterns.LOGGER_ID.match(logger_id):
+                raise ValueError('Invalid logger id')
 
         line = 'A%s%s' % (manufacturer, logger_id)
         if extension:
