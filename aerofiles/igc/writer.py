@@ -1,3 +1,6 @@
+from aerofiles.igc import patterns
+
+
 class Writer:
     """
     A writer for the IGC flight log file format.
@@ -11,3 +14,15 @@ class Writer:
 
     def write_line(self, line):
         self.fp.write(line + '\r\n')
+
+    def write_logger_id(self, manufacturer, logger_id, extension=None):
+        if not patterns.MANUFACTURER_CODE.match(manufacturer):
+            raise ValueError('Invalid manufacturer code')
+        if not patterns.LOGGER_ID.match(logger_id):
+            raise ValueError('Invalid logger id')
+
+        line = 'A%s%s' % (manufacturer, logger_id)
+        if extension:
+            line = line + extension
+
+        self.write_line(line)
