@@ -122,3 +122,13 @@ def glider_type(request):
 def test_glider_type(writer, glider_type):
     writer.write_glider_type(glider_type)
     assert writer.fp.getvalue() == 'HFGTYGLIDERTYPE:%s\r\n' % glider_type
+
+
+@pytest.fixture(params=['D-4449', 'N116EL', '2648'])
+def glider_id(request):
+    return request.param
+
+
+def test_glider_id(writer, glider_id):
+    writer.write_glider_id(glider_id)
+    assert writer.fp.getvalue() == 'HFGIDGLIDERID:%s\r\n' % glider_id

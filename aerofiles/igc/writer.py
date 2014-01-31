@@ -61,3 +61,6 @@ class Writer:
 
     def write_glider_type(self, glider_type):
         self.write_fr_header('GTY', glider_type, subtype_long='GLIDERTYPE')
+
+    def write_glider_id(self, glider_id):
+        self.write_fr_header('GID', glider_id, subtype_long='GLIDERID')
