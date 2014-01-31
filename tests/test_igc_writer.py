@@ -241,3 +241,71 @@ def test_club(writer, club):
     writer.write_club(club)
     assert writer.fp.getvalue() == \
         'HFCLBCLUB:%s\r\n' % club
+
+
+def test_headers(writer):
+    writer.write_headers({
+        'manufacturer_code': 'XCS',
+        'logger_id': 'TBX',
+        'date': datetime.date(1987, 2, 24),
+        'fix_accuracy': 50,
+        'pilot': 'Tobias Bieniek',
+        'copilot': 'John Doe',
+        'glider_type': 'Duo Discus',
+        'glider_id': 'D-KKHH',
+        'firmware_version': '2.2',
+        'hardware_version': '2',
+        'logger_type': 'LXNAVIGATION,LX8000F',
+        'gps_receiver': 'uBLOX LEA-4S-2,16,max9000m',
+        'pressure_sensor': 'INTERSEMA,MS5534A,max10000m',
+        'competition_id': '2H',
+        'competition_class': 'Doubleseater',
+    })
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'AXCSTBX',
+        'HFDTE870224',
+        'HFFXA050',
+        'HFPLTPILOTINCHARGE:Tobias Bieniek',
+        'HFCM2CREW2:John Doe',
+        'HFGTYGLIDERTYPE:Duo Discus',
+        'HFGIDGLIDERID:D-KKHH',
+        'HFDTM100GPSDATUM:WGS-1984',
+        'HFRFWFIRMWAREVERSION:2.2',
+        'HFRHWHARDWAREVERSION:2',
+        'HFFTYFRTYPE:LXNAVIGATION,LX8000F',
+        'HFGPSuBLOX LEA-4S-2,16,max9000m',
+        'HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max10000m',
+        'HFCIDCOMPETITIONID:2H',
+        'HFCCLCOMPETITIONCLASS:Doubleseater',
+    ]) + '\r\n'
+
+
+def test_default_headers(writer):
+    writer.write_headers({
+        'manufacturer_code': 'FLA',
+        'logger_id': '6NG',
+        'date': datetime.date(2013, 4, 1),
+        'logger_type': 'Flarm-IGC',
+        'gps_receiver': 'u-blox:LEA-4P,16,8191',
+    })
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'AFLA6NG',
+        'HFDTE130401',
+        'HFFXA500',
+        'HFPLTPILOTINCHARGE:',
+        'HFGTYGLIDERTYPE:',
+        'HFGIDGLIDERID:',
+        'HFDTM100GPSDATUM:WGS-1984',
+        'HFRFWFIRMWAREVERSION:',
+        'HFRHWHARDWAREVERSION:',
+        'HFFTYFRTYPE:Flarm-IGC',
+        'HFGPSu-blox:LEA-4P,16,8191',
+        'HFPRSPRESSALTSENSOR:',
+    ]) + '\r\n'
+
+
+def test_missing_headers(writer):
+    with pytest.raises(ValueError):
+        writer.write_headers({})

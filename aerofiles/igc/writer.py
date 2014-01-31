@@ -9,6 +9,14 @@ class Writer:
     or http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html
     """
 
+    REQUIRED_HEADERS = [
+        'manufacturer_code',
+        'logger_id',
+        'date',
+        'logger_type',
+        'gps_receiver',
+    ]
+
     def __init__(self, fp=None):
         self.fp = fp
 
@@ -114,3 +122,44 @@ class Writer:
 
     def write_club(self, club):
         self.write_fr_header('CLB', club, subtype_long='CLUB')
+
+    def write_headers(self, headers):
+        for header in self.REQUIRED_HEADERS:
+            if not header in headers:
+                raise ValueError('%s header missing' % header)
+
+        self.write_logger_id(
+            headers['manufacturer_code'],
+            headers['logger_id'],
+            extension=headers.get('logger_id_extension')
+        )
+
+        self.write_date(headers['date'])
+        self.write_fix_accuracy(headers.get('fix_accuracy'))
+
+        self.write_pilot(headers.get('pilot', ''))
+        if 'copilot' in headers:
+            self.write_copilot(headers['copilot'])
+
+        self.write_glider_type(headers.get('glider_type', ''))
+        self.write_glider_id(headers.get('glider_id', ''))
+
+        self.write_gps_datum(
+            code=headers.get('gps_datum_code'),
+            gps_datum=headers.get('gps_datum'),
+        )
+
+        self.write_firmware_version(headers.get('firmware_version', ''))
+        self.write_hardware_version(headers.get('hardware_version', ''))
+        self.write_logger_type(headers['logger_type'])
+        self.write_gps_receiver(headers['gps_receiver'])
+        self.write_pressure_sensor(headers.get('pressure_sensor', ''))
+
+        if 'competition_id' in headers:
+            self.write_competition_id(headers['competition_id'])
+
+        if 'competition_class' in headers:
+            self.write_competition_class(headers['competition_class'])
+
+        if 'club' in headers:
+            self.write_club(headers['club'])
