@@ -70,3 +70,17 @@ def date(request):
 def test_date(writer, date):
     writer.write_date(date)
     assert writer.fp.getvalue() == date.strftime('HFDTE%y%m%d\r\n')
+
+
+@pytest.fixture(params=[
+    'Tobias Bieniek',
+    'Some guy named FOO',
+    'Deep Thought',
+])
+def pilot(request):
+    return request.param
+
+
+def test_pilot(writer, pilot):
+    writer.write_pilot(pilot)
+    assert writer.fp.getvalue() == 'HFPLTPILOTINCHARGE:%s\r\n' % pilot

@@ -45,3 +45,6 @@ class Writer:
 
     def write_date(self, date):
         self.write_fr_header('DTE', date.strftime('%y%m%d'))
+
+    def write_pilot(self, pilot):
+        self.write_fr_header('PLT', pilot, subtype_long='PILOTINCHARGE')
