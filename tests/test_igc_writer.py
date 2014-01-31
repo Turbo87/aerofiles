@@ -79,7 +79,7 @@ def fix_accuracy(request):
 
 def test_fix_accuracy(writer, fix_accuracy):
     writer.write_fix_accuracy(fix_accuracy)
-    assert writer.fp.getvalue() == 'HFFXA%d\r\n' % fix_accuracy
+    assert writer.fp.getvalue() == 'HFFXA%03d\r\n' % fix_accuracy
 
 
 def test_default_fix_accuracy(writer):

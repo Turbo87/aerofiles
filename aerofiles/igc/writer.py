@@ -62,7 +62,7 @@ class Writer:
         if not 0 < accuracy < 1000:
             raise ValueError('Invalid fix accuracy')
 
-        self.write_fr_header('FXA', accuracy)
+        self.write_fr_header('FXA', '%03d' % accuracy)
 
     def write_pilot(self, pilot):
         self.write_fr_header('PLT', pilot, subtype_long='PILOTINCHARGE')
