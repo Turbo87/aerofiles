@@ -58,11 +58,7 @@ def test_logger_id_without_validation(writer):
     assert writer.fp.getvalue() == 'Aa4%12345\r\n'
 
 
-@pytest.fixture(params=[
-    (1996, 12, 24),
-    (2014, 1, 31),
-    (2032, 8, 5),
-])
+@pytest.fixture(params=[(1996, 12, 24), (2014, 1, 31), (2032, 8, 5)])
 def date(request):
     return datetime.date(*request.param)
 
