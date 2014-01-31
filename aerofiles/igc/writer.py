@@ -29,8 +29,14 @@ class Writer:
 
         self.write_line(line)
 
-    def write_header(self, type, value):
-        self.write_line('H%s%s' % (type, value))
+    def write_header(self, origin, type, value):
+        if origin not in ('F', 'O'):
+            raise ValueError('Invalid origin')
+
+        self.write_line('H%s%s%s' % (origin, type, value))
+
+    def write_fr_header(self, type, value):
+        self.write_header('F', type, value)
 
     def write_date(self, date):
-        self.write_header('FDTE', date.strftime('%y%m%d'))
+        self.write_fr_header('DTE', date.strftime('%y%m%d'))
