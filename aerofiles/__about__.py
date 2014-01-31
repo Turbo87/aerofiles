@@ -1,5 +1,6 @@
 __title__ = 'aerofiles'
-__summary__ = 'waypoint file readers and writers for aviators'
+__summary__ = \
+    'waypoint, task and tracklog file readers and writers for aviators'
 __uri__ = 'https://github.com/Turbo87/aerofiles/'
 
 __version__ = '0.1.0'
