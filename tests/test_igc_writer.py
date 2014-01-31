@@ -142,3 +142,14 @@ def test_gps_datum(writer):
 def test_default_gps_datum(writer):
     writer.write_gps_datum()
     assert writer.fp.getvalue() == 'HFDTM100GPSDATUM:WGS-1984\r\n'
+
+
+@pytest.fixture(params=['6.4', 'Flarm-IGC05.09'])
+def firmware_version(request):
+    return request.param
+
+
+def test_firmware_version(writer, firmware_version):
+    writer.write_firmware_version(firmware_version)
+    assert writer.fp.getvalue() == \
+        'HFRFWFIRMWAREVERSION:%s\r\n' % firmware_version

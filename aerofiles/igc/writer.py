@@ -76,3 +76,7 @@ class Writer:
     def write_gps_datum(self, code=100, gps_datum='WGS-1984'):
         self.write_fr_header(
             'DTM', code, subtype_long='GPSDATUM', value_long=gps_datum)
+
+    def write_firmware_version(self, firmware_version):
+        self.write_fr_header(
+            'RFW', firmware_version, subtype_long='FIRMWAREVERSION')
