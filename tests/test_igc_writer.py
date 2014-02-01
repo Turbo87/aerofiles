@@ -324,3 +324,18 @@ def test_empty_fix_extensions(writer):
 def test_invalid_fix_extensions(writer):
     with pytest.raises(ValueError):
         writer.write_fix_extensions([('42', 42)])
+
+
+def test_k_record_extensions(writer):
+    writer.write_k_record_extensions([('HDT', 5)])
+    assert writer.fp.getvalue() == 'J010812HDT\r\n'
+
+
+def test_empty_k_record_extensions(writer):
+    writer.write_k_record_extensions([])
+    assert writer.fp.getvalue() == 'J00\r\n'
+
+
+def test_invalid_k_record_extensions(writer):
+    with pytest.raises(ValueError):
+        writer.write_k_record_extensions([('42', 42)])

@@ -186,3 +186,6 @@ class Writer:
 
     def write_fix_extensions(self, extensions):
         self.write_extensions('I', 36, extensions)
+
+    def write_k_record_extensions(self, extensions):
+        self.write_extensions('J', 8, extensions)
