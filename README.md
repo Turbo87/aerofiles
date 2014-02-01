@@ -16,7 +16,7 @@
 
 If you want to work on aerofiles you should install the necessary dependencies using:
 
-    $ pip install -r requirements-test.txt
+    $ pip install -r requirements-dev.txt
 
 You can run the testsuite with:
 

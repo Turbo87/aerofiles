@@ -12,5 +12,5 @@ install:
   - ./download_test_data.sh
 
 script:
-  - flake8 --ignore=E501 .
+  - flake8 --exclude=".git,docs" --ignore=E501 .
   - py.test
