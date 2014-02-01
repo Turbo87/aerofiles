@@ -166,3 +166,21 @@ class Writer:
 
         if 'club' in headers:
             self.write_club(headers['club'])
+
+    def write_fix_extensions(self, extensions):
+        num_extensions = len(extensions)
+        if num_extensions >= 100:
+            raise ValueError('Invalid number of extensions')
+
+        record = '%02d' % num_extensions
+        start_byte = 36
+        for extension, length in extensions:
+            if not patterns.EXTENSION_CODE.match(extension):
+                raise ValueError('Invalid extension: %s' % extension)
+
+            end_byte = start_byte + length - 1
+            record += '%02d%02d%s' % (start_byte, end_byte, extension)
+
+            start_byte = start_byte + length
+
+        self.write_record('I', record)

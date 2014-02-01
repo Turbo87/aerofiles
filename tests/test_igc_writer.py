@@ -309,3 +309,18 @@ def test_default_headers(writer):
 def test_missing_headers(writer):
     with pytest.raises(ValueError):
         writer.write_headers({})
+
+
+def test_fix_extensions(writer):
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+    assert writer.fp.getvalue() == 'I033638FXA3940SIU4143ENL\r\n'
+
+
+def test_empty_fix_extensions(writer):
+    writer.write_fix_extensions([])
+    assert writer.fp.getvalue() == 'I00\r\n'
+
+
+def test_invalid_fix_extensions(writer):
+    with pytest.raises(ValueError):
+        writer.write_fix_extensions([('42', 42)])
