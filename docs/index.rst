@@ -1,17 +1,10 @@
-Welcome to aerofiles's documentation!
-=====================================
+:orphan:
 
-Contents:
+Welcome to aerofiles
+====================
 
-.. toctree::
-   :maxdepth: 2
+Welcome to the aerofiles documentation.  This documentation is divided into
+different parts.  You should start with :ref:`installation` and then head
+over to the :ref:`api`.
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+.. include:: contents.rst.inc
