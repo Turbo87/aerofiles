@@ -413,7 +413,7 @@ class Writer:
         """
         Write the K record extensions description header::
 
-            writer.write_fix_extensions([('HDT', 5)])
+            writer.write_k_record_extensions([('HDT', 5)])
             # -> J010812HDT
 
         :param extensions: a list of ``(extension, length)`` tuples
