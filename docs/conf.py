@@ -107,7 +107,13 @@ html_theme = 'flask'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'github_fork': 'Turbo87/aerofiles',
+    'github_ribbon_color': 'gray_6d6d6d',
+    'font_family': '"Roboto", sans-serif',
+    'font_weight': '300',
+    'header_font_family': '"Roboto Slab", serif',
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 html_theme_path = ['_themes']
