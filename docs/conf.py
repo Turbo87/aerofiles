@@ -108,6 +108,7 @@ html_theme = 'flask'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
+    'index_logo': 'logo.png',
     'github_fork': 'Turbo87/aerofiles',
     'github_ribbon_color': 'gray_6d6d6d',
     'font_family': '"Roboto", sans-serif',
