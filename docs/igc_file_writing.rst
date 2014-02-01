@@ -52,3 +52,18 @@ The result of the call above is the following lines being written to the
     HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max10000m
     HFCIDCOMPETITIONID:2H
     HFCCLCOMPETITIONCLASS:Doubleseater
+
+Next you might want to define what extensions your GPS fix records will use.
+Make sure that you specify at least the highly recommended ``FXA`` extension as
+specified in the official IGC file specification. You can add the extensions
+description by using the :meth:`~aerofiles.igc.Writer.write_fix_extensions`
+method::
+
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+This will result in the following line being written::
+
+    I033638FXA3940SIU4143ENL
+
+There is also a :meth:`~aerofiles.igc.Writer.write_k_record_extensions` method
+if you are planning to use K records with extensions.
