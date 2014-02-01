@@ -23,6 +23,9 @@ class Writer:
     def write_line(self, line):
         self.fp.write(line + '\r\n')
 
+    def write_record(self, type, record):
+        self.write_line(type + record)
+
     def write_logger_id(self, manufacturer, logger_id, extension=None,
                         validate=True):
         if validate:
@@ -31,11 +34,11 @@ class Writer:
             if not patterns.LOGGER_ID.match(logger_id):
                 raise ValueError('Invalid logger id')
 
-        line = 'A%s%s' % (manufacturer, logger_id)
+        record = '%s%s' % (manufacturer, logger_id)
         if extension:
-            line = line + extension
+            record = record + extension
 
-        self.write_line(line)
+        self.write_record('A', record)
 
     def write_header(self, source, subtype, value,
                      subtype_long=None, value_long=None):
@@ -43,14 +46,14 @@ class Writer:
             raise ValueError('Invalid source')
 
         if not subtype_long:
-            line = 'H%s%s%s' % (source, subtype, value)
+            record = '%s%s%s' % (source, subtype, value)
         elif not value_long:
-            line = 'H%s%s%s:%s' % (source, subtype, subtype_long, value)
+            record = '%s%s%s:%s' % (source, subtype, subtype_long, value)
         else:
-            line = 'H%s%s%s%s:%s' % \
+            record = '%s%s%s%s:%s' % \
                 (source, subtype, value, subtype_long, value_long)
 
-        self.write_line(line)
+        self.write_record('H', record)
 
     def write_fr_header(self, subtype, value,
                         subtype_long=None, value_long=None):
