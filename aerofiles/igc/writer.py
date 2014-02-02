@@ -94,7 +94,7 @@ class Writer:
         :param date: a :class:`datetime.date` instance
         """
 
-        self.write_fr_header('DTE', date.strftime('%y%m%d'))
+        self.write_fr_header('DTE', date.strftime('%d%m%y'))
 
     def write_fix_accuracy(self, accuracy=None):
         """
@@ -458,12 +458,12 @@ class Writer:
 
         if isinstance(declaration_datetime, datetime.datetime):
             declaration_datetime = \
-                declaration_datetime.strftime('%y%m%d%H%M%S')
+                declaration_datetime.strftime('%d%m%y%H%M%S')
         elif not patterns.DATETIME.match(declaration_datetime):
             raise ValueError('Invalid declaration datetime')
 
         if isinstance(flight_date, datetime.date):
-            flight_date = flight_date.strftime('%y%m%d')
+            flight_date = flight_date.strftime('%d%m%y')
 
         if flight_date is None:
             flight_date = '000000'

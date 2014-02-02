@@ -70,7 +70,7 @@ def date(request):
 
 def test_date(writer, date):
     writer.write_date(date)
-    assert writer.fp.getvalue() == date.strftime('HFDTE%y%m%d\r\n')
+    assert writer.fp.getvalue() == date.strftime('HFDTE%d%m%y\r\n')
 
 
 @pytest.fixture(params=[20, 500, 999])
@@ -265,7 +265,7 @@ def test_headers(writer):
 
     assert writer.fp.getvalue() == '\r\n'.join([
         'AXCSTBX',
-        'HFDTE870224',
+        'HFDTE240287',
         'HFFXA050',
         'HFPLTPILOTINCHARGE:Tobias Bieniek',
         'HFCM2CREW2:John Doe',
@@ -293,7 +293,7 @@ def test_default_headers(writer):
 
     assert writer.fp.getvalue() == '\r\n'.join([
         'AFLA6NG',
-        'HFDTE130401',
+        'HFDTE010413',
         'HFFXA500',
         'HFPLTPILOTINCHARGE:',
         'HFGTYGLIDERTYPE:',
@@ -351,14 +351,14 @@ def test_task_metadata(writer):
         text='Some more metadata',
     )
     assert writer.fp.getvalue() == \
-        'C140413125302140414004203Some more metadata\r\n'
+        'C130414125302140414004203Some more metadata\r\n'
 
 
 def test_default_task_metadata(writer):
     with freeze_time("2012-01-14 03:21:34"):
         writer.write_task_metadata(turnpoints=1)
 
-    assert writer.fp.getvalue() == 'C120114032134000000000101\r\n'
+    assert writer.fp.getvalue() == 'C140112032134000000000101\r\n'
 
 
 def test_task_metadata_without_turnpoints_fails(writer):
