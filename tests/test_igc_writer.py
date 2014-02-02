@@ -364,3 +364,26 @@ def test_default_task_metadata(writer):
 def test_task_metadata_without_turnpoints_fails(writer):
     with pytest.raises(ValueError):
         writer.write_task_metadata()
+
+
+def test_task_point(writer):
+    writer.write_task_point(
+        latitude=(51 + 7.345 / 60.),
+        longitude=(6 + 24.765 / 60.),
+        text='Meiersberg',
+    )
+    assert writer.fp.getvalue() == 'C5107345N00624765EMeiersberg\r\n'
+
+
+def test_task_point_with_negative_coordinates(writer):
+    writer.write_task_point(
+        latitude=-(12 + 32.112 / 60.),
+        longitude=-(178 + .001 / 60.),
+        text='TAKEOFF',
+    )
+    assert writer.fp.getvalue() == 'C1232112S17800001WTAKEOFF\r\n'
+
+
+def test_default_task_point(writer):
+    writer.write_task_point()
+    assert writer.fp.getvalue() == 'C0000000N00000000E\r\n'

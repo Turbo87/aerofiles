@@ -491,3 +491,56 @@ class Writer:
             record += text
 
         self.write_record('C', record)
+
+    def write_task_point(self, latitude=None, longitude=None, text=''):
+        """
+        Write a task declaration point::
+
+            writer.write_task_point(
+                latitude=(51 + 7.345 / 60.),
+                longitude=(6 + 24.765 / 60.),
+                text='Meiersberg',
+            )
+            # -> C5107345N00624765EMeiersberg
+
+        If no ``latitude`` or ``longitude`` is passed, the fields will be
+        filled with zeros (i.e. unknown coordinates). This however should only
+        be used for ``TAKEOFF``  and ``LANDING`` points.
+
+        :param latitude: latitude of the point (between -90 and 90 degrees)
+        :param longitude: longitude of the point (between -180 and 180 degrees)
+        :param text: type and/or name of the waypoint (e.g. ``TAKEOFF``,
+            ``START``, ``TURN 1``, ``TURN 2``, ``FINISH`` or ``LANDING``)
+        """
+
+        if latitude is None:
+            latitude = '0000000N'
+        else:
+            if not -90 <= latitude <= 90:
+                raise ValueError('Invalid latitude')
+
+            hemisphere = 'S' if latitude < 0 else 'N'
+
+            latitude = abs(latitude)
+            degrees = int(latitude)
+            milliminutes = round((latitude - degrees) * 60000)
+            latitude = '%02d%05d%s' % (degrees, milliminutes, hemisphere)
+
+        if longitude is None:
+            longitude = '00000000E'
+        else:
+            if not -180 <= longitude <= 180:
+                raise ValueError('Invalid longitude')
+
+            hemisphere = 'W' if longitude < 0 else 'E'
+
+            longitude = abs(longitude)
+            degrees = int(longitude)
+            milliminutes = round((longitude - degrees) * 60000)
+            longitude = '%03d%05d%s' % (degrees, milliminutes, hemisphere)
+
+        record = latitude + longitude
+        if text:
+            record += text
+
+        self.write_record('C', record)
