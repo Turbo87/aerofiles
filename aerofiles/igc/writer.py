@@ -1,3 +1,5 @@
+import datetime
+
 from aerofiles.igc import patterns
 
 
@@ -419,3 +421,73 @@ class Writer:
         :param extensions: a list of ``(extension, length)`` tuples
         """
         self.write_extensions('J', 8, extensions)
+
+    def write_task_metadata(
+            self, declaration_datetime=None, flight_date=None,
+            task_number=None, turnpoints=None, text=None):
+        """
+        Write the task declaration metadata record::
+
+            writer.write_task_metadata(
+                datetime.datetime(2014, 4, 13, 12, 53, 02),
+                task_number=42,
+                turnpoints=3,
+            )
+            # -> C140413125302000000004203
+
+        There are sensible defaults in place for all parameters except for the
+        ``turnpoints`` parameter. If you don't pass that parameter the method
+        will raise a :class:`ValueError`. The other parameter defaults are
+        mentioned in the list below.
+
+        :param declaration_datetime: a :class:`datetime.datetime` instance of
+            the UTC date and time at the time of declaration (default: current
+            date and time)
+        :param flight_date: a :class:`datetime.date` instance of the intended
+            date of the flight (default: ``000000``, which means "use
+            declaration date")
+        :param task_number: task number for the flight date or an integer-based
+            identifier (default: ``0001``)
+        :param turnpoints: the number of turnpoints in the task (not counting
+            start and finish points!)
+        :param text: optional text to append to the metadata record
+        """
+
+        if declaration_datetime is None:
+            declaration_datetime = datetime.datetime.utcnow()
+
+        if isinstance(declaration_datetime, datetime.datetime):
+            declaration_datetime = \
+                declaration_datetime.strftime('%y%m%d%H%M%S')
+        elif not patterns.DATETIME.match(declaration_datetime):
+            raise ValueError('Invalid declaration datetime')
+
+        if isinstance(flight_date, datetime.date):
+            flight_date = flight_date.strftime('%y%m%d')
+
+        if flight_date is None:
+            flight_date = '000000'
+        elif not patterns.DATE.match(flight_date):
+            raise ValueError('Invalid flight date')
+
+        if task_number is None:
+            task_number = 1
+        elif not isinstance(task_number, int):
+            raise ValueError('task number parameter must be an integer')
+
+        if turnpoints is None:
+            raise ValueError('turnpoints parameter must be set')
+        elif not isinstance(turnpoints, int):
+            raise ValueError('turnpoints parameter must be an integer')
+
+        record = '{0}{1}{2:04d}{3:02d}'.format(
+            declaration_datetime,
+            flight_date,
+            task_number,
+            turnpoints,
+        )
+
+        if text:
+            record += text
+
+        self.write_record('C', record)

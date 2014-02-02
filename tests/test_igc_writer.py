@@ -1,4 +1,5 @@
 import pytest
+from freezegun import freeze_time
 
 import datetime
 
@@ -339,3 +340,27 @@ def test_empty_k_record_extensions(writer):
 def test_invalid_k_record_extensions(writer):
     with pytest.raises(ValueError):
         writer.write_k_record_extensions([('42', 42)])
+
+
+def test_task_metadata(writer):
+    writer.write_task_metadata(
+        datetime.datetime(2014, 4, 13, 12, 53, 2),
+        flight_date=datetime.date(2014, 4, 14),
+        task_number=42,
+        turnpoints=3,
+        text='Some more metadata',
+    )
+    assert writer.fp.getvalue() == \
+        'C140413125302140414004203Some more metadata\r\n'
+
+
+def test_default_task_metadata(writer):
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_task_metadata(turnpoints=1)
+
+    assert writer.fp.getvalue() == 'C120114032134000000000101\r\n'
+
+
+def test_task_metadata_without_turnpoints_fails(writer):
+    with pytest.raises(ValueError):
+        writer.write_task_metadata()
