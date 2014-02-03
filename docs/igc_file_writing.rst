@@ -8,6 +8,10 @@ into its constructor::
     with open('sample.igc', 'w') as fp:
         writer = aerofiles.igc.Writer(fp)
 
+
+Headers
+-------
+
 After that you can use the ``writer`` object to write the necessary file
 headers::
 
@@ -67,3 +71,40 @@ This will result in the following line being written::
 
 There is also a :meth:`~aerofiles.igc.Writer.write_k_record_extensions` method
 if you are planning to use K records with extensions.
+
+
+Task
+----
+
+Following the headers should be the task declaration. There are two main
+methods for writing that: :meth:`~aerofiles.igc.Writer.write_task_metadata`
+and :meth:`~aerofiles.igc.Writer.write_task_points`. The first method writes
+the task declaration metadata like date and time of declaration, the intended
+date of the flight, the task id and the number of turnpoints in the declared
+task. The second method is used to write the task points in the specified
+order::
+
+    writer.write_task_metadata(
+        datetime.datetime(2014, 4, 13, 12, 53, 02),
+        task_number=42,
+        turnpoints=3,
+    )
+
+    writer.write_task_points([
+        (None, None, 'TAKEOFF'),
+        (51.40375, 6.41275, 'START'),
+        (50.38210, 8.82105, 'TURN 1'),
+        (50.59045, 7.03555, 'TURN 2'),
+        (51.40375, 6.41275, 'FINISH'),
+        (None, None, 'LANDING'),
+    ])
+
+These calls will write the following lines to the ``sample.igc`` file::
+
+    C140413125302000000004203
+    C0000000N00000000ETAKEOFF
+    C5124225N00624765ESTART
+    C5022926N00849263ETURN 1
+    C5035427N00702133ETURN 2
+    C5124225N00624765EFINISH
+    C0000000N00000000ELANDING
