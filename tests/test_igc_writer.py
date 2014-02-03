@@ -387,3 +387,23 @@ def test_task_point_with_negative_coordinates(writer):
 def test_default_task_point(writer):
     writer.write_task_point()
     assert writer.fp.getvalue() == 'C0000000N00000000E\r\n'
+
+
+def test_task_points(writer):
+    writer.write_task_points([
+        (None, None, 'TAKEOFF'),
+        (51.40375, 6.41275, 'START'),
+        (50.38210, 8.82105, 'TURN 1'),
+        (50.59045, 7.03555, 'TURN 2'),
+        (51.40375, 6.41275, 'FINISH'),
+        (None, None, 'LANDING'),
+    ])
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'C0000000N00000000ETAKEOFF',
+        'C5124225N00624765ESTART',
+        'C5022926N00849263ETURN 1',
+        'C5035427N00702133ETURN 2',
+        'C5124225N00624765EFINISH',
+        'C0000000N00000000ELANDING',
+    ]) + '\r\n'

@@ -544,3 +544,30 @@ class Writer:
             record += text
 
         self.write_record('C', record)
+
+    def write_task_points(self, points):
+        """
+        Write multiple task declaration points with one call::
+
+            writer.write_task_points([
+                (None, None, 'TAKEOFF'),
+                (51.40375, 6.41275, 'START'),
+                (50.38210, 8.82105, 'TURN 1'),
+                (50.59045, 7.03555, 'TURN 2'),
+                (51.40375, 6.41275, 'FINISH'),
+                (None, None, 'LANDING'),
+            ])
+            # -> C0000000N00000000ETAKEOFF
+            # -> C5124225N00624765ESTART
+            # -> C5022926N00849263ETURN 1
+            # -> C5035427N00702133ETURN 2
+            # -> C5124225N00624765EFINISH
+            # -> C0000000N00000000ELANDING
+
+        see the :meth:`~aerofiles.igc.Writer.write_task_point` method for more
+        information.
+
+        :param points: a list of ``(latitude, longitude, text)`` tuples
+        """
+        for latitude, longitude, text in points:
+            self.write_task_point(latitude, longitude, text)
