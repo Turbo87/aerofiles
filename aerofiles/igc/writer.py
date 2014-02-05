@@ -46,6 +46,37 @@ class Writer:
 
         return time
 
+    def format_coordinate(self, value, default=None, is_latitude=True):
+        if value is None:
+            return default
+
+        if is_latitude:
+            if not -90 <= value <= 90:
+                raise ValueError('Invalid latitude')
+
+            hemisphere = 'S' if value < 0 else 'N'
+            format = '%02d%05d%s'
+
+        else:
+            if not -180 <= value <= 180:
+                raise ValueError('Invalid longitude')
+
+            hemisphere = 'W' if value < 0 else 'E'
+            format = '%03d%05d%s'
+
+        value = abs(value)
+        degrees = int(value)
+        milliminutes = round((value - degrees) * 60000)
+        return format % (degrees, milliminutes, hemisphere)
+
+    def format_latitude(self, value):
+        return self.format_coordinate(
+            value, default='0000000N', is_latitude=True)
+
+    def format_longitude(self, value):
+        return self.format_coordinate(
+            value, default='00000000E', is_latitude=False)
+
     def write_line(self, line):
         self.fp.write(line + '\r\n')
 
@@ -554,31 +585,8 @@ class Writer:
             ``START``, ``TURN 1``, ``TURN 2``, ``FINISH`` or ``LANDING``)
         """
 
-        if latitude is None:
-            latitude = '0000000N'
-        else:
-            if not -90 <= latitude <= 90:
-                raise ValueError('Invalid latitude')
-
-            hemisphere = 'S' if latitude < 0 else 'N'
-
-            latitude = abs(latitude)
-            degrees = int(latitude)
-            milliminutes = round((latitude - degrees) * 60000)
-            latitude = '%02d%05d%s' % (degrees, milliminutes, hemisphere)
-
-        if longitude is None:
-            longitude = '00000000E'
-        else:
-            if not -180 <= longitude <= 180:
-                raise ValueError('Invalid longitude')
-
-            hemisphere = 'W' if longitude < 0 else 'E'
-
-            longitude = abs(longitude)
-            degrees = int(longitude)
-            milliminutes = round((longitude - degrees) * 60000)
-            longitude = '%03d%05d%s' % (degrees, milliminutes, hemisphere)
+        latitude = self.format_latitude(latitude)
+        longitude = self.format_longitude(longitude)
 
         record = latitude + longitude
 
