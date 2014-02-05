@@ -492,7 +492,9 @@ class Writer:
 
         self.write_record('C', record)
 
-    def write_task_point(self, latitude=None, longitude=None, text=''):
+    def write_task_point(self, latitude=None, longitude=None, text='',
+                         distance_min=None, distance_max=None,
+                         bearing1=None, bearing2=None):
         """
         Write a task declaration point::
 
@@ -506,6 +508,20 @@ class Writer:
         If no ``latitude`` or ``longitude`` is passed, the fields will be
         filled with zeros (i.e. unknown coordinates). This however should only
         be used for ``TAKEOFF``  and ``LANDING`` points.
+
+        For area tasks there are some additional parameters that can be used
+        to specify the relevant areas::
+
+            writer.write_task_point(
+                -(12 + 32.112 / 60.),
+                -(178 + .001 / 60.),
+                'TURN AREA',
+                distance_min=12.0,
+                distance_max=32.0,
+                bearing1=122.0,
+                bearing2=182.0,
+            )
+            # -> C1232112S17800001W00120000032000122000182000TURN AREA
 
         :param latitude: latitude of the point (between -90 and 90 degrees)
         :param longitude: longitude of the point (between -180 and 180 degrees)
@@ -540,6 +556,17 @@ class Writer:
             longitude = '%03d%05d%s' % (degrees, milliminutes, hemisphere)
 
         record = latitude + longitude
+
+        if None not in [distance_min, distance_max, bearing1, bearing2]:
+            record += '%04d' % int(distance_min)
+            record += '%03d' % int((distance_min - int(distance_min)) * 1000)
+            record += '%04d' % int(distance_max)
+            record += '%03d' % int((distance_max - int(distance_max)) * 1000)
+            record += '%03d' % int(bearing1)
+            record += '%03d' % int((bearing1 - int(bearing1)) * 1000)
+            record += '%03d' % int(bearing2)
+            record += '%03d' % int((bearing2 - int(bearing2)) * 1000)
+
         if text:
             record += text
 
@@ -553,21 +580,26 @@ class Writer:
                 (None, None, 'TAKEOFF'),
                 (51.40375, 6.41275, 'START'),
                 (50.38210, 8.82105, 'TURN 1'),
-                (50.59045, 7.03555, 'TURN 2'),
+                (50.59045, 7.03555, 'TURN 2', 0, 32.5, 0, 180),
                 (51.40375, 6.41275, 'FINISH'),
                 (None, None, 'LANDING'),
             ])
             # -> C0000000N00000000ETAKEOFF
             # -> C5124225N00624765ESTART
             # -> C5022926N00849263ETURN 1
-            # -> C5035427N00702133ETURN 2
+            # -> C5035427N00702133E00000000032500000000180000TURN 2
             # -> C5124225N00624765EFINISH
             # -> C0000000N00000000ELANDING
 
         see the :meth:`~aerofiles.igc.Writer.write_task_point` method for more
         information.
 
-        :param points: a list of ``(latitude, longitude, text)`` tuples
+        :param points: a list of ``(latitude, longitude, text)`` tuples. use
+            ``(latitude, longitude, text, distance_min, distance_max, bearing1,
+            bearing2)`` tuples for area task points.
         """
-        for latitude, longitude, text in points:
-            self.write_task_point(latitude, longitude, text)
+        for args in points:
+            if len(args) not in [3, 7]:
+                raise ValueError('Invalid number of task point tuple items')
+
+            self.write_task_point(*args)

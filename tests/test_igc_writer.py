@@ -384,6 +384,20 @@ def test_task_point_with_negative_coordinates(writer):
     assert writer.fp.getvalue() == 'C1232112S17800001WTAKEOFF\r\n'
 
 
+def test_task_point_with_area(writer):
+    writer.write_task_point(
+        -(12 + 32.112 / 60.),
+        -(178 + .001 / 60.),
+        'TURN AREA',
+        distance_min=12.0,
+        distance_max=32.0,
+        bearing1=122.0,
+        bearing2=182.0,
+    )
+    assert writer.fp.getvalue() == \
+        'C1232112S17800001W00120000032000122000182000TURN AREA\r\n'
+
+
 def test_default_task_point(writer):
     writer.write_task_point()
     assert writer.fp.getvalue() == 'C0000000N00000000E\r\n'
@@ -394,7 +408,7 @@ def test_task_points(writer):
         (None, None, 'TAKEOFF'),
         (51.40375, 6.41275, 'START'),
         (50.38210, 8.82105, 'TURN 1'),
-        (50.59045, 7.03555, 'TURN 2'),
+        (50.59045, 7.03555, 'TURN 2', 0, 32.5, 0, 180),
         (51.40375, 6.41275, 'FINISH'),
         (None, None, 'LANDING'),
     ])
@@ -403,7 +417,7 @@ def test_task_points(writer):
         'C0000000N00000000ETAKEOFF',
         'C5124225N00624765ESTART',
         'C5022926N00849263ETURN 1',
-        'C5035427N00702133ETURN 2',
+        'C5035427N00702133E00000000032500000000180000TURN 2',
         'C5124225N00624765EFINISH',
         'C0000000N00000000ELANDING',
     ]) + '\r\n'
