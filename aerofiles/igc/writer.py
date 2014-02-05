@@ -340,7 +340,7 @@ class Writer:
             other header-writing methods manually!
 
         :param headers: a :class:`dict` of all the headers that should be
-        written.
+            written.
         """
 
         for header in self.REQUIRED_HEADERS:
