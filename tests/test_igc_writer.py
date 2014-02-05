@@ -445,3 +445,20 @@ def test_custom_long_security(writer):
         'G' + 'A' * 25,
         'G' + 'A' * 10,
     ]) + '\r\n'
+
+
+def test_fix(writer):
+    writer.write_fix(
+        datetime.time(12, 34, 56),
+        latitude=51.40375,
+        longitude=6.41275,
+        valid=True,
+        pressure_alt=1234,
+        gps_alt=1432,
+    )
+    assert writer.fp.getvalue() == 'B1234565124225N00624765EA0123401432\r\n'
+
+
+def test_default_fix(writer):
+    writer.write_fix(datetime.time(2, 3, 4))
+    assert writer.fp.getvalue() == 'B0203040000000N00000000EV0000000000\r\n'
