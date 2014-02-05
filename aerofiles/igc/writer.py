@@ -22,6 +22,30 @@ class Writer:
     def __init__(self, fp=None):
         self.fp = fp
 
+    def format_date(self, date):
+        if isinstance(date, datetime.datetime):
+            date = date.date()
+
+        if isinstance(date, datetime.date):
+            date = date.strftime('%d%m%y')
+
+        if not patterns.DATE.match(date):
+            raise ValueError("Invalid date: " + date)
+
+        return date
+
+    def format_time(self, time):
+        if isinstance(time, datetime.datetime):
+            time = time.time()
+
+        if isinstance(time, datetime.time):
+            time = time.strftime('%H%M%S')
+
+        if not patterns.TIME.match(time):
+            raise ValueError("Invalid time: " + time)
+
+        return time
+
     def write_line(self, line):
         self.fp.write(line + '\r\n')
 
@@ -94,7 +118,7 @@ class Writer:
         :param date: a :class:`datetime.date` instance
         """
 
-        self.write_fr_header('DTE', date.strftime('%d%m%y'))
+        self.write_fr_header('DTE', self.format_date(date))
 
     def write_fix_accuracy(self, accuracy=None):
         """
@@ -457,15 +481,16 @@ class Writer:
             declaration_datetime = datetime.datetime.utcnow()
 
         if isinstance(declaration_datetime, datetime.datetime):
-            declaration_datetime = \
-                declaration_datetime.strftime('%d%m%y%H%M%S')
+            declaration_datetime = (
+                self.format_date(declaration_datetime) +
+                self.format_time(declaration_datetime)
+            )
         elif not patterns.DATETIME.match(declaration_datetime):
             raise ValueError('Invalid declaration datetime')
 
         if isinstance(flight_date, datetime.date):
-            flight_date = flight_date.strftime('%d%m%y')
-
-        if flight_date is None:
+            flight_date = self.format_date(flight_date)
+        elif flight_date is None:
             flight_date = '000000'
         elif not patterns.DATE.match(flight_date):
             raise ValueError('Invalid flight date')
