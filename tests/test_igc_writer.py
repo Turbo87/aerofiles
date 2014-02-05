@@ -421,3 +421,27 @@ def test_task_points(writer):
         'C5124225N00624765EFINISH',
         'C0000000N00000000ELANDING',
     ]) + '\r\n'
+
+
+def test_security(writer):
+    writer.write_security('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    assert writer.fp.getvalue() == 'GABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n'
+
+
+def test_long_security(writer):
+    writer.write_security('A' * 100)
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'G' + 'A' * 75,
+        'G' + 'A' * 25,
+    ]) + '\r\n'
+
+
+def test_custom_long_security(writer):
+    writer.write_security('A' * 110, bytes_per_line=25)
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'G' + 'A' * 25,
+        'G' + 'A' * 25,
+        'G' + 'A' * 25,
+        'G' + 'A' * 25,
+        'G' + 'A' * 10,
+    ]) + '\r\n'

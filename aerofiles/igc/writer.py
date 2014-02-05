@@ -603,3 +603,23 @@ class Writer:
                 raise ValueError('Invalid number of task point tuple items')
 
             self.write_task_point(*args)
+
+    def write_security(self, security, bytes_per_line=75):
+        """
+        Write the security signature::
+
+            writer.write_security('ABCDEF')
+            # -> GABCDEF
+
+        If a signature of more than 75 bytes is used the G record will be
+        broken into multiple lines according to the IGC file specification.
+        This rule can be configured with the ``bytes_per_line`` parameter if
+        necessary.
+
+        :param security: the security signature
+        :param bytes_per_line: the maximum number of bytes per line
+            (default: ``75``)
+        """
+
+        for start in range(0, len(security), bytes_per_line):
+            self.write_record('G', security[start:start + bytes_per_line])
