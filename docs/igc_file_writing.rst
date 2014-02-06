@@ -110,6 +110,32 @@ These calls will write the following lines to the ``sample.igc`` file::
     C0000000N00000000ELANDING
 
 
+GPS Fixes
+---------
+
+Writing GPS fixes is accomplished through the
+:meth:`~aerofiles.igc.Writer.write_fix` method::
+
+    writer.write_fix(
+        datetime.time(12, 34, 56),
+        latitude=51.40375,
+        longitude=6.41275,
+        valid=True,
+        pressure_alt=1234,
+        gps_alt=1432,
+        extensions=[50, 0, 12],
+    )
+
+The only required parameter is the time of the fix as a :class:`datetime.time`
+instance, all other parameters are optional. If the
+:meth:`~aerofiles.igc.Writer.write_fix_extensions` method was used before, the
+extensions parameter becomes mandatory and has to contain a list of values for
+the declared fix extensions. The above call would result in the following fix
+record::
+
+    B1234565124225N00624765EA012340143205000012
+
+
 Security Signature
 ------------------
 
