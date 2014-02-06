@@ -707,7 +707,7 @@ class Writer:
                 length = type_length[1]
 
                 if isinstance(value, (int, float)):
-                    value = '{0:0{1:d}d}'.format(value, length)
+                    value = ('%0' + str(length) + 'd') % value
 
                 if len(value) != length:
                     raise ValueError('Extension value has wrong length')
