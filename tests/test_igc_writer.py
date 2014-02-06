@@ -73,6 +73,13 @@ def test_date(writer, date):
     assert writer.fp.getvalue() == date.strftime('HFDTE%d%m%y\r\n')
 
 
+def test_invalid_date(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_date('0222')
+
+    assert ex.value.message == 'Invalid date: 0222'
+
+
 @pytest.fixture(params=[20, 500, 999])
 def fix_accuracy(request):
     return request.param
@@ -472,3 +479,10 @@ def test_fix_with_extensions(writer):
         'I033638FXA3940SIU4143ENL',
         'B0203040000000N00000000EV000000000002313002',
     ]) + '\r\n'
+
+
+def test_fix_with_invalid_time(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix('abcdef')
+
+    assert ex.value.message == 'Invalid time: abcdef'
