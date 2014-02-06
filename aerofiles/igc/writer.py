@@ -682,6 +682,9 @@ class Writer:
         :param pressure_alt: altitude to the ICAO ISA above the 1013.25 hPa
             sea level datum
         :param gps_alt: altitude above the WGS84 ellipsoid
+        :param extensions: a list of extension values according to previous
+            declaration through
+            :meth:`~aerofiles.igc.Writer.write_fix_extensions`
         """
 
         if time is None:
