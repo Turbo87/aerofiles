@@ -63,6 +63,13 @@ def test_logger_id_without_validation(writer):
     assert writer.fp.getvalue() == 'Aa4%12345\r\n'
 
 
+def test_invalid_header_source(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_header('X', 'XXX', 'ABC')
+
+    assert ex.value.message == 'Invalid source: X'
+
+
 @pytest.fixture(params=[(1996, 12, 24), (2014, 1, 31), (2032, 8, 5)])
 def date(request):
     return datetime.date(*request.param)
@@ -268,6 +275,7 @@ def test_headers(writer):
         'pressure_sensor': 'INTERSEMA,MS5534A,max10000m',
         'competition_id': '2H',
         'competition_class': 'Doubleseater',
+        'club': 'LV Aachen',
     })
 
     assert writer.fp.getvalue() == '\r\n'.join([
@@ -286,6 +294,7 @@ def test_headers(writer):
         'HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max10000m',
         'HFCIDCOMPETITIONID:2H',
         'HFCCLCOMPETITIONCLASS:Doubleseater',
+        'HFCLBCLUB:LV Aachen',
     ]) + '\r\n'
 
 
@@ -330,8 +339,15 @@ def test_empty_fix_extensions(writer):
 
 
 def test_invalid_fix_extensions(writer):
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix_extensions(('42', 42) * 100)
+
+    assert ex.value.message == 'Too many extensions'
+
+    with pytest.raises(ValueError) as ex:
         writer.write_fix_extensions([('42', 42)])
+
+    assert ex.value.message == 'Invalid extension: 42'
 
 
 def test_k_record_extensions(writer):
@@ -368,9 +384,30 @@ def test_default_task_metadata(writer):
     assert writer.fp.getvalue() == 'C140112032134000000000101\r\n'
 
 
-def test_task_metadata_without_turnpoints_fails(writer):
-    with pytest.raises(ValueError):
+def test_task_metadata_with_invalid_datetime(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_task_metadata('xxx', turnpoints=2)
+
+    assert ex.value.message == 'Invalid declaration datetime: xxx'
+
+
+def test_task_metadata_with_invalid_tasknumber(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_task_metadata(task_number='xxx', turnpoints=2)
+
+    assert ex.value.message == 'Invalid task number: xxx'
+
+
+def test_task_metadata_with_invalid_turnpoints(writer):
+    with pytest.raises(ValueError) as ex:
         writer.write_task_metadata()
+
+    assert ex.value.message == 'Invalid turnpoints: None'
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_task_metadata(turnpoints='xxx')
+
+    assert ex.value.message == 'Invalid turnpoints: xxx'
 
 
 def test_task_point(writer):
@@ -430,6 +467,15 @@ def test_task_points(writer):
     ]) + '\r\n'
 
 
+def test_invalid_task_points(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_task_points([
+            (None, None, None, None),
+        ])
+
+    assert ex.value.message == 'Invalid number of task point tuple items'
+
+
 def test_security(writer):
     writer.write_security('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     assert writer.fp.getvalue() == 'GABCDEFGHIJKLMNOPQRSTUVWXYZ\r\n'
@@ -482,8 +528,62 @@ def test_fix_with_extensions(writer):
     ]) + '\r\n'
 
 
+def test_fix_with_missing_extensions(writer):
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(datetime.time(2, 3, 4))
+
+    assert ex.value.message == 'Invalid extensions list'
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(datetime.time(2, 3, 4), extensions=['023'])
+
+    assert ex.value.message == 'Number of extensions does not match declaration'
+
+
+def test_fix_with_missing_extensions_declaration(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(datetime.time(2, 3, 4), extensions=['023', 13, 2])
+
+    assert ex.value.message == 'Invalid extensions list'
+
+
+def test_fix_with_invalid_extension(writer):
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(datetime.time(2, 3, 4), extensions=['x', 13, 2])
+
+    assert ex.value.message == 'Extension value has wrong length'
+
+
 def test_fix_with_invalid_time(writer):
     with pytest.raises(ValueError) as ex:
         writer.write_fix('abcdef')
 
     assert ex.value.message == 'Invalid time: abcdef'
+
+
+def test_fix_with_invalid_latitude(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(latitude=-112.34)
+
+    assert ex.value.message.startswith('Invalid latitude:')
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(latitude=91.2)
+
+    assert ex.value.message.startswith('Invalid latitude:')
+
+
+def test_fix_with_invalid_longitude(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(longitude=-181)
+
+    assert ex.value.message.startswith('Invalid longitude:')
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_fix(longitude=215)
+
+    assert ex.value.message.startswith('Invalid longitude:')

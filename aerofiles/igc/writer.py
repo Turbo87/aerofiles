@@ -53,14 +53,14 @@ class Writer:
 
         if is_latitude:
             if not -90 <= value <= 90:
-                raise ValueError('Invalid latitude')
+                raise ValueError('Invalid latitude: %s' % value)
 
             hemisphere = 'S' if value < 0 else 'N'
             format = '%02d%05d%s'
 
         else:
             if not -180 <= value <= 180:
-                raise ValueError('Invalid longitude')
+                raise ValueError('Invalid longitude: %s' % value)
 
             hemisphere = 'W' if value < 0 else 'E'
             format = '%03d%05d%s'
@@ -121,7 +121,7 @@ class Writer:
     def write_header(self, source, subtype, value,
                      subtype_long=None, value_long=None):
         if source not in ('F', 'O'):
-            raise ValueError('Invalid source')
+            raise ValueError('Invalid source: %s' % source)
 
         if not subtype_long:
             record = '%s%s%s' % (source, subtype, value)
@@ -442,7 +442,7 @@ class Writer:
     def write_extensions(self, type, start_byte, extensions):
         num_extensions = len(extensions)
         if num_extensions >= 100:
-            raise ValueError('Invalid number of extensions')
+            raise ValueError('Too many extensions')
 
         record = '%02d' % num_extensions
         for extension, length in extensions:
@@ -519,24 +519,21 @@ class Writer:
                 self.format_time(declaration_datetime)
             )
         elif not patterns.DATETIME.match(declaration_datetime):
-            raise ValueError('Invalid declaration datetime')
+            raise ValueError('Invalid declaration datetime: %s' %
+                             declaration_datetime)
 
-        if isinstance(flight_date, datetime.date):
-            flight_date = self.format_date(flight_date)
-        elif flight_date is None:
+        if flight_date is None:
             flight_date = '000000'
-        elif not patterns.DATE.match(flight_date):
-            raise ValueError('Invalid flight date')
+        else:
+            flight_date = self.format_date(flight_date)
 
         if task_number is None:
             task_number = 1
         elif not isinstance(task_number, int):
-            raise ValueError('task number parameter must be an integer')
+            raise ValueError('Invalid task number: %s' % task_number)
 
-        if turnpoints is None:
-            raise ValueError('turnpoints parameter must be set')
-        elif not isinstance(turnpoints, int):
-            raise ValueError('turnpoints parameter must be an integer')
+        if not isinstance(turnpoints, int):
+            raise ValueError('Invalid turnpoints: %s' % turnpoints)
 
         record = '{0}{1}{2:04d}{3:02d}'.format(
             declaration_datetime,
@@ -697,8 +694,9 @@ class Writer:
         record += '%05d' % (pressure_alt or 0)
         record += '%05d' % (gps_alt or 0)
 
-        if self.fix_extensions:
-            if not isinstance(extensions, list):
+        if self.fix_extensions or extensions:
+            if not (isinstance(extensions, list) and
+                    isinstance(self.fix_extensions, list)):
                 raise ValueError('Invalid extensions list')
 
             if len(extensions) != len(self.fix_extensions):
