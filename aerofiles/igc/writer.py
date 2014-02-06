@@ -21,6 +21,7 @@ class Writer:
 
     def __init__(self, fp=None):
         self.fp = fp
+        self.fix_extensions = None
 
     def format_date(self, date):
         if isinstance(date, datetime.datetime):
@@ -464,6 +465,7 @@ class Writer:
 
         :param extensions: a list of ``(extension, length)`` tuples
         """
+        self.fix_extensions = extensions
         self.write_extensions('I', 36, extensions)
 
     def write_k_record_extensions(self, extensions):
@@ -658,7 +660,7 @@ class Writer:
             self.write_record('G', security[start:start + bytes_per_line])
 
     def write_fix(self, time, latitude=None, longitude=None, valid=False,
-                  pressure_alt=None, gps_alt=None):
+                  pressure_alt=None, gps_alt=None, extensions=None):
         """
         Write a fix record::
 
@@ -687,5 +689,24 @@ class Writer:
         record += 'A' if valid else 'V'
         record += '%05d' % (pressure_alt or 0)
         record += '%05d' % (gps_alt or 0)
+
+        if self.fix_extensions:
+            if not isinstance(extensions, list):
+                raise ValueError('Invalid extensions list')
+
+            if len(extensions) != len(self.fix_extensions):
+                raise ValueError(
+                    'Number of extensions does not match declaration')
+
+            for type_length, value in zip(self.fix_extensions, extensions):
+                length = type_length[1]
+
+                if isinstance(value, (int, float, long)):
+                    value = '{0:0{1:d}d}'.format(value, length)
+
+                if len(value) != length:
+                    raise ValueError('Extension value has wrong length')
+
+                record += value
 
         self.write_record('B', record)

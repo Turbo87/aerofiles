@@ -462,3 +462,13 @@ def test_fix(writer):
 def test_default_fix(writer):
     writer.write_fix(datetime.time(2, 3, 4))
     assert writer.fp.getvalue() == 'B0203040000000N00000000EV0000000000\r\n'
+
+
+def test_fix_with_extensions(writer):
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+    writer.write_fix(datetime.time(2, 3, 4), extensions=['023', 13, 2])
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'I033638FXA3940SIU4143ENL',
+        'B0203040000000N00000000EV000000000002313002',
+    ]) + '\r\n'
