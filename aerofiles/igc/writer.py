@@ -706,7 +706,7 @@ class Writer:
             for type_length, value in zip(self.fix_extensions, extensions):
                 length = type_length[1]
 
-                if isinstance(value, (int, float, long)):
+                if isinstance(value, (int, float)):
                     value = '{0:0{1:d}d}'.format(value, length)
 
                 if len(value) != length:
