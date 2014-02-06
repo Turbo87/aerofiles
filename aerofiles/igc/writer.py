@@ -659,7 +659,7 @@ class Writer:
         for start in range(0, len(security), bytes_per_line):
             self.write_record('G', security[start:start + bytes_per_line])
 
-    def write_fix(self, time, latitude=None, longitude=None, valid=False,
+    def write_fix(self, time=None, latitude=None, longitude=None, valid=False,
                   pressure_alt=None, gps_alt=None, extensions=None):
         """
         Write a fix record::
@@ -674,7 +674,8 @@ class Writer:
             )
             # -> B1234565124225N00624765EA0123401432
 
-        :param time: time of the fix record (UTC)
+        :param time: UTC time of the fix record (default:
+            :meth:`~datetime.datetime.utcnow`)
         :param latitude: longitude of the last GPS fix
         :param longitude: latitude of the last GPS fix
         :param valid: ``True`` if the current GPS fix is 3D
@@ -682,6 +683,9 @@ class Writer:
             sea level datum
         :param gps_alt: altitude above the WGS84 ellipsoid
         """
+
+        if time is None:
+            time = datetime.datetime.utcnow()
 
         record = self.format_time(time)
         record += self.format_latitude(latitude)

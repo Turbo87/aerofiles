@@ -467,8 +467,9 @@ def test_fix(writer):
 
 
 def test_default_fix(writer):
-    writer.write_fix(datetime.time(2, 3, 4))
-    assert writer.fp.getvalue() == 'B0203040000000N00000000EV0000000000\r\n'
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_fix()
+    assert writer.fp.getvalue() == 'B0321340000000N00000000EV0000000000\r\n'
 
 
 def test_fix_with_extensions(writer):

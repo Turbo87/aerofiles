@@ -126,12 +126,14 @@ Writing GPS fixes is accomplished through the
         extensions=[50, 0, 12],
     )
 
-The only required parameter is the time of the fix as a :class:`datetime.time`
-instance, all other parameters are optional. If the
-:meth:`~aerofiles.igc.Writer.write_fix_extensions` method was used before, the
-extensions parameter becomes mandatory and has to contain a list of values for
-the declared fix extensions. The above call would result in the following fix
-record::
+All parameters essentially optional and will be filled with sensible defaults.
+The time parameter will use the current UTC time, while the other parameters
+will be set to *invalid* values.
+
+If the :meth:`~aerofiles.igc.Writer.write_fix_extensions` method was used
+before, the extensions parameter becomes mandatory and has to contain a list
+of values for the declared fix extensions. The above call would result in the
+following fix record::
 
     B1234565124225N00624765EA012340143205000012
 
