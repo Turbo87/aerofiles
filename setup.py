@@ -3,9 +3,7 @@ import re
 
 from setuptools import setup, find_packages
 
-about = {}
-with open("aerofiles/__about__.py") as fp:
-    exec(fp.read(), about)
+GITHUB_URL = 'https://github.com/Turbo87/aerofiles/'
 
 
 def read(*paths):
@@ -19,7 +17,7 @@ def read_markdown(*paths):
 
     # Change relative links to github links
     content = re.sub(r'\]\(([^(http)])',
-                     '](' + about['__uri__'] + r'blob/master/\1', content)
+                     '](' + GITHUB_URL + r'blob/master/\1', content)
 
     # Strip images
     content = re.sub(r'!\[([^\[\]\(\)]+)\]\([^\[\]\(\)]+\)', r'\1', content)
@@ -33,14 +31,16 @@ def read_markdown(*paths):
 
 
 setup(
-    name=about['__title__'],
-    version=about['__version__'],
-    description=about['__summary__'],
+    name='aerofiles',
+    version='0.1.0',
+    description=(
+        'waypoint, task and tracklog file readers and writers for aviators'
+    ),
     long_description=read_markdown('README.md'),
-    url=about['__uri__'],
-    license=about['__license__'],
-    author=about['__author__'],
-    author_email=about['__email__'],
+    url=GITHUB_URL,
+    license='MIT',
+    author='Tobias Bieniek',
+    author_email='tobias.bieniek@gmx.de',
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Developers',
