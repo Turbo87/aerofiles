@@ -3,10 +3,12 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-Version 0.1
------------
 
-First public preview release.
+aerofiles v0.1
+--------------
+
+First public preview release
 
 - SeeYou CUP file reader
 - WELT2000 file reader
+- IGC file writer
