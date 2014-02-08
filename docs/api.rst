@@ -22,3 +22,11 @@ aerofiles.welt2000
 .. autoclass:: aerofiles.welt2000.Reader
    :members:
    :inherited-members:
+
+
+aerofiles.igc
+-------------
+
+.. autoclass:: aerofiles.igc.Writer
+   :members:
+   :inherited-members:

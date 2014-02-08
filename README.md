@@ -9,6 +9,7 @@
 
 * SeeYou CUP file reader (`aerofiles.seeyou`)
 * WELT2000 file reader (`aerofiles.welt2000`)
+* IGC file writer (`aerofiles.igc`)
 
 
 ## Development Environment
