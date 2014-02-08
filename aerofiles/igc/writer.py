@@ -771,7 +771,7 @@ class Writer:
             writer.write_satellites(datetime.time(12, 34, 56), [1, 2, 5, 22])
             # -> F12345601020522
 
-        :param time: UTC time of the fix record (default:
+        :param time: UTC time of the satellite constellation record (default:
             :meth:`~datetime.datetime.utcnow`)
         :param satellites: a list of satellite IDs as either two-character
             strings or integers below 100
