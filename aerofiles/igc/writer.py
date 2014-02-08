@@ -863,3 +863,20 @@ class Writer:
             record += value
 
         self.write_record('K', record)
+
+    def write_comment(self, code, text):
+        """
+        Write a comment record::
+
+            writer.write_comment('PLT', 'Arrived at the first turnpoint')
+            # -> LPLTArrived at the first turnpoint
+
+        :param code: a three-letter-code describing the source of the comment
+            (e.g. ``PLT`` for pilot)
+        :param text: the text that should be added to the comment
+        """
+
+        if not patterns.THREE_LETTER_CODE.match(code):
+            raise ValueError('Invalid source')
+
+        self.write_record('L', code + text)

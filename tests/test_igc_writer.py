@@ -712,3 +712,16 @@ def test_k_record_with_invalid_extension(writer):
         writer.write_k_record(datetime.time(2, 3, 4), ['x', 13, 2])
 
     assert 'Extension value has wrong length' in str(ex)
+
+
+def test_comment(writer):
+    writer.write_comment('PLT', 'This flight was my second 1000km attempt')
+    assert writer.fp.getvalue() == \
+        'LPLTThis flight was my second 1000km attempt\r\n'
+
+
+def test_comment_with_invalid_source(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_comment('X', 'bla')
+
+    assert 'Invalid source' in str(ex)
