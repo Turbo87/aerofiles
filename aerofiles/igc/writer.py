@@ -763,3 +763,42 @@ class Writer:
             record += text
 
         self.write_record('E', record)
+
+    def write_satellites(self, *args):
+        """
+        Write a satellite constellation record::
+
+            writer.write_satellites(datetime.time(12, 34, 56), [1, 2, 5, 22])
+            # -> F12345601020522
+
+        :param time: UTC time of the fix record (default:
+            :meth:`~datetime.datetime.utcnow`)
+        :param satellites: a list of satellite IDs as either two-character
+            strings or integers below 100
+        """
+
+        num_args = len(args)
+        if num_args not in (1, 2):
+            raise ValueError('Invalid number of parameters received')
+
+        if num_args == 1:
+            satellites = args[0]
+            time = None
+        else:
+            time, satellites = args
+
+        if time is None:
+            time = datetime.datetime.utcnow()
+
+        record = self.format_time(time)
+
+        for satellite in satellites:
+            if isinstance(satellite, int):
+                satellite = '%02d' % satellite
+
+            if len(satellite) != 2:
+                raise ValueError('Invalid satellite ID')
+
+            record += satellite
+
+        self.write_record('F', record)

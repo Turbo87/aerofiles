@@ -628,3 +628,33 @@ def test_event_with_invalid_code(writer):
         writer.write_event('X')
 
     assert 'Invalid event code' in str(ex)
+
+
+def test_satellites(writer):
+    writer.write_satellites(datetime.time(12, 34, 56), [2, 52, 33, '03'])
+    assert writer.fp.getvalue() == 'F12345602523303\r\n'
+
+
+def test_satellites_with_default_time(writer):
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_satellites([2, 4, 99])
+    assert writer.fp.getvalue() == 'F032134020499\r\n'
+
+
+def test_satellites_with_invalid_id(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_satellites(['ABCDE'])
+
+    assert 'Invalid satellite ID' in str(ex)
+
+
+def test_satellites_with_invalid_arguments(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_satellites()
+
+    assert 'Invalid number of parameters received' in str(ex)
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_satellites(1, 2, 3)
+
+    assert 'Invalid number of parameters received' in str(ex)
