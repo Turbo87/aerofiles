@@ -715,3 +715,51 @@ class Writer:
                 record += value
 
         self.write_record('B', record)
+
+    def write_event(self, *args):
+        """
+        Write an event record::
+
+            writer.write_event(datetime.time(12, 34, 56), 'PEV')
+            # -> B123456PEV
+
+            writer.write_event(datetime.time(12, 34, 56), 'PEV', 'Some Text')
+            # -> B123456PEVSome Text
+
+            writer.write_event('PEV')  # uses utcnow()
+            # -> B121503PEV
+
+        :param time: UTC time of the fix record (default:
+            :meth:`~datetime.datetime.utcnow`)
+        :param code: event type as three-letter-code
+        :param text: additional text describing the event (optional)
+        """
+
+        num_args = len(args)
+        if not (1 <= num_args <= 3):
+            raise ValueError('Invalid number of parameters received')
+
+        if num_args == 3:
+            time, code, text = args
+        elif num_args == 1:
+            code = args[0]
+            time = text = None
+        elif isinstance(args[0], (datetime.time, datetime.datetime)):
+            time, code = args
+            text = None
+        else:
+            code, text = args
+            time = None
+
+        if time is None:
+            time = datetime.datetime.utcnow()
+
+        if not patterns.THREE_LETTER_CODE.match(code):
+            raise ValueError('Invalid event code')
+
+        record = self.format_time(time)
+        record += code
+        if text:
+            record += text
+
+        self.write_record('E', record)

@@ -587,3 +587,44 @@ def test_fix_with_invalid_longitude(writer):
         writer.write_fix(longitude=215)
 
     assert 'Invalid longitude:' in str(ex)
+
+
+def test_event(writer):
+    writer.write_event(datetime.time(12, 34, 56), 'PEV')
+    assert writer.fp.getvalue() == 'E123456PEV\r\n'
+
+
+def test_event_with_text(writer):
+    writer.write_event(datetime.time(1, 2, 3), 'PEV', 'This is a test')
+    assert writer.fp.getvalue() == 'E010203PEVThis is a test\r\n'
+
+
+def test_event_with_default_time(writer):
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_event('PEV')
+    assert writer.fp.getvalue() == 'E032134PEV\r\n'
+
+
+def test_event_with_default_time_and_text(writer):
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_event('PEV', 'Test')
+    assert writer.fp.getvalue() == 'E032134PEVTest\r\n'
+
+
+def test_event_with_invalid_arguments(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_event()
+
+    assert 'Invalid number of parameters received' in str(ex)
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_event(1, 2, 3, 4)
+
+    assert 'Invalid number of parameters received' in str(ex)
+
+
+def test_event_with_invalid_code(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_event('X')
+
+    assert 'Invalid event code' in str(ex)
