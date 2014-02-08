@@ -1,7 +1,7 @@
 import os
 import re
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 GITHUB_URL = 'https://github.com/Turbo87/aerofiles/'
 
@@ -50,5 +50,5 @@ setup(
         'Programming Language :: Python',
         'Topic :: Scientific/Engineering :: GIS',
     ],
-    packages=find_packages(exclude=['tests*']),
+    packages=['aerofiles'],
 )
