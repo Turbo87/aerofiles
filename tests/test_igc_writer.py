@@ -658,3 +658,57 @@ def test_satellites_with_invalid_arguments(writer):
         writer.write_satellites(1, 2, 3)
 
     assert 'Invalid number of parameters received' in str(ex)
+
+
+def test_k_record(writer):
+    writer.write_k_record_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+    writer.write_k_record(datetime.time(2, 3, 4), ['023', 13, 2])
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'J030810FXA1112SIU1315ENL',
+        'K02030402313002',
+    ]) + '\r\n'
+
+
+def test_k_record_with_default_time(writer):
+    writer.write_k_record_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+    with freeze_time("2012-01-14 03:21:34"):
+        writer.write_k_record(['023', 13, 2])
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'J030810FXA1112SIU1315ENL',
+        'K03213402313002',
+    ]) + '\r\n'
+
+
+def test_k_record_with_missing_arguments(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_k_record()
+
+    assert 'Invalid number of parameters received' in str(ex)
+
+
+def test_k_record_with_missing_extensions(writer):
+    writer.write_k_record_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_k_record(datetime.time(2, 3, 4), ['023'])
+
+    assert 'Number of extensions does not match declaration' in str(ex)
+
+
+def test_k_record_with_missing_extensions_declaration(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_k_record(datetime.time(2, 3, 4), ['023', 13, 2])
+
+    assert 'Invalid extensions list' in str(ex)
+
+
+def test_k_record_with_invalid_extension(writer):
+    writer.write_k_record_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
+
+    with pytest.raises(ValueError) as ex:
+        writer.write_k_record(datetime.time(2, 3, 4), ['x', 13, 2])
+
+    assert 'Extension value has wrong length' in str(ex)

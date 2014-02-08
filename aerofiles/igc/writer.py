@@ -22,6 +22,7 @@ class Writer:
     def __init__(self, fp=None):
         self.fp = fp
         self.fix_extensions = None
+        self.k_record_extensions = None
 
     def format_date(self, date):
         if isinstance(date, datetime.datetime):
@@ -475,8 +476,12 @@ class Writer:
             writer.write_k_record_extensions([('HDT', 5)])
             # -> J010812HDT
 
+        Use :meth:`~aerofiles.igc.Writer.write_k_record` to write the
+        associated records.
+
         :param extensions: a list of ``(extension, length)`` tuples
         """
+        self.k_record_extensions = extensions
         self.write_extensions('J', 8, extensions)
 
     def write_task_metadata(
@@ -802,3 +807,59 @@ class Writer:
             record += satellite
 
         self.write_record('F', record)
+
+    def write_k_record(self, *args):
+        """
+        Write a K record::
+
+            writer.write_k_record_extensions([
+                ('FXA', 3), ('SIU', 2), ('ENL', 3),
+            ])
+
+            writer.write_k_record(datetime.time(2, 3, 4), ['023', 13, 2])
+
+            # -> J030810FXA1112SIU1315ENL
+            # -> K02030402313002
+
+        :param time: UTC time of the k record (default:
+            :meth:`~datetime.datetime.utcnow`)
+        :param extensions: a list of extension values according to previous
+            declaration through
+            :meth:`~aerofiles.igc.Writer.write_k_record_extensions`
+        """
+
+        num_args = len(args)
+        if num_args not in (1, 2):
+            raise ValueError('Invalid number of parameters received')
+
+        if num_args == 1:
+            extensions = args[0]
+            time = None
+        else:
+            time, extensions = args
+
+        if time is None:
+            time = datetime.datetime.utcnow()
+
+        record = self.format_time(time)
+
+        if not (isinstance(extensions, list) and
+                isinstance(self.k_record_extensions, list)):
+            raise ValueError('Invalid extensions list')
+
+        if len(extensions) != len(self.k_record_extensions):
+            raise ValueError(
+                'Number of extensions does not match declaration')
+
+        for type_length, value in zip(self.k_record_extensions, extensions):
+            length = type_length[1]
+
+            if isinstance(value, (int, float)):
+                value = ('%0' + str(length) + 'd') % value
+
+            if len(value) != length:
+                raise ValueError('Extension value has wrong length')
+
+            record += value
+
+        self.write_record('K', record)
