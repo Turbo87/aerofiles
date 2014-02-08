@@ -725,3 +725,208 @@ def test_comment_with_invalid_source(writer):
         writer.write_comment('X', 'bla')
 
     assert 'Invalid source' in str(ex)
+
+
+def test_igc_example(writer):
+    writer.write_headers({
+        'manufacturer_code': 'XXX',
+        'logger_id': 'ABC',
+        'logger_id_extension': 'FLIGHT:1',
+        'date': datetime.date(2009, 7, 16),
+        'fix_accuracy': 35,
+        'pilot': 'Bloggs Bill D',
+        'glider_type': 'Schempp Ventus2cxa',
+        'glider_id': 'ABCD-1234',
+        'firmware_version': '6.4',
+        'hardware_version': '3.0',
+        'logger_type': 'Manufacturer, Model',
+        'gps_receiver': 'MarconiCanada:Superstar,12ch, max10000m',
+        'pressure_sensor': 'Sensyn, XYZ1111, max11000m',
+        'competition_id': 'XYZ-78910',
+        'competition_class': '15m Motor Glider',
+    })
+
+    writer.write_fix_extensions([
+        ('FXA', 3),
+        ('SIU', 2),
+        ('ENL', 3),
+    ])
+
+    writer.write_k_record_extensions([
+        ('HDT', 5),
+    ])
+
+    writer.write_task_metadata(
+        datetime.datetime(2001, 7, 15, 21, 38, 41),
+        datetime.datetime(2001, 7, 16),
+        turnpoints=2,
+        text='500K Tri',
+    )
+
+    writer.write_task_points([
+        (51.18932, -1.03165, 'Lasham Clubhouse'),
+        (51.16965, -1.04407, 'Lasham Start S, Start'),
+        (52.15153, -2.92045, 'Sarnesfield, TP1'),
+        (52.50245, -0.29353, 'Norman Cross, TP2'),
+        (51.16965, -1.04407, 'Lasham Start S, Finish'),
+        (51.18932, -1.03165, 'Lasham Clubhouse'),
+    ])
+
+    writer.write_satellites(datetime.time(16, 2, 40), [
+        4, 6, 9, 12, 36, 24, 22, 18, 21
+    ])
+
+    writer.write_fix(
+        datetime.time(16, 2, 40),
+        54 + 7.121 / 60,
+        -2 - 49.342 / 60,
+        valid=True,
+        pressure_alt=280,
+        gps_alt=421,
+        extensions=[205, 9, 950],
+    )
+
+    writer.write_event(datetime.time(16, 2, 45), 'PEV')
+
+    writer.write_fix(
+        datetime.time(16, 2, 45),
+        51 + 7.126 / 60,
+        -1 - 49.300 / 60,
+        valid=True,
+        pressure_alt=288,
+        gps_alt=429,
+        extensions=[195, 9, 20],
+    )
+    writer.write_fix(
+        datetime.time(16, 2, 50),
+        51 + 7.134 / 60,
+        -1 - 49.283 / 60,
+        valid=True,
+        pressure_alt=290,
+        gps_alt=432,
+        extensions=[210, 9, 15],
+    )
+    writer.write_fix(
+        datetime.time(16, 2, 55),
+        51 + 7.140 / 60,
+        -1 - 49.221 / 60,
+        valid=True,
+        pressure_alt=290,
+        gps_alt=430,
+        extensions=[200, 9, 12],
+    )
+
+    writer.write_satellites(datetime.time(16, 3, 0), [
+        6, 9, 12, 36, 24, 22, 18, 21
+    ])
+
+    writer.write_fix(
+        datetime.time(16, 3, 00),
+        51 + 7.150 / 60,
+        -1 - 49.202 / 60,
+        valid=True,
+        pressure_alt=291,
+        gps_alt=432,
+        extensions=[256, 8, 9],
+    )
+
+    writer.write_event(datetime.time(16, 3, 5), 'PEV')
+
+    writer.write_fix(
+        datetime.time(16, 3, 5),
+        51 + 7.180 / 60,
+        -1 - 49.185 / 60,
+        valid=True,
+        pressure_alt=291,
+        gps_alt=435,
+        extensions=[210, 8, 15],
+    )
+    writer.write_fix(
+        datetime.time(16, 3, 10),
+        51 + 7.212 / 60,
+        -1 - 49.174 / 60,
+        valid=True,
+        pressure_alt=293,
+        gps_alt=435,
+        extensions=[196, 8, 24],
+    )
+
+    writer.write_k_record(datetime.time(16, 2, 48), [90])
+
+    writer.write_fix(
+        datetime.time(16, 2, 48),
+        51 + 7.220 / 60,
+        -1 - 49.150 / 60,
+        valid=True,
+        pressure_alt=494,
+        gps_alt=436,
+        extensions=[190, 8, 18],
+    )
+    writer.write_fix(
+        datetime.time(16, 2, 52),
+        51 + 7.330 / 60,
+        -1 - 49.127 / 60,
+        valid=True,
+        pressure_alt=496,
+        gps_alt=439,
+        extensions=[195, 8, 15],
+    )
+
+    writer.write_comment('XXX', 'RURITANIAN STANDARD NATIONALS DAY 1')
+    writer.write_comment('XXX', 'FLIGHT TIME: 4:14:25, TASK SPEED:58.48KTS')
+
+    writer.write_security(
+        'REJNGJERJKNJKRE31895478537H43982FJN9248F942389T433T'
+        'JNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934'
+        'SKTO5427FGTNUT5621WKTC6714FT8957FGMKJ134527FGTR6751'
+        'K2489IERGNV3089IVJE39GO398535J3894N358954983FTGY546'
+        '12560DJUWT28719GTAOL5628FGWNIST78154INWTOLP7815FITN',
+        bytes_per_line=51
+    )
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        'AXXXABCFLIGHT:1',
+        'HFDTE160709',
+        'HFFXA035',
+        'HFPLTPILOTINCHARGE:Bloggs Bill D',
+        'HFGTYGLIDERTYPE:Schempp Ventus2cxa',
+        'HFGIDGLIDERID:ABCD-1234',
+        'HFDTM100GPSDATUM:WGS-1984',
+        'HFRFWFIRMWAREVERSION:6.4',
+        'HFRHWHARDWAREVERSION:3.0',
+        'HFFTYFRTYPE:Manufacturer, Model',
+        'HFGPSMarconiCanada:Superstar,12ch, max10000m',
+        'HFPRSPRESSALTSENSOR:Sensyn, XYZ1111, max11000m',
+        'HFCIDCOMPETITIONID:XYZ-78910',
+        'HFCCLCOMPETITIONCLASS:15m Motor Glider',
+        'I033638FXA3940SIU4143ENL',
+        'J010812HDT',
+        'C150701213841160701000102500K Tri',
+        'C5111359N00101899WLasham Clubhouse',
+        'C5110179N00102644WLasham Start S, Start',
+        'C5209092N00255227WSarnesfield, TP1',
+        'C5230147N00017612WNorman Cross, TP2',
+        'C5110179N00102644WLasham Start S, Finish',
+        'C5111359N00101899WLasham Clubhouse',
+        'F160240040609123624221821',
+        'B1602405407121N00249342WA002800042120509950',
+        'E160245PEV',
+        'B1602455107126N00149300WA002880042919509020',
+        'B1602505107134N00149283WA002900043221009015',
+        'B1602555107140N00149221WA002900043020009012',
+        'F1603000609123624221821',
+        'B1603005107150N00149202WA002910043225608009',
+        'E160305PEV',
+        'B1603055107180N00149185WA002910043521008015',
+        'B1603105107212N00149174WA002930043519608024',
+        'K16024800090',
+        'B1602485107220N00149150WA004940043619008018',
+        'B1602525107330N00149127WA004960043919508015',
+        'LXXXRURITANIAN STANDARD NATIONALS DAY 1',
+        'LXXXFLIGHT TIME: 4:14:25, TASK SPEED:58.48KTS',
+        'GREJNGJERJKNJKRE31895478537H43982FJN9248F942389T433T',
+        'GJNJK2489IERGNV3089IVJE9GO398535J3894N358954983O0934',
+        'GSKTO5427FGTNUT5621WKTC6714FT8957FGMKJ134527FGTR6751',
+        'GK2489IERGNV3089IVJE39GO398535J3894N358954983FTGY546',
+        'G12560DJUWT28719GTAOL5628FGWNIST78154INWTOLP7815FITN',
+    ]) + '\r\n'
