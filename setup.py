@@ -1,5 +1,4 @@
 import os
-import re
 
 from setuptools import setup
 
@@ -11,32 +10,13 @@ def read(*paths):
     with open(os.path.join(*paths), 'r') as f:
         return f.read()
 
-
-def read_markdown(*paths):
-    content = read(*paths)
-
-    # Change relative links to github links
-    content = re.sub(r'\]\(([^(http)])',
-                     '](' + GITHUB_URL + r'blob/master/\1', content)
-
-    # Strip images
-    content = re.sub(r'!\[([^\[\]\(\)]+)\]\([^\[\]\(\)]+\)', r'\1', content)
-
-    # Convert to rST if pypandoc available
-    try:
-        import pypandoc
-        return pypandoc.convert(content, 'rst', format='md')
-    except (IOError, ImportError):
-        return content
-
-
 setup(
     name='aerofiles',
     version='0.1.0',
     description=(
         'waypoint, task and tracklog file readers and writers for aviators'
     ),
-    long_description=read_markdown('README.md'),
+    long_description=read('README.rst'),
     url=GITHUB_URL,
     license='MIT',
     author='Tobias Bieniek',
