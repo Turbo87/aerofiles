@@ -12,7 +12,7 @@ def read(*paths):
 
 setup(
     name='aerofiles',
-    version='0.1.0',
+    version='0.1.1',
     description=(
         'waypoint, task and tracklog file readers and writers for aviators'
     ),
