@@ -62,3 +62,14 @@ class Writer:
         :param competition_id: competition id of the glider
         """
         self.write_config('COMPID', competition_id)
+
+    def write_competition_class(self, competition_class):
+        """
+        Write the competition class configuration::
+
+            writer.write_competition_class('Club')
+            # -> $PFLAC,S,COMPCLASS,Club
+
+        :param competition_class: competition class of the glider
+        """
+        self.write_config('COMPCLASS', competition_class)

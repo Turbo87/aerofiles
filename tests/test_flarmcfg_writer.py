@@ -46,3 +46,8 @@ def test_write_glider_id(writer):
 def test_write_competition_id(writer):
     writer.write_competition_id('75')
     assert writer.fp.getvalue() == '$PFLAC,S,COMPID,75\r\n'
+
+
+def test_write_competition_class(writer):
+    writer.write_competition_class('Club')
+    assert writer.fp.getvalue() == '$PFLAC,S,COMPCLASS,Club\r\n'
