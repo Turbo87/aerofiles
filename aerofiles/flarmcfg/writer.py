@@ -40,3 +40,14 @@ class Writer:
         :param glider_type: the type of glider
         """
         self.write_config('GLIDERTYPE', glider_type)
+
+    def write_glider_id(self, glider_id):
+        """
+        Write the glider registration configuration::
+
+            writer.write_glider_id('D-4449')
+            # -> $PFLAC,S,GLIDERID,D-4449
+
+        :param glider_id: the registration of the glider
+        """
+        self.write_config('GLIDERID', glider_id)
