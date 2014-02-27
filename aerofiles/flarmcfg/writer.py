@@ -177,3 +177,33 @@ class Writer:
         self.write_config(
             'ADDWP', '%s,%s,%s' % (latitude, longitude, description[0:50])
         )
+
+    def write_waypoints(self, points):
+        """
+        Write multiple task declaration points with one call::
+
+            writer.write_waypoints([
+                (None, None, 'TAKEOFF'),
+                (51.40375, 6.41275, 'START'),
+                (50.38210, 8.82105, 'TURN 1'),
+                (50.59045, 7.03555, 'TURN 2'),
+                (51.40375, 6.41275, 'FINISH'),
+                (None, None, 'LANDING'),
+            ])
+            # -> $PFLAC,S,ADDWP,0000000N,00000000E,TAKEOFF
+            # -> $PFLAC,S,ADDWP,5124225N,00624765E,START
+            # -> $PFLAC,S,ADDWP,5022926N,00849263E,TURN 1
+            # -> $PFLAC,S,ADDWP,5035427N,00702133E,TURN 2
+            # -> $PFLAC,S,ADDWP,5124225N,00624765E,FINISH
+            # -> $PFLAC,S,ADDWP,0000000N,00000000E,LANDING
+
+        see the :meth:`~aerofiles.flarmcfg.Writer.write_waypoint` method for
+        more information.
+
+        :param points: a list of ``(latitude, longitude, text)`` tuples.
+        """
+        for args in points:
+            if len(args) != 3:
+                raise ValueError('Invalid number of task point tuple items')
+
+            self.write_waypoint(*args)

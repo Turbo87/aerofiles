@@ -96,3 +96,32 @@ def test_waypoint_with_negative_coordinates(writer):
 def test_default_waypoint(writer):
     writer.write_waypoint()
     assert writer.fp.getvalue() == '$PFLAC,S,ADDWP,0000000N,00000000E,\r\n'
+
+
+def test_waypoints(writer):
+    writer.write_waypoints([
+        (None, None, 'TAKEOFF'),
+        (51.40375, 6.41275, 'START'),
+        (50.38210, 8.82105, 'TURN 1'),
+        (50.59045, 7.03555, 'TURN 2'),
+        (51.40375, 6.41275, 'FINISH'),
+        (None, None, 'LANDING'),
+    ])
+
+    assert writer.fp.getvalue() == '\r\n'.join([
+        '$PFLAC,S,ADDWP,0000000N,00000000E,TAKEOFF',
+        '$PFLAC,S,ADDWP,5124225N,00624765E,START',
+        '$PFLAC,S,ADDWP,5022926N,00849263E,TURN 1',
+        '$PFLAC,S,ADDWP,5035427N,00702133E,TURN 2',
+        '$PFLAC,S,ADDWP,5124225N,00624765E,FINISH',
+        '$PFLAC,S,ADDWP,0000000N,00000000E,LANDING',
+    ]) + '\r\n'
+
+
+def test_invalid_waypoints(writer):
+    with pytest.raises(ValueError) as ex:
+        writer.write_waypoints([
+            (None, None, None, None),
+        ])
+
+    assert 'Invalid number of task point tuple items' in str(ex)
