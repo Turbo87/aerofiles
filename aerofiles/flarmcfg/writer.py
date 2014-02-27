@@ -29,3 +29,14 @@ class Writer:
         :param pilot: name of the pilot
         """
         self.write_config('PILOT', pilot)
+
+    def write_glider_type(self, glider_type):
+        """
+        Write the glider type configuration::
+
+            writer.write_glider_type('Hornet')
+            # -> $PFLAC,S,GLIDERTYPE,Hornet
+
+        :param glider_type: the type of glider
+        """
+        self.write_config('GLIDERTYPE', glider_type)
