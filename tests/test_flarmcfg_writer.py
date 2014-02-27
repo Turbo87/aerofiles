@@ -71,3 +71,28 @@ def test_write_task_declaration(writer):
 def test_write_default_task_declaration(writer):
     writer.write_task_declaration()
     assert writer.fp.getvalue() == '$PFLAC,S,NEWTASK,\r\n'
+
+
+def test_waypoint(writer):
+    writer.write_waypoint(
+        latitude=(51 + 7.345 / 60.),
+        longitude=(6 + 24.765 / 60.),
+        description='Meiersberg',
+    )
+    assert writer.fp.getvalue() == \
+        '$PFLAC,S,ADDWP,5107345N,00624765E,Meiersberg\r\n'
+
+
+def test_waypoint_with_negative_coordinates(writer):
+    writer.write_waypoint(
+        latitude=-(12 + 32.112 / 60.),
+        longitude=-(178 + .001 / 60.),
+        description='TAKEOFF',
+    )
+    assert writer.fp.getvalue() == \
+        '$PFLAC,S,ADDWP,1232112S,17800001W,TAKEOFF\r\n'
+
+
+def test_default_waypoint(writer):
+    writer.write_waypoint()
+    assert writer.fp.getvalue() == '$PFLAC,S,ADDWP,0000000N,00000000E,\r\n'

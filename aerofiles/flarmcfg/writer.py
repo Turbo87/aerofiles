@@ -13,6 +13,37 @@ class Writer:
     def __init__(self, fp=None):
         self.fp = fp
 
+    def format_coordinate(self, value, default=None, is_latitude=True):
+        if value is None:
+            return default
+
+        if is_latitude:
+            if not -90 <= value <= 90:
+                raise ValueError('Invalid latitude: %s' % value)
+
+            hemisphere = 'S' if value < 0 else 'N'
+            format = '%02d%05d%s'
+
+        else:
+            if not -180 <= value <= 180:
+                raise ValueError('Invalid longitude: %s' % value)
+
+            hemisphere = 'W' if value < 0 else 'E'
+            format = '%03d%05d%s'
+
+        value = abs(value)
+        degrees = int(value)
+        milliminutes = round((value - degrees) * 60000)
+        return format % (degrees, milliminutes, hemisphere)
+
+    def format_latitude(self, value):
+        return self.format_coordinate(
+            value, default='0000000N', is_latitude=True)
+
+    def format_longitude(self, value):
+        return self.format_coordinate(
+            value, default='00000000E', is_latitude=False)
+
     def write_line(self, line):
         self.fp.write(line + '\r\n')
 
@@ -112,3 +143,37 @@ class Writer:
             description = ''
 
         self.write_config('NEWTASK', description[0:50])
+
+    def write_waypoint(self, latitude=None, longitude=None, description=None):
+        """
+        Adds a waypoint to the current task declaration. The first and the
+        last waypoint added will be treated as takeoff and landing location,
+        respectively.
+
+        ::
+
+            writer.write_waypoint(
+                latitude=(51 + 7.345 / 60.),
+                longitude=(6 + 24.765 / 60.),
+                text='Meiersberg',
+            )
+            # -> $PFLAC,S,ADDWP,5107345N,00624765E,Meiersberg
+
+        If no ``latitude`` or ``longitude`` is passed, the fields will be
+        filled with zeros (i.e. unknown coordinates). This however should only
+        be used for takeoff  and landing points.
+
+        :param latitude: latitude of the point (between -90 and 90 degrees)
+        :param longitude: longitude of the point (between -180 and 180 degrees)
+        :param description: arbitrary text description of waypoint
+        """
+
+        if not description:
+            description = ''
+
+        latitude = self.format_latitude(latitude)
+        longitude = self.format_longitude(longitude)
+
+        self.write_config(
+            'ADDWP', '%s,%s,%s' % (latitude, longitude, description[0:50])
+        )
