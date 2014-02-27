@@ -95,3 +95,20 @@ class Writer:
         :param interval: competition class of the glider
         """
         self.write_config('LOGINT', str(interval))
+
+    def write_task_declaration(self, description=None):
+        """
+        Start a new task declaration. Any old task declaration will be cleared
+        by this command::
+
+            writer.write_task_declaration('My Task')
+            # -> $PFLAC,S,NEWTASK,My Task
+
+        :param description: optional text description of task, e.g.
+            "500km triangle"; can be an empty string; will be trimmed to
+            50 characters
+        """
+        if not description:
+            description = ''
+
+        self.write_config('NEWTASK', description[0:50])

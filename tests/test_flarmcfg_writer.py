@@ -61,3 +61,13 @@ def test_write_competition_class(writer):
 def test_write_logger_interval(writer):
     writer.write_logger_interval(4)
     assert writer.fp.getvalue() == '$PFLAC,S,LOGINT,4\r\n'
+
+
+def test_write_task_declaration(writer):
+    writer.write_task_declaration('My Task')
+    assert writer.fp.getvalue() == '$PFLAC,S,NEWTASK,My Task\r\n'
+
+
+def test_write_default_task_declaration(writer):
+    writer.write_task_declaration()
+    assert writer.fp.getvalue() == '$PFLAC,S,NEWTASK,\r\n'
