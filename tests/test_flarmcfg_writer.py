@@ -33,6 +33,11 @@ def test_write_pilot(writer):
     assert writer.fp.getvalue() == '$PFLAC,S,PILOT,FTV Spandau\r\n'
 
 
+def test_write_copilot(writer):
+    writer.write_copilot('John Doe')
+    assert writer.fp.getvalue() == '$PFLAC,S,COPIL,John Doe\r\n'
+
+
 def test_write_glider_type(writer):
     writer.write_glider_type('Astir CS')
     assert writer.fp.getvalue() == '$PFLAC,S,GLIDERTYPE,Astir CS\r\n'
