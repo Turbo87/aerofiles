@@ -41,3 +41,8 @@ def test_write_glider_type(writer):
 def test_write_glider_id(writer):
     writer.write_glider_id('D-8551')
     assert writer.fp.getvalue() == '$PFLAC,S,GLIDERID,D-8551\r\n'
+
+
+def test_write_competition_id(writer):
+    writer.write_competition_id('75')
+    assert writer.fp.getvalue() == '$PFLAC,S,COMPID,75\r\n'
