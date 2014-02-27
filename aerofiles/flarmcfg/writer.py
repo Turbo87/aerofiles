@@ -18,3 +18,14 @@ class Writer:
 
     def write_config(self, key, value):
         self.write_line('$PFLAC,S,%s,%s' % (key, value))
+
+    def write_pilot(self, pilot):
+        """
+        Write the pilot name configuration::
+
+            writer.write_pilot('Tobias Bieniek')
+            # -> $PFLAC,S,PILOT,Tobias Bieniek
+
+        :param pilot: name of the pilot
+        """
+        self.write_config('PILOT', pilot)

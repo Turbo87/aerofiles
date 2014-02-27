@@ -26,3 +26,8 @@ def test_write_line(writer):
 def test_write_config(writer):
     writer.write_config('ID', '4B3E60')
     assert writer.fp.getvalue() == '$PFLAC,S,ID,4B3E60\r\n'
+
+
+def test_write_pilot(writer):
+    writer.write_pilot('FTV Spandau')
+    assert writer.fp.getvalue() == '$PFLAC,S,PILOT,FTV Spandau\r\n'
