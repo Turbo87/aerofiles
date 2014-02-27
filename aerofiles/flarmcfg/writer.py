@@ -73,3 +73,14 @@ class Writer:
         :param competition_class: competition class of the glider
         """
         self.write_config('COMPCLASS', competition_class)
+
+    def write_logger_interval(self, interval):
+        """
+        Write the logger interval configuration::
+
+            writer.write_logger_interval(4)
+            # -> $PFLAC,S,LOGINT,4
+
+        :param interval: competition class of the glider
+        """
+        self.write_config('LOGINT', str(interval))

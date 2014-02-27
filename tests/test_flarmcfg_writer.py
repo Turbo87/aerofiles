@@ -51,3 +51,8 @@ def test_write_competition_id(writer):
 def test_write_competition_class(writer):
     writer.write_competition_class('Club')
     assert writer.fp.getvalue() == '$PFLAC,S,COMPCLASS,Club\r\n'
+
+
+def test_write_logger_interval(writer):
+    writer.write_logger_interval(4)
+    assert writer.fp.getvalue() == '$PFLAC,S,LOGINT,4\r\n'
