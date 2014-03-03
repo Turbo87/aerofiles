@@ -13,6 +13,7 @@ Features
 -  SeeYou CUP file reader (``aerofiles.seeyou``)
 -  WELT2000 file reader (``aerofiles.welt2000``)
 -  IGC file writer (``aerofiles.igc``)
+-  Flarm configuration file writer (``aerofiles.flarmcfg``)
 
 Development Environment
 -----------------------
