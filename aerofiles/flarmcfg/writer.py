@@ -2,12 +2,15 @@
 class Writer:
 
     """
-    A writer for the Flarm configuration file format.
+    A writer for the Flarm configuration file format::
 
-    see http://flarm.de/support/manual/FLARM_DataportManual_v6.00E.pdf
+        with open('flarmcfg.txt', 'w') as fp:
+            writer = Writer(fp)
 
-    Example:
-    http://www.ftv-spandau.de/streckenfluege/flarm-informationen/flarmcfg.txt
+    see `FLARM_DataportManual_v6.00E.pdf
+    <http://flarm.de/support/manual/FLARM_DataportManual_v6.00E.pdf>`_ and
+    annotated example `flarmcfg.txt
+    <http://www.ftv-spandau.de/streckenfluege/flarm-informationen/flarmcfg.txt>`_
     """
 
     def __init__(self, fp=None):
