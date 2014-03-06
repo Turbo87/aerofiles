@@ -1,0 +1,6 @@
+aerofiles.welt2000
+==================
+
+.. autoclass:: aerofiles.welt2000.Reader
+   :members:
+   :inherited-members:
