@@ -2,26 +2,7 @@ from aerofiles import ParserError
 from aerofiles.util import units
 
 from .reader import Reader
-
-
-class WaypointStyles:
-    NORMAL = 1
-    AIRFIELD_GRASS = 2
-    OUTLANDING = 3
-    GLIDERSITE = 4
-    AIRFIELD_SOLID = 5
-    MOUNTAIN_PASS = 6
-    MOUNTAIN_TOP = 7
-    SENDER = 8
-    VOR = 9
-    NDB = 10
-    COOL_TOWER = 11
-    DAM = 12
-    TUNNEL = 13
-    BRIDGE = 14
-    POWER_PLANT = 15
-    CASTLE = 16
-    INTERSECTION = 17
+from .common import WaypointStyles
 
 
 WAYPOINT_STYLE_MAPPING = {
