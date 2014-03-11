@@ -17,3 +17,11 @@ class WaypointStyles:
     POWER_PLANT = 15
     CASTLE = 16
     INTERSECTION = 17
+
+
+class ObservationZoneStyle:
+    FIXED = 0
+    SYMMETRICAL = 1
+    TO_NEXT_POINT = 2
+    TO_PREVIOUS_POINT = 3
+    TO_START_POINT = 4

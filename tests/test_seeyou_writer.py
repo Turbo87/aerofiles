@@ -6,7 +6,7 @@ try:
 except ImportError:
     from io import StringIO
 
-from aerofiles.seeyou import Writer, WaypointStyles
+from aerofiles.seeyou import Writer, WaypointStyles, ObservationZoneStyle
 
 
 @pytest.fixture()
@@ -205,7 +205,7 @@ def test_write_observation_zone(writer_with_waypoints):
     )
 
     writer_with_waypoints.write_observation_zone(
-        1, style=0, radius=35000, angle=30,
+        1, style=ObservationZoneStyle.FIXED, radius=35000, angle=30,
         radius2=12000, angle2=12, angle12=123.4
     )
 
