@@ -9,7 +9,7 @@ instructions for web development with Flask.
    :maxdepth: 2
 
    installation
-   igc_file_writing
+   guide/igc-writing
 
 API Reference
 -------------
