@@ -267,12 +267,12 @@ class Writer:
             fields.append('WpDis=%s' % kw['waypoint_distance'])
 
         if 'distance_tolerance' in kw:
-            fields.append('NearDis=' +
-                self.format_distance(kw['distance_tolerance']))
+            fields.append(
+                'NearDis=' + self.format_distance(kw['distance_tolerance']))
 
         if 'altitude_tolerance' in kw:
-            fields.append('NearAlt=' +
-                self.format_distance(kw['altitude_tolerance']))
+            fields.append(
+                'NearAlt=' + self.format_distance(kw['altitude_tolerance']))
 
         if 'min_distance' in kw:
             fields.append('MinDis=%s' % kw['min_distance'])
