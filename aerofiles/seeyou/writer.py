@@ -18,6 +18,10 @@ class Writer:
     DISTANCE_FORMAT_INT = '%d%s'
     DISTANCE_FORMAT_OTHER = '%s%s'
 
+    ANGLE_FORMAT_FLOAT = '%.1f'
+    ANGLE_FORMAT_INT = '%d'
+    ANGLE_FORMAT_OTHER = '%s'
+
     def __init__(self, fp):
         self.fp = fp
         self.wps = set()
@@ -56,6 +60,17 @@ class Writer:
 
     def format_longitude(self, value):
         return self.format_coordinate(value, is_latitude=False)
+
+    def format_angle(self, angle):
+        if angle is None or angle == '':
+            return ''
+
+        if isinstance(angle, float):
+            return self.ANGLE_FORMAT_FLOAT % angle
+        elif isinstance(angle, int):
+            return self.ANGLE_FORMAT_INT % angle
+        else:
+            return self.ANGLE_FORMAT_OTHER % angle
 
     def format_distance(self, distance):
         if distance is None or distance == '':
@@ -276,5 +291,59 @@ class Writer:
 
         if 'bonus' in kw:
             fields.append('Bonus=%d' % kw['bonus'])
+
+        self.write_fields(fields)
+
+    def write_observation_zone(self, num, **kw):
+
+        """
+        Write observation zone information for a taskpoint::
+
+            writer.write_task_options(
+                start_time=time(12, 34, 56),
+                task_time=timedelta(hours=1, minutes=45, seconds=12),
+                waypoint_distance=False,
+                distance_tolerance=(0.7, 'km'),
+                altitude_tolerance=300.0,
+            )
+            # -> Options,NoStart=12:34:56,TaskTime=01:45:12,WpDis=False,NearDis=0.7km,NearAlt=300.0m
+
+        :param num: consecutive number of a waypoint (``0``: Start)
+        :param style: direction (``0``: Fixed value, ``1``: Symmetrical, ``2``:
+            To next point, ``3``: To previous point, ``4``: To start point
+        :param radius: radius 1 in meter or as ``(radius, unit)`` tuple
+        :param angle: angle 1 in degrees
+        :param radius2: radius 2 in meter or as ``(radius, unit)`` tuple
+        :param angle 2: angle 2 in degrees
+        :param angle12: angle 12 in degress
+        :param line: should be ``True`` if start or finish line
+        """
+
+        if not self.in_task_section:
+            raise RuntimeError(
+                'Observation zones have to be written in task section')
+
+        fields = ['ObsZone=%d' % num]
+
+        if 'style' in kw:
+            fields.append('Style=%d' % kw['style'])
+
+        if 'radius' in kw:
+            fields.append('R1=' + self.format_distance(kw['radius']))
+
+        if 'angle' in kw:
+            fields.append('A1=' + self.format_angle(kw['angle']))
+
+        if 'radius2' in kw:
+            fields.append('R2=' + self.format_distance(kw['radius2']))
+
+        if 'angle2' in kw:
+            fields.append('A2=' + self.format_angle(kw['angle2']))
+
+        if 'angle12' in kw:
+            fields.append('A12=' + self.format_angle(kw['angle12']))
+
+        if 'line' in kw:
+            fields.append('Line=' + ('1' if kw['line'] else '0'))
 
         self.write_fields(fields)

@@ -193,3 +193,39 @@ def test_write_task_options2(writer_with_waypoints):
 def test_write_task_options_in_waypoints_section(writer_with_waypoints):
     with pytest.raises(RuntimeError):
         writer_with_waypoints.write_task_options()
+
+
+def test_write_observation_zone(writer_with_waypoints):
+    writer_with_waypoints.write_task('TestTask', [
+        'TP1', 'TP2', 'TP3', 'TP1',
+    ])
+
+    writer_with_waypoints.write_observation_zone(
+        0, style=2, radius=400, angle=180, line=True,
+    )
+
+    writer_with_waypoints.write_observation_zone(
+        1, style=0, radius=35000, angle=30,
+        radius2=12000, angle2=12, angle12=123.4
+    )
+
+    writer_with_waypoints.write_observation_zone(
+        2, style=3, radius=(2000, 'm'), angle=180, line=True,
+    )
+
+    assert writer_with_waypoints.fp.getvalue() == \
+        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        '\r\n' \
+        '-----Related Tasks-----\r\n' \
+        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        'ObsZone=0,Style=2,R1=400m,A1=180,Line=1\r\n' \
+        'ObsZone=1,Style=0,R1=35000m,A1=30,R2=12000m,A2=12,A12=123.4\r\n' \
+        'ObsZone=2,Style=3,R1=2000m,A1=180,Line=1\r\n'
+
+
+def test_write_observation_zone_in_waypoints_section(writer_with_waypoints):
+    with pytest.raises(RuntimeError):
+        writer_with_waypoints.write_observation_zone(0)
