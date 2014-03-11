@@ -10,6 +10,7 @@ class Writer:
     """
 
     HEADER = 'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc'
+    DIVIDER = '-----Related Tasks-----'
 
     DISTANCE_FORMAT_FLOAT = '%.1f%s'
     DISTANCE_FORMAT_INT = '%d%s'
@@ -17,6 +18,9 @@ class Writer:
 
     def __init__(self, fp):
         self.fp = fp
+        self.wps = set()
+        self.in_task_section = False
+
         self.write_line(self.HEADER)
 
     def escape(self, field):
@@ -110,6 +114,9 @@ class Writer:
             limit)
         """
 
+        if self.in_task_section:
+            raise RuntimeError('Waypoints must be written before any tasks')
+
         if not name:
             raise ValueError('Waypoint name must not be empty')
 
@@ -126,5 +133,48 @@ class Writer:
             self.escape(frequency),
             self.escape(description),
         ]
+
+        self.write_fields(fields)
+
+        self.wps.add(name)
+
+    def write_task(self, description, waypoints):
+
+        """
+        Write a task definition::
+
+            writer.write_task('500 km FAI', [
+                'MEIER',
+                'BRILO',
+                'AILER',
+                'MEIER',
+            ])
+            # -> "500 km FAI","MEIER","BRILO","AILER","MEIER"
+
+        Make sure that the referenced waypoints have been written with
+        :meth:`~aerofiles.seeyou.Writer.write_waypoint` before writing the
+        task. The task section divider will be written to automatically when
+        :meth:`~aerofiles.seeyou.Writer.write_task` is called the first time.
+        After the first task is written
+        :meth:`~aerofiles.seeyou.Writer.write_waypoint` must not be called
+        anymore.
+
+        :param description: description of the task (may be blank)
+        :param waypoints: list of waypoints in the task (names must match the
+            long names of previously written waypoints)
+        """
+
+        if not self.in_task_section:
+            self.write_line()
+            self.write_line(self.DIVIDER)
+            self.in_task_section = True
+
+        fields = [self.escape(description)]
+
+        for waypoint in waypoints:
+            if waypoint not in self.wps:
+                raise ValueError('Waypoint "%s" was not found' % waypoint)
+
+            fields.append(self.escape(waypoint))
 
         self.write_fields(fields)
