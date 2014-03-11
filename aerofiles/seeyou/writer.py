@@ -135,14 +135,14 @@ class Writer:
             http://www.iana.org/cctld/cctld-whois.htm)
         :param latitude: latitude of the point (between -90 and 90 degrees)
         :param longitude: longitude of the point (between -180 and 180 degrees)
-        :param elevation: elevation of the waypoint in meters or as (elevation,
-            unit) tuple
+        :param elevation: elevation of the waypoint in meters or as
+            ``(elevation, unit)`` tuple
         :param style: the waypoint type (see official specification for the
             list of valid styles, defaults to "Normal")
         :param runway_direction: heading of the runway in degrees if the
             waypoint is landable
-        :param runway_length: length of the runway in meters or as (length,
-            unit) tuple if the waypoint is landable
+        :param runway_length: length of the runway in meters or as ``(length,
+            unit)`` tuple if the waypoint is landable
         :param frequency: radio frequency of the airport
         :param description: optional description of the waypoint (no length
             limit)
@@ -234,9 +234,9 @@ class Writer:
         :param waypoint_distance: task distance calculation (``False``: use
             fixes, ``True``: use waypoints)
         :param distance_tolerance: distance tolerance in meters or as
-            (distance, unit) tuple
+            ``(distance, unit)`` tuple
         :param altitude_tolerance: altitude tolerance in meters or as
-            (distance, unit) tuple
+            ``(distance, unit)`` tuple
         :param min_distance: "uncompleted leg (``False``: calculate maximum
             distance from last observation zone)"
         :param random_order: if ``True``, then Random order of waypoints is
