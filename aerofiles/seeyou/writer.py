@@ -222,6 +222,18 @@ class Writer:
             (distance, unit) tuple
         :param altitude_tolerance: altitude tolerance in meters or as
             (distance, unit) tuple
+        :param min_distance: "uncompleted leg (``False``: calculate maximum
+            distance from last observation zone)"
+        :param random_order: if ``True``, then Random order of waypoints is
+            checked
+        :param max_points: maximum number of points
+        :param before_points: number of mandatory waypoints at the beginning.
+            ``1`` means start line only, ``2`` means start line plus first
+            point in task sequence (Task line).
+        :param after_points: number of mandatory waypoints at the end. ``1``
+            means finish line only, ``2`` means finish line and one point
+            before finish in task sequence (Task line).
+        :param bonus: bonus for crossing the finish line
         """
 
         if not self.in_task_section:
@@ -246,5 +258,23 @@ class Writer:
         if 'altitude_tolerance' in kw:
             fields.append('NearAlt=' +
                 self.format_distance(kw['altitude_tolerance']))
+
+        if 'min_distance' in kw:
+            fields.append('MinDis=%s' % kw['min_distance'])
+
+        if 'random_order' in kw:
+            fields.append('RandomOrder=%s' % kw['random_order'])
+
+        if 'max_points' in kw:
+            fields.append('MaxPts=%d' % kw['max_points'])
+
+        if 'before_points' in kw:
+            fields.append('BeforePts=%d' % kw['before_points'])
+
+        if 'after_points' in kw:
+            fields.append('AfterPts=%d' % kw['after_points'])
+
+        if 'bonus' in kw:
+            fields.append('Bonus=%d' % kw['bonus'])
 
         self.write_fields(fields)

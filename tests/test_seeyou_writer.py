@@ -164,6 +164,32 @@ def test_write_task_options(writer_with_waypoints):
         'NearDis=0.7km,NearAlt=300.0m\r\n'
 
 
+def test_write_task_options2(writer_with_waypoints):
+    writer_with_waypoints.write_task('TestTask', [
+        'TP1', 'TP2', 'TP3', 'TP1',
+    ])
+
+    writer_with_waypoints.write_task_options(
+        min_distance=False,
+        random_order=False,
+        max_points=5,
+        before_points=1,
+        after_points=2,
+        bonus=200,
+    )
+
+    assert writer_with_waypoints.fp.getvalue() == \
+        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        '\r\n' \
+        '-----Related Tasks-----\r\n' \
+        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        'Options,MinDis=False,RandomOrder=False,MaxPts=5,BeforePts=1,' \
+        'AfterPts=2,Bonus=200\r\n'
+
+
 def test_write_task_options_in_waypoints_section(writer_with_waypoints):
     with pytest.raises(RuntimeError):
         writer_with_waypoints.write_task_options()
