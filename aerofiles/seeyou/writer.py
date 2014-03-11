@@ -1,3 +1,5 @@
+import datetime
+
 from .converter import WaypointStyles
 
 
@@ -71,6 +73,23 @@ class Writer:
             return self.DISTANCE_FORMAT_INT % (distance, unit)
         else:
             return self.DISTANCE_FORMAT_OTHER % (distance, unit)
+
+    def format_time(self, time):
+        if isinstance(time, datetime.datetime):
+            time = time.time()
+
+        if isinstance(time, datetime.time):
+            time = time.strftime('%H:%M:%S')
+
+        return time
+
+    def format_timedelta(self, timedelta):
+        if isinstance(timedelta, datetime.timedelta):
+            hours, remainder = divmod(timedelta.total_seconds(), 3600)
+            minutes, seconds = divmod(remainder, 60)
+            timedelta = '%02d:%02d:%02d' % (hours, minutes, seconds)
+
+        return timedelta
 
     def write_line(self, line=''):
         self.fp.write(line + '\r\n')
@@ -176,5 +195,56 @@ class Writer:
                 raise ValueError('Waypoint "%s" was not found' % waypoint)
 
             fields.append(self.escape(waypoint))
+
+        self.write_fields(fields)
+
+    def write_task_options(self, **kw):
+
+        """
+        Write an options line for a task definition::
+
+            writer.write_task_options(
+                start_time=time(12, 34, 56),
+                task_time=timedelta(hours=1, minutes=45, seconds=12),
+                waypoint_distance=False,
+                distance_tolerance=(0.7, 'km'),
+                altitude_tolerance=300.0,
+            )
+            # -> Options,NoStart=12:34:56,TaskTime=01:45:12,WpDis=False,NearDis=0.7km,NearAlt=300.0m
+
+        :param start_time: opening time of the start line as
+            :class:`datetime.time` or string
+        :param task_time: designated time for the task as
+            :class:`datetime.timedelta` or string
+        :param waypoint_distance: task distance calculation (``False``: use
+            fixes, ``True``: use waypoints)
+        :param distance_tolerance: distance tolerance in meters or as
+            (distance, unit) tuple
+        :param altitude_tolerance: altitude tolerance in meters or as
+            (distance, unit) tuple
+        """
+
+        if not self.in_task_section:
+            raise RuntimeError(
+                'Task options have to be written in task section')
+
+        fields = ['Options']
+
+        if 'start_time' in kw:
+            fields.append('NoStart=' + self.format_time(kw['start_time']))
+
+        if 'task_time' in kw:
+            fields.append('TaskTime=' + self.format_timedelta(kw['task_time']))
+
+        if 'waypoint_distance' in kw:
+            fields.append('WpDis=%s' % kw['waypoint_distance'])
+
+        if 'distance_tolerance' in kw:
+            fields.append('NearDis=' +
+                self.format_distance(kw['distance_tolerance']))
+
+        if 'altitude_tolerance' in kw:
+            fields.append('NearAlt=' +
+                self.format_distance(kw['altitude_tolerance']))
 
         self.write_fields(fields)

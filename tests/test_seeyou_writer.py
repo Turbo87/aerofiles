@@ -1,4 +1,5 @@
 import pytest
+import datetime
 
 try:
     from StringIO import StringIO
@@ -136,3 +137,33 @@ def test_write_waypoint_after_write_task(writer_with_waypoints):
 
     with pytest.raises(RuntimeError):
         writer_with_waypoints.write_waypoint('XYZ', 'XYZ', 'DE', 0, 0)
+
+
+def test_write_task_options(writer_with_waypoints):
+    writer_with_waypoints.write_task('TestTask', [
+        'TP1', 'TP2', 'TP3', 'TP1',
+    ])
+
+    writer_with_waypoints.write_task_options(
+        start_time=datetime.time(12, 34, 56),
+        task_time=datetime.timedelta(hours=1, minutes=45, seconds=12),
+        waypoint_distance=False,
+        distance_tolerance=(0.7, 'km'),
+        altitude_tolerance=300.0,
+    )
+
+    assert writer_with_waypoints.fp.getvalue() == \
+        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        '\r\n' \
+        '-----Related Tasks-----\r\n' \
+        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        'Options,NoStart=12:34:56,TaskTime=01:45:12,WpDis=False,' \
+        'NearDis=0.7km,NearAlt=300.0m\r\n'
+
+
+def test_write_task_options_in_waypoints_section(writer_with_waypoints):
+    with pytest.raises(RuntimeError):
+        writer_with_waypoints.write_task_options()
