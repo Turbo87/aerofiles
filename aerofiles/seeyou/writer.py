@@ -1,6 +1,6 @@
 import datetime
 
-from .converter import WaypointStyles
+from .converter import WaypointStyle
 
 
 class Writer:
@@ -114,7 +114,7 @@ class Writer:
 
     def write_waypoint(
             self, name, shortname, country, latitude, longitude, elevation='',
-            style=WaypointStyles.NORMAL, runway_direction='', runway_length='',
+            style=WaypointStyle.NORMAL, runway_direction='', runway_length='',
             frequency='', description=''):
 
         """

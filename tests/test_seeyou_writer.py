@@ -6,7 +6,7 @@ try:
 except ImportError:
     from io import StringIO
 
-from aerofiles.seeyou import Writer, WaypointStyles, ObservationZoneStyle
+from aerofiles.seeyou import Writer, WaypointStyle, ObservationZoneStyle
 
 
 @pytest.fixture()
@@ -96,7 +96,7 @@ def test_write_waypoint_with_metadata(writer):
         (51 + 7.345 / 60.),
         (6 + 24.765 / 60.),
         (146., 'm'),
-        WaypointStyles.AIRFIELD_GRASS,
+        WaypointStyle.AIRFIELD_GRASS,
         120,
         930,
         '130.125',

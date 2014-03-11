@@ -2,27 +2,27 @@ from aerofiles import ParserError
 from aerofiles.util import units
 
 from .reader import Reader
-from .common import WaypointStyles
+from .common import WaypointStyle
 
 
 WAYPOINT_STYLE_MAPPING = {
-    WaypointStyles.NORMAL: [],
-    WaypointStyles.AIRFIELD_GRASS: ['landable', 'airfield'],
-    WaypointStyles.OUTLANDING: ['landable'],
-    WaypointStyles.GLIDERSITE: ['landable', 'airfield', 'glidersite'],
-    WaypointStyles.AIRFIELD_SOLID: ['landable', 'airfield'],
-    WaypointStyles.MOUNTAIN_PASS: ['mountain-pass'],
-    WaypointStyles.MOUNTAIN_TOP: ['mountain-top'],
-    WaypointStyles.SENDER: ['sender'],
-    WaypointStyles.VOR: ['vor'],
-    WaypointStyles.NDB: ['ndb'],
-    WaypointStyles.COOL_TOWER: ['tower'],
-    WaypointStyles.DAM: ['dam'],
-    WaypointStyles.TUNNEL: ['tunnel'],
-    WaypointStyles.BRIDGE: ['bridge'],
-    WaypointStyles.POWER_PLANT: ['power-plant'],
-    WaypointStyles.CASTLE: ['castle'],
-    WaypointStyles.INTERSECTION: ['intersection'],
+    WaypointStyle.NORMAL: [],
+    WaypointStyle.AIRFIELD_GRASS: ['landable', 'airfield'],
+    WaypointStyle.OUTLANDING: ['landable'],
+    WaypointStyle.GLIDERSITE: ['landable', 'airfield', 'glidersite'],
+    WaypointStyle.AIRFIELD_SOLID: ['landable', 'airfield'],
+    WaypointStyle.MOUNTAIN_PASS: ['mountain-pass'],
+    WaypointStyle.MOUNTAIN_TOP: ['mountain-top'],
+    WaypointStyle.SENDER: ['sender'],
+    WaypointStyle.VOR: ['vor'],
+    WaypointStyle.NDB: ['ndb'],
+    WaypointStyle.COOL_TOWER: ['tower'],
+    WaypointStyle.DAM: ['dam'],
+    WaypointStyle.TUNNEL: ['tunnel'],
+    WaypointStyle.BRIDGE: ['bridge'],
+    WaypointStyle.POWER_PLANT: ['power-plant'],
+    WaypointStyle.CASTLE: ['castle'],
+    WaypointStyle.INTERSECTION: ['intersection'],
 }
 
 UNITS_MAPPING = {
@@ -91,9 +91,9 @@ class Converter:
         runways = []
         runway = {}
 
-        if style == WaypointStyles.AIRFIELD_GRASS:
+        if style == WaypointStyle.AIRFIELD_GRASS:
             runway['surface'] = 'grass'
-        elif style == WaypointStyles.AIRFIELD_SOLID:
+        elif style == WaypointStyle.AIRFIELD_SOLID:
             runway['surface'] = 'solid'
 
         if dir is not None:

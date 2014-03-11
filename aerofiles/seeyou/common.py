@@ -1,5 +1,5 @@
 
-class WaypointStyles:
+class WaypointStyle:
     NORMAL = 1
     AIRFIELD_GRASS = 2
     OUTLANDING = 3
