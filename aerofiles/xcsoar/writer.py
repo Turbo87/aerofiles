@@ -16,6 +16,12 @@ class Writer:
         params.sort()
         return _name + ' ' + ' '.join(params)
 
+    def convert_bool(self, kw, key):
+        if key in kw:
+            value = kw[key]
+            if isinstance(value, bool):
+                kw[key] = (1 if value else 0)
+
     @contextmanager
     def write_tag_with_content(self, _name, **kw):
         self.write_line('<%s>' % self.format_tag_content(_name, **kw))
@@ -33,10 +39,7 @@ class Writer:
             if isinstance(aat_min_time, datetime.timedelta):
                 kw['aat_min_time'] = aat_min_time.seconds
 
-        if 'fai_finish' in kw:
-            fai_finish = kw['fai_finish']
-            if isinstance(fai_finish, bool):
-                kw['fai_finish'] = (1 if kw['fai_finish'] else 0)
+        self.convert_bool(kw, 'fai_finish')
 
         return self.write_tag_with_content('Task', **kw)
 
