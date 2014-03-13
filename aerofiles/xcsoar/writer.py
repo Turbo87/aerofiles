@@ -55,6 +55,8 @@ class Writer:
         return self.write_tag_with_content('Task', **kw)
 
     def write_point(self, **kw):
+        self.convert_bool(kw, 'score_exit')
+
         return self.write_tag_with_content('Point', **kw)
 
     def write_waypoint(self, **kw):
