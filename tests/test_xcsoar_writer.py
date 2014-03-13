@@ -8,7 +8,7 @@ try:
 except ImportError:
     from io import StringIO
 
-from aerofiles.xcsoar import  (
+from aerofiles.xcsoar import (
     Writer, TaskType, PointType, ObservationZoneType, AltitudeReference
 )
 
