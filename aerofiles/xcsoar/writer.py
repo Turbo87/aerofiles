@@ -1,6 +1,8 @@
 import datetime
 from contextlib import contextmanager
 
+from .constants import ObservationZoneType
+
 
 class Writer:
     def __init__(self, fp=None):
@@ -55,11 +57,17 @@ class Writer:
         return self.write_tag_with_content('Task', **kw)
 
     def write_point(self, **kw):
+        assert 'type' in kw
+
         self.convert_bool(kw, 'score_exit')
 
         return self.write_tag_with_content('Point', **kw)
 
     def write_waypoint(self, **kw):
+        assert 'name' in kw
+        assert 'latitude' in kw
+        assert 'longitude' in kw
+
         location_kw = {
             'latitude': kw['latitude'],
             'longitude': kw['longitude'],
@@ -72,4 +80,25 @@ class Writer:
             self.write_tag('Location', **location_kw)
 
     def write_observation_zone(self, **kw):
+        assert 'type' in kw
+
+        if kw['type'] == ObservationZoneType.LINE:
+            assert 'length' in kw
+
+        elif kw['type'] == ObservationZoneType.CYLINDER:
+            assert 'radius' in kw
+
+        elif kw['type'] == ObservationZoneType.SECTOR:
+            assert 'radius' in kw
+            assert 'start_radial' in kw
+            assert 'end_radial' in kw
+
+        elif kw['type'] == ObservationZoneType.SYMMETRIC_QUADRANT:
+            assert 'radius' in kw
+
+        elif kw['type'] == ObservationZoneType.CUSTOM_KEYHOLE:
+            assert 'radius' in kw
+            assert 'inner_radius' in kw
+            assert 'angle' in kw
+
         self.write_tag('ObservationZone', **kw)
