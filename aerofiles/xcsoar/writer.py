@@ -22,6 +22,12 @@ class Writer:
             if isinstance(value, bool):
                 kw[key] = (1 if value else 0)
 
+    def convert_timedelta(self, kw, key):
+        if key in kw:
+            value = kw[key]
+            if isinstance(value, datetime.timedelta):
+                kw[key] = value.seconds
+
     @contextmanager
     def write_tag_with_content(self, _name, **kw):
         self.write_line('<%s>' % self.format_tag_content(_name, **kw))
@@ -34,11 +40,7 @@ class Writer:
         self.write_line('<%s/>' % self.format_tag_content(_name, **kw))
 
     def write_task(self, **kw):
-        if 'aat_min_time' in kw:
-            aat_min_time = kw['aat_min_time']
-            if isinstance(aat_min_time, datetime.timedelta):
-                kw['aat_min_time'] = aat_min_time.seconds
-
+        self.convert_timedelta(kw, 'aat_min_time')
         self.convert_bool(kw, 'fai_finish')
         self.convert_bool(kw, 'start_requires_arm')
 
