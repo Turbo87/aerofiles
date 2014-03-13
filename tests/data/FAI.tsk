@@ -1,0 +1,26 @@
+<Task aat_min_time="10800" fai_finish="1" finish_min_height="0" finish_min_height_ref="AGL" start_max_height="0" start_max_height_ref="AGL" start_max_speed="0" start_requires_arm="0" type="FAIGeneral">
+	<Point type="Start">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone type="FAISector"/>
+	</Point>
+	<Point type="Turn">
+		<Waypoint altitude="239" comment="Flugplatz" id="1630" name="Dillingen">
+			<Location latitude="49.3861" longitude="6.74862"/>
+		</Waypoint>
+		<ObservationZone type="FAISector"/>
+	</Point>
+	<Point type="Turn">
+		<Waypoint altitude="779" comment="SENDER" id="2453" name="Fredeburg Hunau">
+			<Location latitude="51.2061" longitude="8.37722"/>
+		</Waypoint>
+		<ObservationZone type="FAISector"/>
+	</Point>
+	<Point type="Finish">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone type="FAISector"/>
+	</Point>
+</Task>
