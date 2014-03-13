@@ -10,3 +10,7 @@ class PointType:
 
 class ObservationZoneType:
     FAI_SECTOR = 'FAISector'
+
+
+class AltitudeReference:
+    AGL = 'AGL'

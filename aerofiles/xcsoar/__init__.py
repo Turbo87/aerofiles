@@ -1,4 +1,4 @@
 # flake8: noqa
 
-from .constants import TaskType, PointType, ObservationZoneType
+from .constants import *
 from .writer import Writer

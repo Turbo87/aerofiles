@@ -8,7 +8,9 @@ try:
 except ImportError:
     from io import StringIO
 
-from aerofiles.xcsoar import Writer, TaskType, PointType, ObservationZoneType
+from aerofiles.xcsoar import  (
+    Writer, TaskType, PointType, ObservationZoneType, AltitudeReference
+)
 
 FOLDER = os.path.dirname(os.path.realpath(__file__))
 
@@ -30,11 +32,11 @@ def read_file(filename):
 
 def test_write_sample_task(writer):
     with writer.write_task(
-        start_max_height_ref='AGL',
+        start_max_height_ref=AltitudeReference.AGL,
         start_max_height=0,
         start_max_speed=0,
         start_requires_arm=0,
-        finish_min_height_ref='AGL',
+        finish_min_height_ref=AltitudeReference.AGL,
         finish_min_height=0,
         fai_finish=True,
         aat_min_time=datetime.timedelta(hours=3),
