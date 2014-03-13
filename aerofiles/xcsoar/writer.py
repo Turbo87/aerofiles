@@ -22,6 +22,12 @@ class Writer:
             if isinstance(value, bool):
                 kw[key] = (1 if value else 0)
 
+    def convert_time(self, kw, key):
+        if key in kw:
+            value = kw[key]
+            if isinstance(value, datetime.time):
+                kw[key] = value.strftime('%H:%M')
+
     def convert_timedelta(self, kw, key):
         if key in kw:
             value = kw[key]
@@ -41,6 +47,8 @@ class Writer:
 
     def write_task(self, **kw):
         self.convert_timedelta(kw, 'aat_min_time')
+        self.convert_time(kw, 'start_open_time')
+        self.convert_time(kw, 'start_close_time')
         self.convert_bool(kw, 'fai_finish')
         self.convert_bool(kw, 'start_requires_arm')
 
