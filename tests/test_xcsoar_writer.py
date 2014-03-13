@@ -191,3 +191,72 @@ def test_write_sample_task_2(writer):
             )
 
     assert writer.fp.getvalue() == read_file('AAT.tsk')
+
+
+def test_write_sample_task_3(writer):
+    with writer.write_task(
+        finish_min_height=200,
+        finish_min_height_ref=AltitudeReference.AGL,
+        start_max_speed=55.5556,
+        start_open_time=datetime.time(12, 13),
+        type=TaskType.RACING,
+    ):
+        with writer.write_point(type=PointType.START):
+            writer.write_waypoint(
+                name='Aachen Merzbruc',
+                comment='Flugplatz',
+                id=3,
+                altitude=189,
+                latitude=50.8231,
+                longitude=6.18638,
+            )
+
+            writer.write_observation_zone(
+                type=ObservationZoneType.LINE,
+                length=20000,
+            )
+
+        with writer.write_point(type=PointType.TURN):
+            writer.write_waypoint(
+                name='Ailertchen',
+                comment='Flugplatz',
+                id=67,
+                altitude=469,
+                latitude=50.5925,
+                longitude=7.94445,
+            )
+
+            writer.write_observation_zone(
+                type=ObservationZoneType.KEYHOLE,
+            )
+
+        with writer.write_point(type=PointType.TURN):
+            writer.write_waypoint(
+                name='Meschede Schuer',
+                comment='Flugplatz',
+                id=3737,
+                altitude=439,
+                latitude=51.3028,
+                longitude=8.23945,
+            )
+
+            writer.write_observation_zone(
+                type=ObservationZoneType.KEYHOLE,
+            )
+
+        with writer.write_point(type=PointType.FINISH):
+            writer.write_waypoint(
+                name='Aachen Merzbruc',
+                comment='Flugplatz',
+                id=3,
+                altitude=189,
+                latitude=50.8231,
+                longitude=6.18638,
+            )
+
+            writer.write_observation_zone(
+                type=ObservationZoneType.CYLINDER,
+                radius=1000,
+            )
+
+    assert writer.fp.getvalue() == read_file('Racing.tsk')

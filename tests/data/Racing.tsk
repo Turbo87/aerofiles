@@ -1,0 +1,26 @@
+<Task finish_min_height="200" finish_min_height_ref="AGL" start_max_speed="55.5556" start_open_time="12:13" type="RT">
+	<Point type="Start">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone length="20000" type="Line"/>
+	</Point>
+	<Point type="Turn">
+		<Waypoint altitude="469" comment="Flugplatz" id="67" name="Ailertchen">
+			<Location latitude="50.5925" longitude="7.94445"/>
+		</Waypoint>
+		<ObservationZone type="Keyhole"/>
+	</Point>
+	<Point type="Turn">
+		<Waypoint altitude="439" comment="Flugplatz" id="3737" name="Meschede Schuer">
+			<Location latitude="51.3028" longitude="8.23945"/>
+		</Waypoint>
+		<ObservationZone type="Keyhole"/>
+	</Point>
+	<Point type="Finish">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone radius="1000" type="Cylinder"/>
+	</Point>
+</Task>

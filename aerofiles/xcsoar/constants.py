@@ -1,6 +1,7 @@
 class TaskType:
     AAT = 'AAT'
     FAI_GENERAL = 'FAIGeneral'
+    RACING = 'RT'
 
 
 class PointType:
@@ -13,6 +14,7 @@ class PointType:
 class ObservationZoneType:
     CYLINDER = 'Cylinder'
     FAI_SECTOR = 'FAISector'
+    KEYHOLE = 'Keyhole'
     LINE = 'Line'
 
 
