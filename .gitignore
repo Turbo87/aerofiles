@@ -48,4 +48,5 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-tests/data
+tests/data/SEEYOU.CUP
+tests/data/WELT2000.TXT
