@@ -35,7 +35,7 @@ def test_write_sample_task(writer):
         start_max_height_ref=AltitudeReference.AGL,
         start_max_height=0,
         start_max_speed=0,
-        start_requires_arm=0,
+        start_requires_arm=False,
         finish_min_height_ref=AltitudeReference.AGL,
         finish_min_height=0,
         fai_finish=True,

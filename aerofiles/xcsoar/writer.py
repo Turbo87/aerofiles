@@ -40,6 +40,7 @@ class Writer:
                 kw['aat_min_time'] = aat_min_time.seconds
 
         self.convert_bool(kw, 'fai_finish')
+        self.convert_bool(kw, 'start_requires_arm')
 
         return self.write_tag_with_content('Task', **kw)
 
