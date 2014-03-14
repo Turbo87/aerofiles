@@ -1,7 +1,7 @@
 import re
 import csv
 
-from aerofiles import ParserError
+from aerofiles.errors import ParserError
 
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)

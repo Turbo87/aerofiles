@@ -1,13 +1,30 @@
 # flake8: noqa
 
-from .errors import *
+import aerofiles.flarmcfg
+import aerofiles.igc
+import aerofiles.seeyou
+import aerofiles.welt2000
+import aerofiles.xcsoar
 
-from .seeyou import (
-    Reader as SeeYouReader,
-    Converter as SeeYouConverter,
+from aerofiles.flarmcfg import (
+    Writer as FlarmConfigWriter,
 )
 
-from .welt2000 import (
+from aerofiles.igc import (
+    Writer as IGCWriter,
+)
+
+from aerofiles.seeyou import (
+    Converter as SeeYouConverter,
+    Reader as SeeYouReader,
+    Writer as SeeYouWriter,
+)
+
+from aerofiles.welt2000 import (
     Reader as Welt2000Reader,
     Converter as Welt2000Converter,
+)
+
+from aerofiles.xcsoar import (
+    Writer as XCSoarWriter,
 )

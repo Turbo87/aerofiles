@@ -1,6 +1,6 @@
 import re
 
-from aerofiles import ParserError
+from aerofiles.errors import ParserError
 
 
 RE_WHITESPACE = re.compile(r'\s+')

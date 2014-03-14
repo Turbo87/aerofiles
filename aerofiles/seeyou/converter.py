@@ -1,4 +1,4 @@
-from aerofiles import ParserError
+from aerofiles.errors import ParserError
 from aerofiles.util import units
 
 from .reader import Reader
