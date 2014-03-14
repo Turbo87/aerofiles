@@ -25,7 +25,7 @@ class Writer:
         self.fp.write(indent + line + '\n')
 
     def format_tag_content(self, _name, **kw):
-        params = map(lambda (k, v): '%s="%s"' % (k, v), kw.iteritems())
+        params = list(map(lambda item: '%s="%s"' % item, kw.items()))
         params.sort()
         return _name + ' ' + ' '.join(params)
 
