@@ -2,7 +2,7 @@ from os import path
 
 import pytest
 
-from aerofiles import ParserError
+from aerofiles.errors import ParserError
 from aerofiles.seeyou import Reader, Converter
 
 from . import assert_waypoint
