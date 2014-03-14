@@ -1,0 +1,32 @@
+<Task aat_min_time="9000" fai_finish="0" finish_min_height="200" finish_min_height_ref="AGL" start_close_time="14:30" start_max_height="1600" start_max_height_ref="MSL" start_max_speed="47.2222" start_open_time="13:30" start_requires_arm="1" type="AAT">
+	<Point type="Start">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone length="20000" type="Line"/>
+	</Point>
+	<Point type="Area">
+		<Waypoint altitude="579" comment="Flugplatz" id="1064" name="Dahlemer Binz">
+			<Location latitude="50.4056" longitude="6.52888"/>
+		</Waypoint>
+		<ObservationZone radius="20000" type="Cylinder"/>
+	</Point>
+	<Point type="Area">
+		<Waypoint altitude="469" comment="Flugplatz" id="67" name="Ailertchen">
+			<Location latitude="50.5925" longitude="7.94445"/>
+		</Waypoint>
+		<ObservationZone radius="30000" type="Cylinder"/>
+	</Point>
+	<Point type="Area">
+		<Waypoint altitude="439" comment="Flugplatz" id="3737" name="Meschede Schuer">
+			<Location latitude="51.3028" longitude="8.23945"/>
+		</Waypoint>
+		<ObservationZone radius="30000" type="Cylinder"/>
+	</Point>
+	<Point type="Finish">
+		<Waypoint altitude="189" comment="Flugplatz" id="3" name="Aachen Merzbruc">
+			<Location latitude="50.8231" longitude="6.18638"/>
+		</Waypoint>
+		<ObservationZone length="1000" type="Line"/>
+	</Point>
+</Task>
