@@ -13,3 +13,4 @@ This part of the documentation covers all the public APIs of aerofiles.
    welt2000
    igc
    flarmcfg
+   xcsoar
