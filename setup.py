@@ -12,7 +12,7 @@ def read(*paths):
 
 setup(
     name='aerofiles',
-    version='0.1.1',
+    version='0.2',
     description='waypoint, task, tracklog readers and writers for aviation',
     long_description=read('README.rst'),
     url=GITHUB_URL,
