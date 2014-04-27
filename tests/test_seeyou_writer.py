@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 import datetime
 
@@ -54,6 +56,12 @@ def test_write_line(writer):
     writer.fp = StringIO()
     writer.write_line('line')
     assert writer.fp.getvalue() == 'line\r\n'
+
+
+def test_write_line_with_unicode(writer):
+    writer.fp = StringIO()
+    writer.write_line(u'Köln')
+    assert writer.fp.getvalue() == u'Köln\r\n'
 
 
 def test_write_fields(writer):
