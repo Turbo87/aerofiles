@@ -401,7 +401,7 @@ class Writer:
         """
 
         for header in self.REQUIRED_HEADERS:
-            if not header in headers:
+            if header not in headers:
                 raise ValueError('%s header missing' % header)
 
         self.write_logger_id(

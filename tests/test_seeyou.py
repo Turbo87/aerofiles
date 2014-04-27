@@ -254,8 +254,6 @@ def check_waypoint(waypoint):
         assert 0 <= len(waypoint['runways']) <= 1
         for runway in waypoint['runways']:
             assert isinstance(runway, dict)
-            #if 'surface' in runway:
-            #    assert runway['surface'] in welt2000.SURFACES.values()
             if 'length' in runway:
                 assert 0 < runway['length'] <= 9999
             if 'directions' in runway:
