@@ -11,16 +11,16 @@ class Writer:
             writer = Writer(fp)
     """
 
-    HEADER = 'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc'
-    DIVIDER = '-----Related Tasks-----'
+    HEADER = u'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc'
+    DIVIDER = u'-----Related Tasks-----'
 
-    DISTANCE_FORMAT_FLOAT = '%.1f%s'
-    DISTANCE_FORMAT_INT = '%d%s'
-    DISTANCE_FORMAT_OTHER = '%s%s'
+    DISTANCE_FORMAT_FLOAT = u'%.1f%s'
+    DISTANCE_FORMAT_INT = u'%d%s'
+    DISTANCE_FORMAT_OTHER = u'%s%s'
 
-    ANGLE_FORMAT_FLOAT = '%.1f'
-    ANGLE_FORMAT_INT = '%d'
-    ANGLE_FORMAT_OTHER = '%s'
+    ANGLE_FORMAT_FLOAT = u'%.1f'
+    ANGLE_FORMAT_INT = u'%d'
+    ANGLE_FORMAT_OTHER = u'%s'
 
     def __init__(self, fp):
         self.fp = fp
@@ -33,22 +33,22 @@ class Writer:
         if not field:
             return ''
 
-        return '"%s"' % field.replace('\\', '\\\\').replace('"', '\\"')
+        return u'"%s"' % field.replace('\\', '\\\\').replace('"', '\\"')
 
     def format_coordinate(self, value, is_latitude=True):
         if is_latitude:
             if not -90 <= value <= 90:
-                raise ValueError('Invalid latitude: %s' % value)
+                raise ValueError(u'Invalid latitude: %s' % value)
 
-            hemisphere = 'S' if value < 0 else 'N'
-            format = '%02d%06.3f%s'
+            hemisphere = u'S' if value < 0 else u'N'
+            format = u'%02d%06.3f%s'
 
         else:
             if not -180 <= value <= 180:
-                raise ValueError('Invalid longitude: %s' % value)
+                raise ValueError(u'Invalid longitude: %s' % value)
 
-            hemisphere = 'W' if value < 0 else 'E'
-            format = '%03d%06.3f%s'
+            hemisphere = u'W' if value < 0 else u'E'
+            format = u'%03d%06.3f%s'
 
         value = abs(value)
         degrees = int(value)
@@ -63,7 +63,7 @@ class Writer:
 
     def format_angle(self, angle):
         if angle is None or angle == '':
-            return ''
+            return u''
 
         if isinstance(angle, float):
             return self.ANGLE_FORMAT_FLOAT % angle
@@ -74,13 +74,13 @@ class Writer:
 
     def format_distance(self, distance):
         if distance is None or distance == '':
-            return ''
+            return u''
 
         if isinstance(distance, tuple):
             unit = distance[1]
             distance = distance[0]
         else:
-            unit = 'm'
+            unit = u'm'
 
         if isinstance(distance, float):
             return self.DISTANCE_FORMAT_FLOAT % (distance, unit)
@@ -94,7 +94,7 @@ class Writer:
             time = time.time()
 
         if isinstance(time, datetime.time):
-            time = time.strftime('%H:%M:%S')
+            time = time.strftime(u'%H:%M:%S')
 
         return time
 
@@ -102,20 +102,20 @@ class Writer:
         if isinstance(timedelta, datetime.timedelta):
             hours, remainder = divmod(timedelta.seconds, 3600)
             minutes, seconds = divmod(remainder, 60)
-            timedelta = '%02d:%02d:%02d' % (hours, minutes, seconds)
+            timedelta = u'%02d:%02d:%02d' % (hours, minutes, seconds)
 
         return timedelta
 
-    def write_line(self, line=''):
-        self.fp.write(line + '\r\n')
+    def write_line(self, line=u''):
+        self.fp.write(line + u'\r\n')
 
     def write_fields(self, fields):
-        self.write_line(','.join(fields))
+        self.write_line(u','.join(fields))
 
     def write_waypoint(
-            self, name, shortname, country, latitude, longitude, elevation='',
-            style=WaypointStyle.NORMAL, runway_direction='', runway_length='',
-            frequency='', description=''):
+            self, name, shortname, country, latitude, longitude, elevation=u'',
+            style=WaypointStyle.NORMAL, runway_direction=u'', runway_length=u'',
+            frequency=u'', description=u''):
 
         """
         Write a waypoint::
@@ -149,10 +149,10 @@ class Writer:
         """
 
         if self.in_task_section:
-            raise RuntimeError('Waypoints must be written before any tasks')
+            raise RuntimeError(u'Waypoints must be written before any tasks')
 
         if not name:
-            raise ValueError('Waypoint name must not be empty')
+            raise ValueError(u'Waypoint name must not be empty')
 
         fields = [
             self.escape(name),
@@ -207,7 +207,7 @@ class Writer:
 
         for waypoint in waypoints:
             if waypoint not in self.wps:
-                raise ValueError('Waypoint "%s" was not found' % waypoint)
+                raise ValueError(u'Waypoint "%s" was not found' % waypoint)
 
             fields.append(self.escape(waypoint))
 
@@ -253,44 +253,44 @@ class Writer:
 
         if not self.in_task_section:
             raise RuntimeError(
-                'Task options have to be written in task section')
+                u'Task options have to be written in task section')
 
         fields = ['Options']
 
         if 'start_time' in kw:
-            fields.append('NoStart=' + self.format_time(kw['start_time']))
+            fields.append(u'NoStart=' + self.format_time(kw['start_time']))
 
         if 'task_time' in kw:
-            fields.append('TaskTime=' + self.format_timedelta(kw['task_time']))
+            fields.append(u'TaskTime=' + self.format_timedelta(kw['task_time']))
 
         if 'waypoint_distance' in kw:
-            fields.append('WpDis=%s' % kw['waypoint_distance'])
+            fields.append(u'WpDis=%s' % kw['waypoint_distance'])
 
         if 'distance_tolerance' in kw:
             fields.append(
-                'NearDis=' + self.format_distance(kw['distance_tolerance']))
+                u'NearDis=' + self.format_distance(kw['distance_tolerance']))
 
         if 'altitude_tolerance' in kw:
             fields.append(
-                'NearAlt=' + self.format_distance(kw['altitude_tolerance']))
+                u'NearAlt=' + self.format_distance(kw['altitude_tolerance']))
 
         if 'min_distance' in kw:
-            fields.append('MinDis=%s' % kw['min_distance'])
+            fields.append(u'MinDis=%s' % kw['min_distance'])
 
         if 'random_order' in kw:
-            fields.append('RandomOrder=%s' % kw['random_order'])
+            fields.append(u'RandomOrder=%s' % kw['random_order'])
 
         if 'max_points' in kw:
-            fields.append('MaxPts=%d' % kw['max_points'])
+            fields.append(u'MaxPts=%d' % kw['max_points'])
 
         if 'before_points' in kw:
-            fields.append('BeforePts=%d' % kw['before_points'])
+            fields.append(u'BeforePts=%d' % kw['before_points'])
 
         if 'after_points' in kw:
-            fields.append('AfterPts=%d' % kw['after_points'])
+            fields.append(u'AfterPts=%d' % kw['after_points'])
 
         if 'bonus' in kw:
-            fields.append('Bonus=%d' % kw['bonus'])
+            fields.append(u'Bonus=%d' % kw['bonus'])
 
         self.write_fields(fields)
 
@@ -321,29 +321,29 @@ class Writer:
 
         if not self.in_task_section:
             raise RuntimeError(
-                'Observation zones have to be written in task section')
+                u'Observation zones have to be written in task section')
 
-        fields = ['ObsZone=%d' % num]
+        fields = [u'ObsZone=%d' % num]
 
         if 'style' in kw:
-            fields.append('Style=%d' % kw['style'])
+            fields.append(u'Style=%d' % kw['style'])
 
         if 'radius' in kw:
-            fields.append('R1=' + self.format_distance(kw['radius']))
+            fields.append(u'R1=' + self.format_distance(kw['radius']))
 
         if 'angle' in kw:
-            fields.append('A1=' + self.format_angle(kw['angle']))
+            fields.append(u'A1=' + self.format_angle(kw['angle']))
 
         if 'radius2' in kw:
-            fields.append('R2=' + self.format_distance(kw['radius2']))
+            fields.append(u'R2=' + self.format_distance(kw['radius2']))
 
         if 'angle2' in kw:
-            fields.append('A2=' + self.format_angle(kw['angle2']))
+            fields.append(u'A2=' + self.format_angle(kw['angle2']))
 
         if 'angle12' in kw:
-            fields.append('A12=' + self.format_angle(kw['angle12']))
+            fields.append(u'A12=' + self.format_angle(kw['angle12']))
 
         if 'line' in kw:
-            fields.append('Line=' + ('1' if kw['line'] else '0'))
+            fields.append(u'Line=' + ('1' if kw['line'] else '0'))
 
         self.write_fields(fields)
