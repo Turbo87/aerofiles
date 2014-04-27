@@ -1,0 +1,370 @@
+******* OPEN AIR (tm) TERRAIN and AIRSPACE DESCRIPTION LANGUAGE *************
+*    Version 1.0
+*    December 10, 1998
+*    Updated October 15, 1999
+*    Send comments to jerryp@winpilot.com
+*
+*
+*  AIRSPACE related record types:
+*  ==============================
+*
+* AC class    ;    class = Airspace Class, see below:
+*     R restricted
+*     Q danger
+*     P prohibited
+*     A Class A
+*     B Class B
+*     C Class C
+*     D Class D
+*     GP glider prohibited
+*     CTR CTR
+*     W Wave Window
+*
+*
+*  AN string        ;     string = Airspace Name
+*  AH string        ;     string = Airspace Ceiling
+*  AL string        ;     string = Airspace Floor
+*  AT coordinate    ;    coordinate = Coordinate of where to place a name label on the map (optional)
+*                     ;     NOTE: there can be multiple AT records for a single airspace segment
+*
+*
+*    TERRAIN related record types (WinPilot version 1.130 and newer):
+*    ==============================
+*
+*    TO    {string}                 ; Declares Terrain Open Polygon; string = name (optional)
+*    TC    {string}                 ; Declares Terrain Closed Polygon; string = name (optional)
+*    SP style, width, red, green, blue    ; Selects Pen to be used in drawing
+*    SB red, green, blue                         ; Selects Brush to be used in drawing
+*
+*
+*    Record types common to both TERRAIN and AIRSPACE
+*    =================================================
+*
+*    V x=n             ;     Variable assignment.
+*                     ;     Currently the following variables are supported:
+*                     ;     D={+|-}    sets direction for: DA and DB records
+*                     ;                     '-' means counterclockwise direction; '+' is the default
+*                     ;                     automatically reset to '+' at the begining of new airspace segment
+*                     ;     X=coordinate    : sets the center for the following records: DA, DB, and DC
+*                     ;     W=number        : sets the width of an airway in nm (NYI)
+*                     ;      Z=number         : sets zoom level at which the element becomes visible (WP version 1.130 and newer)
+*
+*    DP coordinate                     ; add polygon pointC
+*    DA radius, angleStart, angleEnd    ; add an arc, angles in degrees, radius in nm (set center using V X=...)
+*    DB coordinate1, coordinate2         ; add an arc, from coordinate1 to coordinate2 (set center using V X=...)
+*    DC radius                         ; draw a circle (center taken from the previous V X=...  record, radius in nm
+*    DY coordinate                     ; add a segment of an airway (NYI)
+
+* SAMPLE OpenAir(tm) File (for Minden, NV):
+
+
+* Reno Class C
+AC C
+AN RENO-C
+AL SFC
+AH 8400 ft
+V X=39:29.7 N 119:46.5 W
+DC 5
+
+* Reno Class C
+AC C
+AN RENO
+AL 7200 ft
+AH 8400 ft
+* this item will have 3 labels
+AT 39:36.8 N 119:46.1W
+AT 39:22.8 N 119:45.1W
+AT 39:29.9 N 119:36.1W
+V X=39:29.7 N 119:46.5 W
+DA 10,270,290
+DA 7,290,320
+DA 10,320,200
+V D=-
+DA 5,200,270
+
+
+AC C
+AN BEALE AFB
+AL SFC
+AH 4100 ft
+V X=39:08.4 N 121:26.1 W
+DC 5
+
+AC C
+AN BEALE AFB
+AL 2600ft
+AH 4100 ft
+AT 39:10.2 N 121:17.2 W
+DA 10,9,130
+V D=-
+DA 5,130,9
+
+AC C
+AN BEALE AFB
+AL 1600ft
+AH 4100 ft
+AT 39:06.2 N 121:35.5 W
+DA 10,130,9
+V D=-5
+DA 5,9,130
+
+
+AC C
+AN SACRAMENTO/MCCLEAN
+AL 1600 ft
+AH 4100 ft
+V X=38:41.7 N 121:35.4 W
+DA 10,164,40
+V X=38:40.2 N 121:24.0 W
+DA 10,344,219
+
+******************* RESTRICTED ********************
+
+
+AC R
+AN R 4812 4804
+AL 0
+AH FL 180
+V X=39:13:30 N 118:13:30 W
+DA 5,0,178
+V D=-
+V X=39:10:20 N 118:37:00 W
+DA 5,175,355
+
+AC R
+AN R-4803 S
+AL 0
+AH FL180
+V X=39:20:00 N 118:52:00 W
+DA 3,27,270
+DP 39:35:00 N 118:59:20 W
+DP 39:36:00 N 118:53:30 W
+
+AC R
+AN R-4806 W
+AL 0
+AH UNLIM
+DP 36:41:00 N 115:56:10 W    c29
+DP 37:06:00 N 115:56:10 W    c30
+DP 37:06:00 N 115:35:00 W    c31
+DP 37:16:55 N 115:35:00 W    c32
+
+DP 37:16:55 N 115:18:10 W    c34
+DP 36:38:08 N 115:18:10 W    c35
+DP 36:25:40 N 115:18:10 W    c36
+DP 36:25:40 N 115:23:20 W    c37
+DP 36:35:00 N 115:37:00 W    c38
+DP 36:35:00 N 115:53:00 W    c39
+DP 36:35:45 N 115:56:10 W    c40
+
+
+AC R
+AN R-4806 E
+AL 100 Agl
+AH UNLIM
+DP 37:16:55 N 115:18:10 W    c34
+DP 36:38:08 N 115:18:10 W    c35
+
+DP 36:47:40 N 115:07:00 W    c41
+DP 37:11:45 N 115:07:00 W    c42
+DP 37:16:55 N 115:11:00 W    c43
+
+
+AC R
+AN R-4807 A
+AL 0
+AH UNLIM (Mon-Fri)
+AT 37:28:00 N 116:36:00 W
+DP 37:53:00 N 117:06:00 W
+DP 37:53:00 N 116:55:30 W    c1
+DP 37:47:00 N 116:55:30 W    c2
+DP 37:33:00 N 116:43:20 W    c3
+DP 37:33:00 N 116:26:20 W    c4
+DP 37:53:00 N 116:26:20 W    c5
+DP 37:53:00 N 116:11:00 W
+DP 37:42:00 N 116:11:00 W
+DP 37:42:00 N 115:53:00 W    c6
+DP 37:33:00 N 115:53:00 W    c7
+DP 37:33:00 N 115:48:00 W    c8
+DP 37:28:00 N 115:48:00 W    c9
+DP 37:28:00 N 116:00:00 W    c10
+DP 37:16:00 N 116:00:00 W    c11
+DP 37:16:00 N 116:11:10 W    c12
+DP 37:20:00 N 116:11:00 W    c13
+DP 37:23:00 N 116:17:15 W    c14
+DP 37:23:00 N 116:22:15 W    c15
+DP 37:21:00 N 116:27:00 W    c16
+DP 37:21:00 N 116:34:10 W    c17
+DP 37:16:00 N 116:31:00 W    c18
+DP 37:08:00 N 116:27:00 W    c19
+DP 36:55:00 N 116:27:00 W    c20
+DP 36:55:00 N 116:34:00 W    c21
+DP 36:51:00 N 116:34:00 W    c22
+DP 37:26:25 N 117:04:45 W    c23
+DP 37:32:30 N 117:05:55 W    c24
+DP 37:53:00 N 117:06:00 W    c25
+
+
+AC R
+AN R-4807 B
+AL 0
+AH UNLIMITED
+DP 37:16:00 N 116:11:10 W    c12
+DP 37:20:00 N 116:11:00 W    c13
+DP 37:23:00 N 116:17:15 W    c14
+DP 37:23:00 N 116:22:15 W    c15
+DP 37:21:00 N 116:27:00 W    c16
+DP 37:21:00 N 116:34:10 W    c17
+DP 37:16:00 N 116:31:00 W    c18
+
+
+AC R
+AN R-4808 N
+AL 0
+AH UNLIMITED
+DP 37:28:00 N 115:48:00 W    c9
+DP 37:28:00 N 116:00:00 W    c10
+DP 37:16:00 N 116:00:00 W    c11
+DP 37:16:00 N 116:11:10 W    c12
+DP 37:16:00 N 116:31:00 W    c18
+DP 37:08:00 N 116:27:00 W    c19
+DP 36:55:00 N 116:27:00 W    c20
+DP 36:55:00 N 116:34:00 W    c21
+DP 36:51:00 N 116:34:00 W    c22
+
+DP 36:51:00 N 116:26:45 W    c26
+DP 36:46:00 N 116:26:45 W    c27
+DP 36:41:00 N 116:15:00 W    c28
+DP 36:41:00 N 115:56:10 W    c29
+DP 37:06:00 N 115:56:10 W    c30
+DP 37:06:00 N 115:35:00 W    c31
+DP 37:16:55 N 115:35:00 W    c32
+DP 37:28:00 N 115:35:00 W    c33
+
+
+AC R
+AN R-4808 S
+AL 0
+AH UNLIMITED
+DP 36:46:00 N 116:26:45 W    c27
+DP 36:41:00 N 116:15:00 W    c28
+DP 36:41:00 N 116:26:45 W
+
+
+AC R
+AN R-4809
+AL 0
+AH UNLIMITED
+DP 37:53:00 N 116:55:30 W    c1
+DP 37:47:00 N 116:55:30 W    c2
+DP 37:33:00 N 116:43:20 W    c3
+DP 37:33:00 N 116:26:20 W    c4
+DP 37:53:00 N 116:26:20 W    c5
+
+
+AC R
+AN R-4810
+AL 0
+AH 17000ft
+V X=39:10:20 N 118:37:00 W
+DA 5,293,215
+V X=39:09:00 N 118:42:00 W
+DA 3,159,347
+
+AC R
+AN R-4811
+AL 0
+AH 15000ft (Mo-Fri)
+V X=38:14:40 N 118:38:40 W
+DC 1.5
+
+AC R
+AN R-4813
+AL 0
+AH FL180
+V X=39:51:20 N 118:21:00 W
+DA 13,165,255
+DP 39:51:15 N 118:37:35 W
+DP 40:01:20 N 118:15:00 W
+DP 40:01:20 N 118:00:55 W
+DP 39:58:20 N 118:00:55 W
+
+AC R
+AN R-4816S
+AL 500 ft agl
+AH FL180
+DP 39:17:20 N 118:20:30 W
+DP 39:18:20 N 117:59:00 W
+DP 39:21:00 N 117:55:00 W
+DP 39:24:30 N 117:52:00 W
+DP 39:26:50 N 117:51:08 W
+
+DP 39:30:00 N 117:49:00 W
+DP 39:34:00 N 117:41:20 W
+DP 39:34:00 N 118:12:30 W
+DP 39:30:00 N 118:15:18 W
+
+
+AC R
+AN R-4816N
+AL 1500 ft agl
+AH FL180
+DP 39:34:00 N 118:12:30 W
+DP 39:51:20 N 117:59:55 W
+DP 39:51:20 N 117:31:00 W
+DP 39:34:00 N 117:40:00 W
+
+
+
+************* ALERT ************
+AC R
+AN A-481
+AL 7000ft
+AH 17000ft
+AT 36:21.0 N 115:22.0 W
+DP 36:14.2 N 115:02.0 W
+V X=36:14.2 N 115:02.0 W
+DA 30,274,307
+
+
+
+************* CLASS D ***********
+
+AC D
+AN NAS-FALLON
+AL 0
+AH 6400ft
+V X=39:25.0 N 118:42.0 W
+DC 6
+
+AC D
+AN LAKE TAHOE
+AL 0
+AH 8800ft
+V X=38:53.6 N 119:59.7 W
+DC 5
+
+
+************* Wave Windows ***********
+AC W
+AN Minden West
+AH Ask on 122.8
+AL 18000 ft
+DP 39:04:00 N 119:57:00 W
+DP 39:04:00 N 119:41:00 W
+DP 38:42:00 N 119:38:00 W
+DP 38:42:00 N 119:57:00 W
+
+
+TC Lake Tahoe
+SP 0, 1, 0, 0, 255
+SB 200,200,255
+V Z=100
+DP 38:56:00 N 120:02:00 W
+DP 38:56:40 N 120:04:00 W
+DP 39:00:00 N 120:05:55 W
+DP 39:01:45 N 120:07:00 W
+DP 39:03:40 N 120:07:00 W
+DP 39:05:00 N 120:09:00 W
+DP 39:10:30 N 120:07:30 W
+DP 39:11:00 N 120:06:00 W
