@@ -226,7 +226,7 @@ class LowLevelReader:
                     result['line'] = lineno
                     yield result
 
-            except Exception, e:
+            except Exception as e:
                 self.warnings.append((e, lineno, line))
 
     def parse_line(self, line):

@@ -2,7 +2,11 @@ import pytest
 
 from os import path
 from json import load as load_json
-from itertools import izip_longest
+
+try:
+    from itertools import zip_longest
+except ImportError:
+    from itertools import izip_longest as zip_longest
 
 from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
 
@@ -29,7 +33,7 @@ def test_reader(json):
     with open(TEXT_PATH) as fp:
         reader = Reader(fp)
 
-        for block, expected in izip_longest(reader, json):
+        for block, expected in zip_longest(reader, json):
             assert_block(block, expected)
 
         assert reader.warnings == []
@@ -39,7 +43,7 @@ def test_low_level_reader(low_level_json):
     with open(TEXT_PATH) as fp:
         reader = LowLevelReader(fp)
 
-        for record, expected in izip_longest(reader, low_level_json):
+        for record, expected in zip_longest(reader, low_level_json):
             assert_record(record, expected)
 
         assert reader.warnings == []
@@ -51,7 +55,7 @@ def assert_float(value, expected, threshold):
 
 def assert_location(value, expected):
     # fallback because we're lazy
-    if isinstance(expected, (str, unicode)):
+    if not isinstance(expected, list):
         expected = coordinate(expected)
 
     assert isinstance(value, list)
@@ -61,8 +65,7 @@ def assert_location(value, expected):
 
 
 def assert_block(value, expected):
-    assert value
-    print value['name']
+    assert value is not None
     assert value['type'] == expected['type']
     assert value['name'] == expected['name']
 
