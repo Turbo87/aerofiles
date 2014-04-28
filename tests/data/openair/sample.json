@@ -1,0 +1,668 @@
+[{
+    "type": "airspace",
+    "class": "C",
+    "name": "RENO-C",
+    "floor": "SFC",
+    "ceiling": "8400 ft",
+    "labels": [],
+    "elements": [{
+        "type": "circle",
+        "center": [39.495, -119.775],
+        "radius": 5
+    }]
+}, {
+    "type": "airspace",
+    "class": "C",
+    "name": "RENO",
+    "floor": "7200 ft",
+    "ceiling": "8400 ft",
+    "labels": [
+        [39.61333, -119.76833],
+        [39.38, -119.75166],
+        [39.49833, -119.60166]
+    ],
+    "elements": [{
+        "type": "arc",
+        "center": [39.495, -119.775],
+        "radius": 10,
+        "start": 270,
+        "end": 290,
+        "clockwise": true
+    }, {
+        "type": "arc",
+        "center": [39.495, -119.775],
+        "radius": 7,
+        "start": 290,
+        "end": 320,
+        "clockwise": true
+    }, {
+        "type": "arc",
+        "center": [39.495, -119.775],
+        "radius": 10,
+        "start": 320,
+        "end": 200,
+        "clockwise": true
+    }, {
+        "type": "arc",
+        "center": [39.495, -119.775],
+        "radius": 5,
+        "start": 200,
+        "end": 270,
+        "clockwise": false
+    }]
+}, {
+    "type": "airspace",
+    "class": "C",
+    "name": "BEALE AFB",
+    "floor": "SFC",
+    "ceiling": "4100 ft",
+    "labels": [],
+    "elements": [{
+        "type": "circle",
+        "center": [39.14, -121.435],
+        "radius": 5
+    }]
+}, {
+    "type": "airspace",
+    "class": "C",
+    "name": "BEALE AFB",
+    "floor": "2600ft",
+    "ceiling": "4100 ft",
+    "labels": ["39:10.2 N 121:17.2 W"],
+    "elements": [{
+        "type": "arc",
+        "center": [39.14, -121.435],
+        "clockwise": true,
+        "radius": 10,
+        "start": 9,
+        "end": 130
+    }, {
+        "type": "arc",
+        "center": [39.14, -121.435],
+        "clockwise": false,
+        "radius": 5,
+        "start": 130,
+        "end": 9
+    }]
+}, {
+    "type": "airspace",
+    "class": "C",
+    "name": "BEALE AFB",
+    "floor": "1600ft",
+    "ceiling": "4100 ft",
+    "labels": ["39:06.2 N 121:35.5 W"],
+    "elements": [{
+        "type": "arc",
+        "center": [39.14, -121.435],
+        "clockwise": true,
+        "radius": 10,
+        "start": 130,
+        "end": 9
+    }, {
+        "type": "arc",
+        "center": [39.14, -121.435],
+        "clockwise": false,
+        "radius": 5,
+        "start": 9,
+        "end": 130
+    }]
+}, {
+    "type": "airspace",
+    "class": "C",
+    "name": "SACRAMENTO/MCCLEAN",
+    "floor": "1600 ft",
+    "ceiling": "4100 ft",
+    "labels": [],
+    "elements": [{
+        "type": "arc",
+        "center": [38.695, -121.59],
+        "clockwise": true,
+        "radius": 10,
+        "start": 164,
+        "end": 40
+    }, {
+        "type": "arc",
+        "center": [38.67, -121.4],
+        "clockwise": true,
+        "radius": 10,
+        "start": 344,
+        "end": 219
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R 4812 4804",
+    "floor": "0",
+    "ceiling": "FL 180",
+    "labels": [],
+    "elements": [{
+        "type": "arc",
+        "center": [39.225, -118.225],
+        "clockwise": true,
+        "radius": 5,
+        "start": 0,
+        "end": 178
+    }, {
+        "type": "arc",
+        "center": [39.17222, -118.61666],
+        "clockwise": false,
+        "radius": 5,
+        "start": 175,
+        "end": 355
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4803 S",
+    "floor": "0",
+    "ceiling": "FL180",
+    "labels": [],
+    "elements": [{
+        "type": "arc",
+        "center": [39.33333, -118.86666],
+        "clockwise": true,
+        "radius": 3,
+        "start": 27,
+        "end": 270
+    }, {
+        "type": "point",
+        "location": [39.58333, -118.98888]
+    }, {
+        "type": "point",
+        "location": [39.6, -118.89166]
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4806 W",
+    "floor": "0",
+    "ceiling": "UNLIM",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": [36.68333, -115.93611]
+    }, {
+        "type": "point",
+        "location": [37.1, -115.93611]
+    }, {
+        "type": "point",
+        "location": [37.1, -115.58333]
+    }, {
+        "type": "point",
+        "location": [37.28194, -115.58333]
+    }, {
+        "type": "point",
+        "location": [37.28194, -115.30277]
+    }, {
+        "type": "point",
+        "location": [36.63555, -115.30277]
+    }, {
+        "type": "point",
+        "location": [36.42777, -115.30277]
+    }, {
+        "type": "point",
+        "location": [36.42777, -115.38888]
+    }, {
+        "type": "point",
+        "location": [36.58333, -115.61666]
+    }, {
+        "type": "point",
+        "location": [36.58333, -115.88333]
+    }, {
+        "type": "point",
+        "location": [36.59583, -115.93611]
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4806 E",
+    "floor": "100 Agl",
+    "ceiling": "UNLIM",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": [37.28194, -115.30277]
+    }, {
+        "type": "point",
+        "location": [36.63555, -115.30277]
+    }, {
+        "type": "point",
+        "location": [36.79444, -115.11666]
+    }, {
+        "type": "point",
+        "location": [37.19583, -115.11666]
+    }, {
+        "type": "point",
+        "location": [37.28194, -115.18333]
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4807 A",
+    "floor": "0",
+    "ceiling": "UNLIM (Mon-Fri)",
+    "labels": ["37:28:00 N 116:36:00 W"],
+    "elements": [{
+        "type": "point",
+        "location": "37:53:00 N 117:06:00 W"
+    }, {
+        "type": "point",
+        "location": "37:53:00 N 116:55:30 W    c1"
+    }, {
+        "type": "point",
+        "location": "37:47:00 N 116:55:30 W    c2"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 116:43:20 W    c3"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 116:26:20 W    c4"
+    }, {
+        "type": "point",
+        "location": "37:53:00 N 116:26:20 W    c5"
+    }, {
+        "type": "point",
+        "location": "37:53:00 N 116:11:00 W"
+    }, {
+        "type": "point",
+        "location": "37:42:00 N 116:11:00 W"
+    }, {
+        "type": "point",
+        "location": "37:42:00 N 115:53:00 W    c6"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 115:53:00 W    c7"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 115:48:00 W    c8"
+    }, {
+        "type": "point",
+        "location": "37:28:00 N 115:48:00 W    c9"
+    }, {
+        "type": "point",
+        "location": "37:28:00 N 116:00:00 W    c10"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:00:00 W    c11"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:11:10 W    c12"
+    }, {
+        "type": "point",
+        "location": "37:20:00 N 116:11:00 W    c13"
+    }, {
+        "type": "point",
+        "location": "37:23:00 N 116:17:15 W    c14"
+    }, {
+        "type": "point",
+        "location": "37:23:00 N 116:22:15 W    c15"
+    }, {
+        "type": "point",
+        "location": "37:21:00 N 116:27:00 W    c16"
+    }, {
+        "type": "point",
+        "location": "37:21:00 N 116:34:10 W    c17"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:31:00 W    c18"
+    }, {
+        "type": "point",
+        "location": "37:08:00 N 116:27:00 W    c19"
+    }, {
+        "type": "point",
+        "location": "36:55:00 N 116:27:00 W    c20"
+    }, {
+        "type": "point",
+        "location": "36:55:00 N 116:34:00 W    c21"
+    }, {
+        "type": "point",
+        "location": "36:51:00 N 116:34:00 W    c22"
+    }, {
+        "type": "point",
+        "location": "37:26:25 N 117:04:45 W    c23"
+    }, {
+        "type": "point",
+        "location": "37:32:30 N 117:05:55 W    c24"
+    }, {
+        "type": "point",
+        "location": "37:53:00 N 117:06:00 W    c25"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4807 B",
+    "floor": "0",
+    "ceiling": "UNLIMITED",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "37:16:00 N 116:11:10 W    c12"
+    }, {
+        "type": "point",
+        "location": "37:20:00 N 116:11:00 W    c13"
+    }, {
+        "type": "point",
+        "location": "37:23:00 N 116:17:15 W    c14"
+    }, {
+        "type": "point",
+        "location": "37:23:00 N 116:22:15 W    c15"
+    }, {
+        "type": "point",
+        "location": "37:21:00 N 116:27:00 W    c16"
+    }, {
+        "type": "point",
+        "location": "37:21:00 N 116:34:10 W    c17"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:31:00 W    c18"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4808 N",
+    "floor": "0",
+    "ceiling": "UNLIMITED",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "37:28:00 N 115:48:00 W    c9"
+    }, {
+        "type": "point",
+        "location": "37:28:00 N 116:00:00 W    c10"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:00:00 W    c11"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:11:10 W    c12"
+    }, {
+        "type": "point",
+        "location": "37:16:00 N 116:31:00 W    c18"
+    }, {
+        "type": "point",
+        "location": "37:08:00 N 116:27:00 W    c19"
+    }, {
+        "type": "point",
+        "location": "36:55:00 N 116:27:00 W    c20"
+    }, {
+        "type": "point",
+        "location": "36:55:00 N 116:34:00 W    c21"
+    }, {
+        "type": "point",
+        "location": "36:51:00 N 116:34:00 W    c22"
+    }, {
+        "type": "point",
+        "location": "36:51:00 N 116:26:45 W    c26"
+    }, {
+        "type": "point",
+        "location": "36:46:00 N 116:26:45 W    c27"
+    }, {
+        "type": "point",
+        "location": "36:41:00 N 116:15:00 W    c28"
+    }, {
+        "type": "point",
+        "location": "36:41:00 N 115:56:10 W    c29"
+    }, {
+        "type": "point",
+        "location": "37:06:00 N 115:56:10 W    c30"
+    }, {
+        "type": "point",
+        "location": "37:06:00 N 115:35:00 W    c31"
+    }, {
+        "type": "point",
+        "location": "37:16:55 N 115:35:00 W    c32"
+    }, {
+        "type": "point",
+        "location": "37:28:00 N 115:35:00 W    c33"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4808 S",
+    "floor": "0",
+    "ceiling": "UNLIMITED",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "36:46:00 N 116:26:45 W    c27"
+    }, {
+        "type": "point",
+        "location": "36:41:00 N 116:15:00 W    c28"
+    }, {
+        "type": "point",
+        "location": "36:41:00 N 116:26:45 W"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4809",
+    "floor": "0",
+    "ceiling": "UNLIMITED",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "37:53:00 N 116:55:30 W    c1"
+    }, {
+        "type": "point",
+        "location": "37:47:00 N 116:55:30 W    c2"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 116:43:20 W    c3"
+    }, {
+        "type": "point",
+        "location": "37:33:00 N 116:26:20 W    c4"
+    }, {
+        "type": "point",
+        "location": "37:53:00 N 116:26:20 W    c5"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4810",
+    "floor": "0",
+    "ceiling": "17000ft",
+    "labels": [],
+    "elements": [{
+        "type": "arc",
+        "center": [39.17222, -118.61666],
+        "clockwise": true,
+        "radius": 5,
+        "start": 293,
+        "end": 215
+    }, {
+        "type": "arc",
+        "center": [39.15, -118.7],
+        "clockwise": true,
+        "radius": 3,
+        "start": 159,
+        "end": 347
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4811",
+    "floor": "0",
+    "ceiling": "15000ft (Mo-Fri)",
+    "labels": [],
+    "elements": [{
+        "type": "circle",
+        "center": [38.24444, -118.64444],
+        "radius": 1.5
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4813",
+    "floor": "0",
+    "ceiling": "FL180",
+    "labels": [],
+    "elements": [{
+        "type": "arc",
+        "center": [39.85555, -118.35],
+        "clockwise": true,
+        "radius": 13,
+        "start": 165,
+        "end": 255
+    }, {
+        "type": "point",
+        "location": "39:51:15 N 118:37:35 W"
+    }, {
+        "type": "point",
+        "location": "40:01:20 N 118:15:00 W"
+    }, {
+        "type": "point",
+        "location": "40:01:20 N 118:00:55 W"
+    }, {
+        "type": "point",
+        "location": "39:58:20 N 118:00:55 W"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4816S",
+    "floor": "500 ft agl",
+    "ceiling": "FL180",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "39:17:20 N 118:20:30 W"
+    }, {
+        "type": "point",
+        "location": "39:18:20 N 117:59:00 W"
+    }, {
+        "type": "point",
+        "location": "39:21:00 N 117:55:00 W"
+    }, {
+        "type": "point",
+        "location": "39:24:30 N 117:52:00 W"
+    }, {
+        "type": "point",
+        "location": "39:26:50 N 117:51:08 W"
+    }, {
+        "type": "point",
+        "location": "39:30:00 N 117:49:00 W"
+    }, {
+        "type": "point",
+        "location": "39:34:00 N 117:41:20 W"
+    }, {
+        "type": "point",
+        "location": "39:34:00 N 118:12:30 W"
+    }, {
+        "type": "point",
+        "location": "39:30:00 N 118:15:18 W"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "R-4816N",
+    "floor": "1500 ft agl",
+    "ceiling": "FL180",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "39:34:00 N 118:12:30 W"
+    }, {
+        "type": "point",
+        "location": "39:51:20 N 117:59:55 W"
+    }, {
+        "type": "point",
+        "location": "39:51:20 N 117:31:00 W"
+    }, {
+        "type": "point",
+        "location": "39:34:00 N 117:40:00 W"
+    }]
+}, {
+    "type": "airspace",
+    "class": "R",
+    "name": "A-481",
+    "floor": "7000ft",
+    "ceiling": "17000ft",
+    "labels": ["36:21.0 N 115:22.0 W"],
+    "elements": [{
+        "type": "point",
+        "location": "36:14.2 N 115:02.0 W"
+    }, {
+        "type": "arc",
+        "center": [36.23666, -115.03333],
+        "clockwise": true,
+        "radius": 30,
+        "start": 274,
+        "end": 307
+    }]
+}, {
+    "type": "airspace",
+    "class": "D",
+    "name": "NAS-FALLON",
+    "floor": "0",
+    "ceiling": "6400ft",
+    "labels": [],
+    "elements": [{
+        "type": "circle",
+        "center": [39.41666, -118.7],
+        "radius": 6
+    }]
+}, {
+    "type": "airspace",
+    "class": "D",
+    "name": "LAKE TAHOE",
+    "floor": "0",
+    "ceiling": "8800ft",
+    "labels": [],
+    "elements": [{
+        "type": "circle",
+        "center": [38.89333, -119.995],
+        "radius": 5
+    }]
+}, {
+    "type": "airspace",
+    "class": "W",
+    "name": "Minden West",
+    "ceiling": "Ask on 122.8",
+    "floor": "18000 ft",
+    "labels": [],
+    "elements": [{
+        "type": "point",
+        "location": "39:04:00 N 119:57:00 W"
+    }, {
+        "type": "point",
+        "location": "39:04:00 N 119:41:00 W"
+    }, {
+        "type": "point",
+        "location": "38:42:00 N 119:38:00 W"
+    }, {
+        "type": "point",
+        "location": "38:42:00 N 119:57:00 W"
+    }]
+}, {
+    "type": "terrain",
+    "name": "Lake Tahoe",
+    "open": false,
+    "outline": [0, 1, 0, 0, 255],
+    "fill": [200, 200, 255],
+    "zoom": 100,
+    "elements": [{
+        "type": "point",
+        "location": "38:56:00 N 120:02:00 W"
+    }, {
+        "type": "point",
+        "location": "38:56:40 N 120:04:00 W"
+    }, {
+        "type": "point",
+        "location": "39:00:00 N 120:05:55 W"
+    }, {
+        "type": "point",
+        "location": "39:01:45 N 120:07:00 W"
+    }, {
+        "type": "point",
+        "location": "39:03:40 N 120:07:00 W"
+    }, {
+        "type": "point",
+        "location": "39:05:00 N 120:09:00 W"
+    }, {
+        "type": "point",
+        "location": "39:10:30 N 120:07:30 W"
+    }, {
+        "type": "point",
+        "location": "39:11:00 N 120:06:00 W"
+    }]
+}]

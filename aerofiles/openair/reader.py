@@ -2,7 +2,200 @@ from aerofiles.openair import patterns
 
 
 class Reader:
-    pass
+
+    def get_EMPTY_AIRSPACE_ITEM(self):
+        return {
+            "type": "airspace",
+            "class": None,
+            "name": None,
+            "floor": None,
+            "ceiling": None,
+            "labels": [],
+            "elements": []
+        }
+
+    def get_EMPTY_TERRAIN_ITEM(self, open):
+        return {
+            "type": "terrain",
+            "open": open,
+            "name": None,
+            "fill": None,
+            "outline": None,
+            "zoom": None,
+            "elements": []
+        }
+
+    def __init__(self, fp):
+        self.fp = fp
+        self.warnings = []
+
+    def __iter__(self):
+        return self.next()
+
+    def next(self):
+        block = None
+        center = None
+        clockwise = True
+
+        def is_valid(block):
+            if not block:
+                return False
+
+            elif block.get("type") == "airspace" and \
+                    block.get("class") is not None:
+                return True
+
+            elif block.get("type") == "terrain":
+                return True
+
+            return False
+
+        for record in LowLevelReader(self.fp):
+            if record['type'] == 'AC':
+                if not block:
+                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    clockwise = True
+
+                elif block.get("type") == "airspace":
+                    if block.get("name") and block.get("class"):
+                        yield block
+                        block = self.get_EMPTY_AIRSPACE_ITEM()
+                        clockwise = True
+
+                elif block.get("type") == "terrain":
+                    yield block
+                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    clockwise = True
+
+                block["class"] = record["value"]
+
+            elif record['type'] == 'AN':
+                if not block:
+                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    clockwise = True
+
+                elif block.get("type") == "airspace":
+                    if block.get("name") and block.get("class"):
+                        yield block
+                        block = self.get_EMPTY_AIRSPACE_ITEM()
+                        clockwise = True
+
+                elif block.get("type") == "terrain":
+                    yield block
+                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    clockwise = True
+
+                block["name"] = record["value"]
+
+            elif record['type'] == 'TC':
+                if not block:
+                    block = self.get_EMPTY_TERRAIN_ITEM(False)
+                    clockwise = True
+
+                elif block.get("type") == "airspace":
+                    if block.get("name") and block.get("class"):
+                        yield block
+                        block = self.get_EMPTY_TERRAIN_ITEM(False)
+                        clockwise = True
+
+                elif block.get("type") == "terrain":
+                    yield block
+                    block = self.get_EMPTY_TERRAIN_ITEM(False)
+                    clockwise = True
+
+                block["name"] = record["value"]
+
+            elif record['type'] == 'TO':
+                if not block:
+                    block = self.get_EMPTY_TERRAIN_ITEM(True)
+                    clockwise = True
+
+                elif block.get("type") == "airspace":
+                    if block.get("name") and block.get("class"):
+                        yield block
+                        block = self.get_EMPTY_TERRAIN_ITEM(True)
+                        clockwise = True
+
+                elif block.get("type") == "terrain":
+                    yield block
+                    block = self.get_EMPTY_TERRAIN_ITEM(True)
+                    clockwise = True
+
+                block["name"] = record["value"]
+
+            elif record['type'] == 'AH':
+                block["ceiling"] = record["value"]
+
+            elif record['type'] == 'AL':
+                block["floor"] = record["value"]
+
+            elif record['type'] == 'AT':
+                block['labels'].append(record["value"])
+
+            elif record['type'] == 'SP':
+                block["outline"] = record["value"]
+
+            elif record['type'] == 'SB':
+                block["fill"] = record["value"]
+
+            elif record['type'] == 'V':
+                if record['name'] == 'X':
+                    center = record["value"]
+                elif record['name'] == 'D':
+                    clockwise = record["value"]
+                elif record['name'] == 'Z':
+                    block['zoom'] = record["value"]
+
+            elif record['type'] == 'DP':
+                block['elements'].append({
+                    "type": "point",
+                    "location": record["value"],
+                })
+
+            elif record['type'] == 'DA':
+                if not center:
+                    raise ValueError('center undefined')
+
+                block['elements'].append({
+                    "type": "arc",
+                    "center": center,
+                    "clockwise": clockwise,
+                    "radius": record["radius"],
+                    "start": record["start"],
+                    "end": record["end"],
+                })
+
+            elif record['type'] == 'DB':
+                block['elements'].append({
+                    "type": "arc",
+                    "center": center,
+                    "clockwise": clockwise,
+                    "start": record["start"],
+                    "end": record["end"],
+                })
+
+            elif record['type'] == 'DC':
+                if not center:
+                    raise ValueError('center undefined')
+
+                block['elements'].append({
+                    "type": "circle",
+                    "center": center,
+                    "radius": record["value"],
+                })
+
+            elif record['type'] == 'DY':
+                block['elements'].append({
+                    "type": "airway",
+                    "location": record["value"],
+                })
+
+        if block and block.get("type") == "airspace":
+            if block.get("name") and block.get("class"):
+                yield block
+
+        elif block and block.get("type") == "terrain":
+            yield block
 
 
 class LowLevelReader:

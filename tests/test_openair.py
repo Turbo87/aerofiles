@@ -2,13 +2,21 @@ import pytest
 
 from os import path
 from json import load as load_json
+from itertools import izip_longest
 
-from aerofiles.openair.reader import LowLevelReader, coordinate
+from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
 
 
 DATA_PATH = path.join(path.dirname(path.realpath(__file__)), 'data')
 TEXT_PATH = path.join(DATA_PATH, 'openair', 'sample.txt')
+JSON_PATH = path.join(DATA_PATH, 'openair', 'sample.json')
 LL_JSON_PATH = path.join(DATA_PATH, 'openair', 'sample-low-level.json')
+
+
+@pytest.fixture
+def json():
+    with open(JSON_PATH) as fp:
+        return load_json(fp)
 
 
 @pytest.fixture
@@ -17,11 +25,21 @@ def low_level_json():
         return load_json(fp)
 
 
+def test_reader(json):
+    with open(TEXT_PATH) as fp:
+        reader = Reader(fp)
+
+        for block, expected in izip_longest(reader, json):
+            assert_block(block, expected)
+
+        assert reader.warnings == []
+
+
 def test_low_level_reader(low_level_json):
     with open(TEXT_PATH) as fp:
         reader = LowLevelReader(fp)
 
-        for record, expected in zip(reader, low_level_json):
+        for record, expected in izip_longest(reader, low_level_json):
             assert_record(record, expected)
 
         assert reader.warnings == []
@@ -40,6 +58,53 @@ def assert_location(value, expected):
     assert len(value) == 2
     assert_float(value[0], expected[0], 0.0001)
     assert_float(value[1], expected[1], 0.0001)
+
+
+def assert_block(value, expected):
+    assert value
+    print value['name']
+    assert value['type'] == expected['type']
+    assert value['name'] == expected['name']
+
+    if value['type'] == 'airspace':
+        assert value['class'] == expected['class']
+        assert value['floor'] == expected['floor']
+        assert value['ceiling'] == expected['ceiling']
+
+        for x in zip(value['labels'], expected['labels']):
+            assert_location(*x)
+
+    elif value['type'] == 'terrain':
+        assert value['open'] == expected['open']
+        assert value['fill'] == expected['fill']
+        assert value['outline'] == expected['outline']
+        assert value['zoom'] == expected['zoom']
+
+    for v, e in zip(value['elements'], expected['elements']):
+        assert_element(v, e)
+
+
+def assert_element(value, expected):
+    assert value['type'] == expected['type']
+
+    if value['type'] == 'point':
+        assert_location(value['location'], expected['location'])
+
+    elif value['type'] == 'circle':
+        assert_location(value['center'], expected['center'])
+        assert value['radius'] == expected['radius']
+
+    elif value['type'] == 'arc':
+        assert_location(value['center'], expected['center'])
+        assert value['clockwise'] == expected['clockwise']
+
+        if 'radius' in value:
+            assert value['radius'] == expected['radius']
+            assert value['start'] == expected['start']
+            assert value['end'] == expected['end']
+        else:
+            assert_location(value['start'], expected['start'])
+            assert_location(value['end'], expected['end'])
 
 
 def assert_record(value, expected):
