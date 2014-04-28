@@ -15,19 +15,6 @@ class Reader:
         center = None
         clockwise = True
 
-        def is_valid(block):
-            if not block:
-                return False
-
-            elif block.get("type") == "airspace" and \
-                    block.get("class") is not None:
-                return True
-
-            elif block.get("type") == "terrain":
-                return True
-
-            return False
-
         for record in LowLevelReader(self.fp):
             if record['type'] == 'AC':
                 if not block:
