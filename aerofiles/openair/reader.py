@@ -97,6 +97,9 @@ class LowLevelReader:
         if value[0] == 'X':
             value[1] = coordinate(value[1])
 
+        elif value[0] == 'Z':
+            value[1] = float(value[1])
+
         elif value[0] == 'D':
             if value[1].startswith('+'):
                 value[1] = True

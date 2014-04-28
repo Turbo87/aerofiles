@@ -246,7 +246,7 @@
     {"type": "TC", "value": "Lake Tahoe"},
     {"type": "SP", "value": [0, 1, 0, 0, 255]},
     {"type": "SB", "value": [200, 200, 255]},
-    {"type": "V", "name": "Z", "value": "100"},
+    {"type": "V", "name": "Z", "value": 100},
     {"type": "DP", "value": "38:56:00 N 120:02:00 W"},
     {"type": "DP", "value": "38:56:40 N 120:04:00 W"},
     {"type": "DP", "value": "39:00:00 N 120:05:55 W"},
