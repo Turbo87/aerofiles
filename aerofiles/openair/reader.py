@@ -30,10 +30,11 @@ class LowLevelReader:
             try:
                 result = self.parse_line(line)
                 if result:
+                    result['line'] = lineno
                     yield result
 
             except Exception, e:
-                self.warnings.append(e)
+                self.warnings.append((e, lineno, line))
 
     def parse_line(self, line):
         # Ignore comments
