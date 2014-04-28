@@ -3,28 +3,6 @@ from aerofiles.openair import patterns
 
 class Reader:
 
-    def get_EMPTY_AIRSPACE_ITEM(self):
-        return {
-            "type": "airspace",
-            "class": None,
-            "name": None,
-            "floor": None,
-            "ceiling": None,
-            "labels": [],
-            "elements": []
-        }
-
-    def get_EMPTY_TERRAIN_ITEM(self, open):
-        return {
-            "type": "terrain",
-            "open": open,
-            "name": None,
-            "fill": None,
-            "outline": None,
-            "zoom": None,
-            "elements": []
-        }
-
     def __init__(self, fp):
         self.fp = fp
         self.warnings = []
@@ -53,72 +31,72 @@ class Reader:
         for record in LowLevelReader(self.fp):
             if record['type'] == 'AC':
                 if not block:
-                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    block = self.get_empty_airspace_block()
                     clockwise = True
 
                 elif block.get("type") == "airspace":
                     if block.get("name") and block.get("class"):
                         yield block
-                        block = self.get_EMPTY_AIRSPACE_ITEM()
+                        block = self.get_empty_airspace_block()
                         clockwise = True
 
                 elif block.get("type") == "terrain":
                     yield block
-                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    block = self.get_empty_airspace_block()
                     clockwise = True
 
                 block["class"] = record["value"]
 
             elif record['type'] == 'AN':
                 if not block:
-                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    block = self.get_empty_airspace_block()
                     clockwise = True
 
                 elif block.get("type") == "airspace":
                     if block.get("name") and block.get("class"):
                         yield block
-                        block = self.get_EMPTY_AIRSPACE_ITEM()
+                        block = self.get_empty_airspace_block()
                         clockwise = True
 
                 elif block.get("type") == "terrain":
                     yield block
-                    block = self.get_EMPTY_AIRSPACE_ITEM()
+                    block = self.get_empty_airspace_block()
                     clockwise = True
 
                 block["name"] = record["value"]
 
             elif record['type'] == 'TC':
                 if not block:
-                    block = self.get_EMPTY_TERRAIN_ITEM(False)
+                    block = self.get_empty_terrain_block(False)
                     clockwise = True
 
                 elif block.get("type") == "airspace":
                     if block.get("name") and block.get("class"):
                         yield block
-                        block = self.get_EMPTY_TERRAIN_ITEM(False)
+                        block = self.get_empty_terrain_block(False)
                         clockwise = True
 
                 elif block.get("type") == "terrain":
                     yield block
-                    block = self.get_EMPTY_TERRAIN_ITEM(False)
+                    block = self.get_empty_terrain_block(False)
                     clockwise = True
 
                 block["name"] = record["value"]
 
             elif record['type'] == 'TO':
                 if not block:
-                    block = self.get_EMPTY_TERRAIN_ITEM(True)
+                    block = self.get_empty_terrain_block(True)
                     clockwise = True
 
                 elif block.get("type") == "airspace":
                     if block.get("name") and block.get("class"):
                         yield block
-                        block = self.get_EMPTY_TERRAIN_ITEM(True)
+                        block = self.get_empty_terrain_block(True)
                         clockwise = True
 
                 elif block.get("type") == "terrain":
                     yield block
-                    block = self.get_EMPTY_TERRAIN_ITEM(True)
+                    block = self.get_empty_terrain_block(True)
                     clockwise = True
 
                 block["name"] = record["value"]
@@ -196,6 +174,28 @@ class Reader:
 
         elif block and block.get("type") == "terrain":
             yield block
+
+    def get_empty_airspace_block(self):
+        return {
+            "type": "airspace",
+            "class": None,
+            "name": None,
+            "floor": None,
+            "ceiling": None,
+            "labels": [],
+            "elements": []
+        }
+
+    def get_empty_terrain_block(self, open):
+        return {
+            "type": "terrain",
+            "open": open,
+            "name": None,
+            "fill": None,
+            "outline": None,
+            "zoom": None,
+            "elements": []
+        }
 
 
 class LowLevelReader:
