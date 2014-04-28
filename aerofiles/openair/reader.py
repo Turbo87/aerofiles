@@ -140,7 +140,7 @@ class LowLevelReader:
         if len(values) != num:
             raise ValueError()
 
-        return [cast(value) for value, cast in zip(values, types)]
+        return [cast(v) for v, cast in zip(values, types)]
 
 
 def coordinate(value):
