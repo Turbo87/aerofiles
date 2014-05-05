@@ -187,6 +187,59 @@ class Reader:
 
 class LowLevelReader:
 
+    """
+    A low-level reader for the OpenAir airspace file format::
+
+        with open('airspace.txt') as fp:
+            reader = LowLevelReader(fp)
+
+    see `OpenAir file format specification
+    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_
+
+    Instances of this class read OpenAir files line by line and extract the
+    information in each line as a dictionary. A line like ``AN Sacramento`` for
+    example is converted to ``{"type": "AN", "value": "Sacramento"}``.
+
+    The reader should be used as a generator and will return a ``(result,
+    error)`` tuple for each line that is not empty or a comment::
+
+        for result, error in reader:
+            if error:
+                raise error  # or handle it otherwise
+
+            # handle result
+
+    Most lines are just parsed into ``type`` and ``value`` strings. The
+    following examples should show the lines that are parsed differently::
+
+        # AT 39:36.8 N 119:46.1W
+        {"type": "AT", "value": [39.61333, -119.76833]}
+
+        # DA 10,320,200
+        {"type": "DA", "radius": 10, "start": 320, "end": 200}
+
+        # DC 1.5
+        {"type": "DC", "value": 1.5}
+
+        # DP 39:35:00 N 118:59:20 W
+        {"type": "DP", "value": [39.58333, -118.98888]}
+
+        # SB 200,200,255
+        {"type": "SB", "value": [200, 200, 255]}
+
+        # SP 0,1,0,0,255
+        {"type": "SP", "value": [0, 1, 0, 0, 255]}
+
+        # V D=-
+        {"type": "V", "name": "D", "value": False}
+
+        # V X=39:29.7 N 119:46.5 W
+        {"type": "V", "name": "X", "value": [39.495, -119.775]}
+
+        # V Z=100
+        {"type": "V", "name": "Z", "value": 100}
+    """
+
     def __init__(self, fp):
         self.fp = fp
         self.lineno = 0
