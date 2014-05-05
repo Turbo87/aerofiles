@@ -15,7 +15,7 @@ class Reader:
         center = None
         clockwise = True
 
-        for record in LowLevelReader(self.fp):
+        for record, error in LowLevelReader(self.fp):
             if record['type'] == 'AC':
                 if not block:
                     block = self.get_empty_airspace_block()
@@ -200,21 +200,20 @@ class LowLevelReader:
 
     def __init__(self, fp):
         self.fp = fp
-        self.warnings = []
 
     def __iter__(self):
         return self.next()
 
     def next(self):
-        for lineno, line in enumerate(self.fp, 1):
+        for line in self.fp:
             try:
                 result = self.parse_line(line)
                 if result:
-                    result['line'] = lineno
-                    yield result
+                    yield (result, None)
 
             except Exception as e:
-                self.warnings.append((e, lineno, line))
+                yield (None, e)
+
 
     def parse_line(self, line):
         # Ignore comments

@@ -43,10 +43,10 @@ def test_low_level_reader(low_level_json):
     with open(TEXT_PATH) as fp:
         reader = LowLevelReader(fp)
 
-        for record, expected in zip_longest(reader, low_level_json):
-            assert_record(record, expected)
-
-        assert reader.warnings == []
+        for result, expected in zip_longest(reader, low_level_json):
+            result, error = result
+            assert error is None
+            assert_record(result, expected)
 
 
 def assert_float(value, expected, threshold):
