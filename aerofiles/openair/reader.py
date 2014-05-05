@@ -16,6 +16,15 @@ class Reader:
             self.center = None
             self.clockwise = True
 
+        def is_ready(self):
+            if not self.block:
+                return False
+
+            block_type = self.block.get("type")
+
+            return block_type == "terrain" or (block_type == "airspace" and
+                self.block.get("name") and self.block.get("class"))
+
         def reset_airspace(self):
             self.clockwise = True
             self.block = {
@@ -45,61 +54,41 @@ class Reader:
 
         for record, error in self.reader:
             if record['type'] == 'AC':
-                if not state.block:
-                    state.reset_airspace()
-
-                elif state.block.get("type") == "airspace":
-                    if state.block.get("name") and state.block.get("class"):
-                        yield state.block
-                        state.reset_airspace()
-
-                elif state.block.get("type") == "terrain":
+                if state.is_ready():
                     yield state.block
+                    state.block = None
+
+                if not state.block:
                     state.reset_airspace()
 
                 state.block["class"] = record["value"]
 
             elif record['type'] == 'AN':
-                if not state.block:
-                    state.reset_airspace()
-
-                elif state.block.get("type") == "airspace":
-                    if state.block.get("name") and state.block.get("class"):
-                        yield state.block
-                        state.reset_airspace()
-
-                elif state.block.get("type") == "terrain":
+                if state.is_ready():
                     yield state.block
+                    state.block = None
+
+                if not state.block:
                     state.reset_airspace()
 
                 state.block["name"] = record["value"]
 
             elif record['type'] == 'TC':
-                if not state.block:
-                    state.reset_terrain(False)
-
-                elif state.block.get("type") == "airspace":
-                    if state.block.get("name") and state.block.get("class"):
-                        yield state.block
-                        state.reset_terrain(False)
-
-                elif state.block.get("type") == "terrain":
+                if state.is_ready():
                     yield state.block
+                    state.block = None
+
+                if not state.block:
                     state.reset_terrain(False)
 
                 state.block["name"] = record["value"]
 
             elif record['type'] == 'TO':
-                if not state.block:
-                    state.reset_terrain(True)
-
-                elif state.block.get("type") == "airspace":
-                    if state.block.get("name") and state.block.get("class"):
-                        yield state.block
-                        state.reset_terrain(True)
-
-                elif state.block.get("type") == "terrain":
+                if state.is_ready():
                     yield state.block
+                    state.block = None
+
+                if not state.block:
                     state.reset_terrain(True)
 
                 state.block["name"] = record["value"]
