@@ -127,8 +127,8 @@ def assert_record(value, expected):
         assert value['end'] == expected['end']
 
     elif value['type'] == 'DB':
-        assert value['start'] == expected['start']
-        assert value['end'] == expected['end']
+        assert_location(value['start'], expected['start'])
+        assert_location(value['end'], expected['end'])
 
     elif value['type'] == 'AT' or \
             value['type'] == 'DP' or \
