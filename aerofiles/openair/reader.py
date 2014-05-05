@@ -200,12 +200,15 @@ class LowLevelReader:
 
     def __init__(self, fp):
         self.fp = fp
+        self.lineno = 0
 
     def __iter__(self):
         return self.next()
 
     def next(self):
         for line in self.fp:
+            self.lineno += 1
+
             try:
                 result = self.parse_line(line)
                 if result:
