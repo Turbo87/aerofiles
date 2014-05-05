@@ -269,15 +269,15 @@ class LowLevelReader:
         return {'type': 'TC', 'value': value}
 
     def handle_SB_record(self, value):
-        value = self._split(value, ',', 3, int, int, int)
+        value = split(value, ',', 3, int, int, int)
         return {'type': 'SB', 'value': value}
 
     def handle_SP_record(self, value):
-        value = self._split(value, ',', 5, int, int, int, int, int)
+        value = split(value, ',', 5, int, int, int, int, int)
         return {'type': 'SP', 'value': value}
 
     def handle_V_record(self, value):
-        value = self._split(value, '=', 2, str, str)
+        value = split(value, '=', 2, str, str)
 
         if value[0] == 'X':
             value[1] = coordinate(value[1])
@@ -299,7 +299,7 @@ class LowLevelReader:
         return {'type': 'DP', 'value': coordinate(value)}
 
     def handle_DA_record(self, value):
-        value = self._split(value, ',', 3, float, float, float)
+        value = split(value, ',', 3, float, float, float)
 
         return {
             'type': 'DA',
@@ -307,7 +307,7 @@ class LowLevelReader:
         }
 
     def handle_DB_record(self, value):
-        value = self._split(value, ',', 2, coordinate, coordinate)
+        value = split(value, ',', 2, coordinate, coordinate)
 
         return {
             'type': 'DB',
@@ -320,12 +320,13 @@ class LowLevelReader:
     def handle_DY_record(self, value):
         return {'type': 'DY', 'value': coordinate(value)}
 
-    def _split(self, value, separator, num, *types):
-        values = value.split(separator)
-        if len(values) != num:
-            raise ValueError()
 
-        return [cast(v) for v, cast in zip(values, types)]
+def split(value, separator, num, *types):
+    values = value.split(separator)
+    if len(values) != num:
+        raise ValueError()
+
+    return [cast(v) for v, cast in zip(values, types)]
 
 
 def coordinate(value):
