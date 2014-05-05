@@ -2,6 +2,7 @@
 
 import aerofiles.flarmcfg
 import aerofiles.igc
+import aerofiles.openair
 import aerofiles.seeyou
 import aerofiles.welt2000
 import aerofiles.xcsoar
@@ -12,6 +13,10 @@ from aerofiles.flarmcfg import (
 
 from aerofiles.igc import (
     Writer as IGCWriter,
+)
+
+from aerofiles.openair import (
+    Reader as OpenAirReader,
 )
 
 from aerofiles.seeyou import (
