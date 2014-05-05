@@ -12,9 +12,9 @@ from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
 
 
 DATA_PATH = path.join(path.dirname(path.realpath(__file__)), 'data')
-TEXT_PATH = path.join(DATA_PATH, 'openair', 'sample.txt')
-JSON_PATH = path.join(DATA_PATH, 'openair', 'sample.json')
-LL_JSON_PATH = path.join(DATA_PATH, 'openair', 'sample-low-level.json')
+TEXT_PATH = path.join(DATA_PATH, 'sample.txt')
+JSON_PATH = path.join(DATA_PATH, 'sample.json')
+LL_JSON_PATH = path.join(DATA_PATH, 'sample-low-level.json')
 
 
 @pytest.fixture
