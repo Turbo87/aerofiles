@@ -10,157 +10,161 @@ class Reader:
     def __iter__(self):
         return self.next()
 
+    class State:
+        def __init__(self):
+            self.block = None
+            self.center = None
+            self.clockwise = True
+
     def next(self):
-        block = None
-        center = None
-        clockwise = True
+        state = self.State()
 
         for record, error in self.reader:
             if record['type'] == 'AC':
-                if not block:
-                    block = self.get_empty_airspace_block()
-                    clockwise = True
+                if not state.block:
+                    state.block = self.get_empty_airspace_block()
+                    state.clockwise = True
 
-                elif block.get("type") == "airspace":
-                    if block.get("name") and block.get("class"):
-                        yield block
-                        block = self.get_empty_airspace_block()
-                        clockwise = True
+                elif state.block.get("type") == "airspace":
+                    if state.block.get("name") and state.block.get("class"):
+                        yield state.block
+                        state.block = self.get_empty_airspace_block()
+                        state.clockwise = True
 
-                elif block.get("type") == "terrain":
-                    yield block
-                    block = self.get_empty_airspace_block()
-                    clockwise = True
+                elif state.block.get("type") == "terrain":
+                    yield state.block
+                    state.block = self.get_empty_airspace_block()
+                    state.clockwise = True
 
-                block["class"] = record["value"]
+                state.block["class"] = record["value"]
 
             elif record['type'] == 'AN':
-                if not block:
-                    block = self.get_empty_airspace_block()
-                    clockwise = True
+                if not state.block:
+                    state.block = self.get_empty_airspace_block()
+                    state.clockwise = True
 
-                elif block.get("type") == "airspace":
-                    if block.get("name") and block.get("class"):
-                        yield block
-                        block = self.get_empty_airspace_block()
-                        clockwise = True
+                elif state.block.get("type") == "airspace":
+                    if state.block.get("name") and state.block.get("class"):
+                        yield state.block
+                        state.block = self.get_empty_airspace_block()
+                        state.clockwise = True
 
-                elif block.get("type") == "terrain":
-                    yield block
-                    block = self.get_empty_airspace_block()
-                    clockwise = True
+                elif state.block.get("type") == "terrain":
+                    yield state.block
+                    state.block = self.get_empty_airspace_block()
+                    state.clockwise = True
 
-                block["name"] = record["value"]
+                state.block["name"] = record["value"]
 
             elif record['type'] == 'TC':
-                if not block:
-                    block = self.get_empty_terrain_block(False)
-                    clockwise = True
+                if not state.block:
+                    state.block = self.get_empty_terrain_block(False)
+                    state.clockwise = True
 
-                elif block.get("type") == "airspace":
-                    if block.get("name") and block.get("class"):
-                        yield block
-                        block = self.get_empty_terrain_block(False)
-                        clockwise = True
+                elif state.block.get("type") == "airspace":
+                    if state.block.get("name") and state.block.get("class"):
+                        yield state.block
+                        state.block = self.get_empty_terrain_block(False)
+                        state.clockwise = True
 
-                elif block.get("type") == "terrain":
-                    yield block
-                    block = self.get_empty_terrain_block(False)
-                    clockwise = True
+                elif state.block.get("type") == "terrain":
+                    yield state.block
+                    state.block = self.get_empty_terrain_block(False)
+                    state.clockwise = True
 
-                block["name"] = record["value"]
+                state.block["name"] = record["value"]
 
             elif record['type'] == 'TO':
-                if not block:
-                    block = self.get_empty_terrain_block(True)
-                    clockwise = True
+                if not state.block:
+                    state.block = self.get_empty_terrain_block(True)
+                    state.clockwise = True
 
-                elif block.get("type") == "airspace":
-                    if block.get("name") and block.get("class"):
-                        yield block
-                        block = self.get_empty_terrain_block(True)
-                        clockwise = True
+                elif state.block.get("type") == "airspace":
+                    if state.block.get("name") and state.block.get("class"):
+                        yield state.block
+                        state.block = self.get_empty_terrain_block(True)
+                        state.clockwise = True
 
-                elif block.get("type") == "terrain":
-                    yield block
-                    block = self.get_empty_terrain_block(True)
-                    clockwise = True
+                elif state.block.get("type") == "terrain":
+                    yield state.block
+                    state.block = self.get_empty_terrain_block(True)
+                    state.clockwise = True
 
-                block["name"] = record["value"]
+                state.block["name"] = record["value"]
 
             elif record['type'] == 'AH':
-                block["ceiling"] = record["value"]
+                state.block["ceiling"] = record["value"]
 
             elif record['type'] == 'AL':
-                block["floor"] = record["value"]
+                state.block["floor"] = record["value"]
 
             elif record['type'] == 'AT':
-                block['labels'].append(record["value"])
+                state.block['labels'].append(record["value"])
 
             elif record['type'] == 'SP':
-                block["outline"] = record["value"]
+                state.block["outline"] = record["value"]
 
             elif record['type'] == 'SB':
-                block["fill"] = record["value"]
+                state.block["fill"] = record["value"]
 
             elif record['type'] == 'V':
                 if record['name'] == 'X':
-                    center = record["value"]
+                    state.center = record["value"]
                 elif record['name'] == 'D':
-                    clockwise = record["value"]
+                    state.clockwise = record["value"]
                 elif record['name'] == 'Z':
-                    block['zoom'] = record["value"]
+                    state.block['zoom'] = record["value"]
 
             elif record['type'] == 'DP':
-                block['elements'].append({
+                state.block['elements'].append({
                     "type": "point",
                     "location": record["value"],
                 })
 
             elif record['type'] == 'DA':
-                if not center:
+                if not state.center:
                     raise ValueError('center undefined')
 
-                block['elements'].append({
+                state.block['elements'].append({
                     "type": "arc",
-                    "center": center,
-                    "clockwise": clockwise,
+                    "center": state.center,
+                    "clockwise": state.clockwise,
                     "radius": record["radius"],
                     "start": record["start"],
                     "end": record["end"],
                 })
 
             elif record['type'] == 'DB':
-                block['elements'].append({
+                state.block['elements'].append({
                     "type": "arc",
-                    "center": center,
-                    "clockwise": clockwise,
+                    "center": state.center,
+                    "clockwise": state.clockwise,
                     "start": record["start"],
                     "end": record["end"],
                 })
 
             elif record['type'] == 'DC':
-                if not center:
+                if not state.center:
                     raise ValueError('center undefined')
 
-                block['elements'].append({
+                state.block['elements'].append({
                     "type": "circle",
-                    "center": center,
+                    "center": state.center,
                     "radius": record["value"],
                 })
 
             elif record['type'] == 'DY':
-                block['elements'].append({
+                state.block['elements'].append({
                     "type": "airway",
                     "location": record["value"],
                 })
 
-        if block and block.get("type") == "airspace":
-            if block.get("name") and block.get("class"):
-                yield block
+        if state.block and state.block.get("type") == "airspace":
+            if state.block.get("name") and state.block.get("class"):
+                yield state.block
 
-        elif block and block.get("type") == "terrain":
-            yield block
+        elif state.block and state.block.get("type") == "terrain":
+            yield state.block
 
     def get_empty_airspace_block(self):
         return {
