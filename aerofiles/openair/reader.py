@@ -187,17 +187,6 @@ class Reader:
 
 class LowLevelReader:
 
-    RECORD_TYPES = (
-        # AIRSPACE related record types
-        'AC', 'AN', 'AH', 'AL', 'AT',
-
-        # TERRAIN related record types
-        'TO', 'TC', 'SB', 'SP',
-
-        # Common record types
-        'V', 'DP', 'DA', 'DB', 'DC', 'DY',
-    )
-
     def __init__(self, fp):
         self.fp = fp
         self.lineno = 0
