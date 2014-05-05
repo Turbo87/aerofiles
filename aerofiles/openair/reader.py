@@ -232,15 +232,20 @@ class LowLevelReader:
         record = line.split(' ', 1)
 
         # Find handler method
-        handler = getattr(self, 'handle_%s_record' % record[0], None)
-        if not handler:
-            raise ValueError('unknown record type')
+        handler = self.get_handler_method(record[0])
 
         # Get value from record
         value = None if len(record) < 2 else record[1]
 
         # Run handler method and return result
         return handler(value)
+
+    def get_handler_method(self, type):
+        handler = getattr(self, 'handle_%s_record' % type, None)
+        if not handler:
+            raise ValueError('unknown record type')
+
+        return handler
 
     def handle_AC_record(self, value):
         return {'type': 'AC', 'value': value}
