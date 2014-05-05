@@ -12,9 +12,8 @@ class Reader:
 
     class State:
         def __init__(self):
-            self.block = None
             self.center = None
-            self.clockwise = True
+            self.reset()
 
         def is_ready(self):
             if not self.block:
@@ -26,7 +25,6 @@ class Reader:
                 self.block.get("name") and self.block.get("class"))
 
         def reset_airspace(self):
-            self.clockwise = True
             self.block = {
                 "type": "airspace",
                 "class": None,
@@ -38,7 +36,6 @@ class Reader:
             }
 
         def reset_terrain(self, open):
-            self.clockwise = True
             self.block = {
                 "type": "terrain",
                 "open": open,
@@ -49,6 +46,10 @@ class Reader:
                 "elements": []
             }
 
+        def reset(self):
+            self.clockwise = True
+            self.block = None
+
     def next(self):
         state = self.State()
 
@@ -56,7 +57,7 @@ class Reader:
             if record['type'] in ('AC', 'AN', 'TC', 'TO'):
                 if state.is_ready():
                     yield state.block
-                    state.block = None
+                    state.reset()
 
             if record['type'] == 'AC':
                 if not state.block:
