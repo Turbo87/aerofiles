@@ -369,7 +369,7 @@ def split(value, separator, num, *types):
     if len(values) != num:
         raise ValueError()
 
-    return [cast(v) for v, cast in zip(values, types)]
+    return [cast(v.strip()) for v, cast in zip(values, types)]
 
 
 def coordinate(value):
