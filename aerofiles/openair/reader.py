@@ -277,41 +277,41 @@ class LowLevelReader:
         return {'type': 'SP', 'value': value}
 
     def handle_V_record(self, value):
-        value = split(value, '=', 2, str, str)
+        name, value = split(value, '=', 2, str, str)
 
-        if value[0] == 'X':
-            value[1] = coordinate(value[1])
+        if name == 'X':
+            value = coordinate(value)
 
-        elif value[0] == 'Z':
-            value[1] = float(value[1])
+        elif name == 'Z':
+            value = float(value)
 
-        elif value[0] == 'D':
-            if value[1].startswith('+'):
-                value[1] = True
-            elif value[1].startswith('-'):
-                value[1] = False
+        elif name == 'D':
+            if value.startswith('+'):
+                value = True
+            elif value.startswith('-'):
+                value = False
             else:
-                raise ValueError('invalid direction value: %s' % value[1])
+                raise ValueError('invalid direction value: %s' % value)
 
-        return {'type': 'V', 'name': value[0], 'value': value[1]}
+        return {'type': 'V', 'name': name, 'value': value}
 
     def handle_DP_record(self, value):
         return {'type': 'DP', 'value': coordinate(value)}
 
     def handle_DA_record(self, value):
-        value = split(value, ',', 3, float, float, float)
+        radius, start, end = split(value, ',', 3, float, float, float)
 
         return {
             'type': 'DA',
-            'radius': value[0], 'start': value[1], 'end': value[2]
+            'radius': radius, 'start': start, 'end': end,
         }
 
     def handle_DB_record(self, value):
-        value = split(value, ',', 2, coordinate, coordinate)
+        start, end = split(value, ',', 2, coordinate, coordinate)
 
         return {
             'type': 'DB',
-            'start': value[0], 'end': value[1]
+            'start': start, 'end': end
         }
 
     def handle_DC_record(self, value):
