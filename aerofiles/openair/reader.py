@@ -259,7 +259,6 @@ class LowLevelReader:
             except Exception as e:
                 yield (None, e)
 
-
     def parse_line(self, line):
         # Ignore comments
         if line.startswith('*'):
