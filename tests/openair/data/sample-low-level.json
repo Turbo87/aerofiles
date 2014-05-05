@@ -15,7 +15,7 @@
     {"type": "V", "name": "X", "value": [39.495, -119.775]},
     {"type": "DA", "radius": 10, "start": 270, "end": 290},
     {"type": "DA", "radius": 7, "start": 290, "end": 320},
-    {"type": "DA", "radius": 10, "start": 320, "end": 200},
+    {"type": "DB", "start": [39.61333, -119.76833], "end": [39.49833, -119.60166]},
     {"type": "V", "name": "D", "value": false},
     {"type": "DA", "radius": 5, "start": 200, "end": 270},
     {"type": "AC", "value": "C"},
