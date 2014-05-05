@@ -4,7 +4,7 @@ from aerofiles.openair import patterns
 class Reader:
 
     def __init__(self, fp):
-        self.fp = fp
+        self.reader = LowLevelReader(fp)
         self.warnings = []
 
     def __iter__(self):
@@ -15,7 +15,7 @@ class Reader:
         center = None
         clockwise = True
 
-        for record, error in LowLevelReader(self.fp):
+        for record, error in self.reader:
             if record['type'] == 'AC':
                 if not block:
                     block = self.get_empty_airspace_block()
