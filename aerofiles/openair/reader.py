@@ -53,41 +53,30 @@ class Reader:
         state = self.State()
 
         for record, error in self.reader:
-            if record['type'] == 'AC':
+            if record['type'] in ('AC', 'AN', 'TC', 'TO'):
                 if state.is_ready():
                     yield state.block
                     state.block = None
 
+            if record['type'] == 'AC':
                 if not state.block:
                     state.reset_airspace()
 
                 state.block["class"] = record["value"]
 
             elif record['type'] == 'AN':
-                if state.is_ready():
-                    yield state.block
-                    state.block = None
-
                 if not state.block:
                     state.reset_airspace()
 
                 state.block["name"] = record["value"]
 
             elif record['type'] == 'TC':
-                if state.is_ready():
-                    yield state.block
-                    state.block = None
-
                 if not state.block:
                     state.reset_terrain(False)
 
                 state.block["name"] = record["value"]
 
             elif record['type'] == 'TO':
-                if state.is_ready():
-                    yield state.block
-                    state.block = None
-
                 if not state.block:
                     state.reset_terrain(True)
 
@@ -160,11 +149,7 @@ class Reader:
                     "location": record["value"],
                 })
 
-        if state.block and state.block.get("type") == "airspace":
-            if state.block.get("name") and state.block.get("class"):
-                yield state.block
-
-        elif state.block and state.block.get("type") == "terrain":
+        if state.is_ready():
             yield state.block
 
 
