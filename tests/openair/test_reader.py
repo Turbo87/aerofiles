@@ -39,8 +39,6 @@ def test_reader(json):
             assert error is None
             assert_block(record, expected)
 
-        assert reader.warnings == []
-
 
 def test_low_level_reader(low_level_json):
     with open(path.join(DATA, 'sample.txt')) as fp:
