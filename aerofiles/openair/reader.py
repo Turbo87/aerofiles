@@ -22,7 +22,7 @@ class Reader:
             block_type = self.block.get("type")
 
             return block_type == "terrain" or (block_type == "airspace" and
-                self.block.get("name") and self.block.get("class"))
+                self.block.get("name") and self.block.get("class"))  # noqa
 
         def reset_airspace(self):
             self.block = {
@@ -154,7 +154,6 @@ class Reader:
                 "type": "airway",
                 "location": line["value"],
             })
-
 
 
 class LowLevelReader:
