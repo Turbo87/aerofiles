@@ -53,66 +53,66 @@ class Reader:
     def next(self):
         state = self.State()
 
-        for record, error in self.reader:
-            if record['type'] in ('AC', 'AN', 'TC', 'TO'):
+        for line, error in self.reader:
+            if line['type'] in ('AC', 'AN', 'TC', 'TO'):
                 if state.is_ready():
                     yield state.block
                     state.reset()
 
-            if record['type'] == 'AC':
+            if line['type'] == 'AC':
                 if not state.block:
                     state.reset_airspace()
 
-                state.block["class"] = record["value"]
+                state.block["class"] = line["value"]
 
-            elif record['type'] == 'AN':
+            elif line['type'] == 'AN':
                 if not state.block:
                     state.reset_airspace()
 
-                state.block["name"] = record["value"]
+                state.block["name"] = line["value"]
 
-            elif record['type'] == 'TC':
+            elif line['type'] == 'TC':
                 if not state.block:
                     state.reset_terrain(False)
 
-                state.block["name"] = record["value"]
+                state.block["name"] = line["value"]
 
-            elif record['type'] == 'TO':
+            elif line['type'] == 'TO':
                 if not state.block:
                     state.reset_terrain(True)
 
-                state.block["name"] = record["value"]
+                state.block["name"] = line["value"]
 
-            elif record['type'] == 'AH':
-                state.block["ceiling"] = record["value"]
+            elif line['type'] == 'AH':
+                state.block["ceiling"] = line["value"]
 
-            elif record['type'] == 'AL':
-                state.block["floor"] = record["value"]
+            elif line['type'] == 'AL':
+                state.block["floor"] = line["value"]
 
-            elif record['type'] == 'AT':
-                state.block['labels'].append(record["value"])
+            elif line['type'] == 'AT':
+                state.block['labels'].append(line["value"])
 
-            elif record['type'] == 'SP':
-                state.block["outline"] = record["value"]
+            elif line['type'] == 'SP':
+                state.block["outline"] = line["value"]
 
-            elif record['type'] == 'SB':
-                state.block["fill"] = record["value"]
+            elif line['type'] == 'SB':
+                state.block["fill"] = line["value"]
 
-            elif record['type'] == 'V':
-                if record['name'] == 'X':
-                    state.center = record["value"]
-                elif record['name'] == 'D':
-                    state.clockwise = record["value"]
-                elif record['name'] == 'Z':
-                    state.block['zoom'] = record["value"]
+            elif line['type'] == 'V':
+                if line['name'] == 'X':
+                    state.center = line["value"]
+                elif line['name'] == 'D':
+                    state.clockwise = line["value"]
+                elif line['name'] == 'Z':
+                    state.block['zoom'] = line["value"]
 
-            elif record['type'] == 'DP':
+            elif line['type'] == 'DP':
                 state.block['elements'].append({
                     "type": "point",
-                    "location": record["value"],
+                    "location": line["value"],
                 })
 
-            elif record['type'] == 'DA':
+            elif line['type'] == 'DA':
                 if not state.center:
                     raise ValueError('center undefined')
 
@@ -120,34 +120,34 @@ class Reader:
                     "type": "arc",
                     "center": state.center,
                     "clockwise": state.clockwise,
-                    "radius": record["radius"],
-                    "start": record["start"],
-                    "end": record["end"],
+                    "radius": line["radius"],
+                    "start": line["start"],
+                    "end": line["end"],
                 })
 
-            elif record['type'] == 'DB':
+            elif line['type'] == 'DB':
                 state.block['elements'].append({
                     "type": "arc",
                     "center": state.center,
                     "clockwise": state.clockwise,
-                    "start": record["start"],
-                    "end": record["end"],
+                    "start": line["start"],
+                    "end": line["end"],
                 })
 
-            elif record['type'] == 'DC':
+            elif line['type'] == 'DC':
                 if not state.center:
                     raise ValueError('center undefined')
 
                 state.block['elements'].append({
                     "type": "circle",
                     "center": state.center,
-                    "radius": record["value"],
+                    "radius": line["value"],
                 })
 
-            elif record['type'] == 'DY':
+            elif line['type'] == 'DY':
                 state.block['elements'].append({
                     "type": "airway",
-                    "location": record["value"],
+                    "location": line["value"],
                 })
 
         if state.is_ready():
