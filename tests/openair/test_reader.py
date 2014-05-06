@@ -10,27 +10,23 @@ except ImportError:
 
 from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
 
-
-DATA_PATH = path.join(path.dirname(path.realpath(__file__)), 'data')
-TEXT_PATH = path.join(DATA_PATH, 'sample.txt')
-JSON_PATH = path.join(DATA_PATH, 'sample.json')
-LL_JSON_PATH = path.join(DATA_PATH, 'sample-low-level.json')
+DATA = path.join(path.dirname(path.realpath(__file__)), 'data')
 
 
 @pytest.fixture
 def json():
-    with open(JSON_PATH) as fp:
+    with open(path.join(DATA, 'sample.json')) as fp:
         return load_json(fp)
 
 
 @pytest.fixture
 def low_level_json():
-    with open(LL_JSON_PATH) as fp:
+    with open(path.join(DATA, 'sample-low-level.json')) as fp:
         return load_json(fp)
 
 
 def test_reader(json):
-    with open(TEXT_PATH) as fp:
+    with open(path.join(DATA, 'sample.txt')) as fp:
         reader = Reader(fp)
 
         for block, expected in zip_longest(reader, json):
@@ -40,7 +36,7 @@ def test_reader(json):
 
 
 def test_low_level_reader(low_level_json):
-    with open(TEXT_PATH) as fp:
+    with open(path.join(DATA, 'sample.txt')) as fp:
         reader = LowLevelReader(fp)
 
         for result, expected in zip_longest(reader, low_level_json):
