@@ -68,87 +68,93 @@ class Reader:
                 elif line_type == 'TO':
                     state.reset_terrain(True)
 
-            if line_type == 'AC':
-                state.block["class"] = line["value"]
-
-            elif line_type == 'AN':
-                state.block["name"] = line["value"]
-
-            elif line_type == 'TC':
-                state.block["name"] = line["value"]
-
-            elif line_type == 'TO':
-                state.block["name"] = line["value"]
-
-            elif line_type == 'AH':
-                state.block["ceiling"] = line["value"]
-
-            elif line_type == 'AL':
-                state.block["floor"] = line["value"]
-
-            elif line_type == 'AT':
-                state.block['labels'].append(line["value"])
-
-            elif line_type == 'SP':
-                state.block["outline"] = line["value"]
-
-            elif line_type == 'SB':
-                state.block["fill"] = line["value"]
-
-            elif line_type == 'V':
-                if line['name'] == 'X':
-                    state.center = line["value"]
-                elif line['name'] == 'D':
-                    state.clockwise = line["value"]
-                elif line['name'] == 'Z':
-                    state.block['zoom'] = line["value"]
-
-            elif line_type == 'DP':
-                state.block['elements'].append({
-                    "type": "point",
-                    "location": line["value"],
-                })
-
-            elif line_type == 'DA':
-                if not state.center:
-                    raise ValueError('center undefined')
-
-                state.block['elements'].append({
-                    "type": "arc",
-                    "center": state.center,
-                    "clockwise": state.clockwise,
-                    "radius": line["radius"],
-                    "start": line["start"],
-                    "end": line["end"],
-                })
-
-            elif line_type == 'DB':
-                state.block['elements'].append({
-                    "type": "arc",
-                    "center": state.center,
-                    "clockwise": state.clockwise,
-                    "start": line["start"],
-                    "end": line["end"],
-                })
-
-            elif line_type == 'DC':
-                if not state.center:
-                    raise ValueError('center undefined')
-
-                state.block['elements'].append({
-                    "type": "circle",
-                    "center": state.center,
-                    "radius": line["value"],
-                })
-
-            elif line_type == 'DY':
-                state.block['elements'].append({
-                    "type": "airway",
-                    "location": line["value"],
-                })
+            self.handle_line(line, state)
 
         if state.is_ready():
             yield state.block
+
+    def handle_line(self, line, state):
+        line_type = line['type']
+
+        if line_type == 'AC':
+            state.block["class"] = line["value"]
+
+        elif line_type == 'AN':
+            state.block["name"] = line["value"]
+
+        elif line_type == 'TC':
+            state.block["name"] = line["value"]
+
+        elif line_type == 'TO':
+            state.block["name"] = line["value"]
+
+        elif line_type == 'AH':
+            state.block["ceiling"] = line["value"]
+
+        elif line_type == 'AL':
+            state.block["floor"] = line["value"]
+
+        elif line_type == 'AT':
+            state.block['labels'].append(line["value"])
+
+        elif line_type == 'SP':
+            state.block["outline"] = line["value"]
+
+        elif line_type == 'SB':
+            state.block["fill"] = line["value"]
+
+        elif line_type == 'V':
+            if line['name'] == 'X':
+                state.center = line["value"]
+            elif line['name'] == 'D':
+                state.clockwise = line["value"]
+            elif line['name'] == 'Z':
+                state.block['zoom'] = line["value"]
+
+        elif line_type == 'DP':
+            state.block['elements'].append({
+                "type": "point",
+                "location": line["value"],
+            })
+
+        elif line_type == 'DA':
+            if not state.center:
+                raise ValueError('center undefined')
+
+            state.block['elements'].append({
+                "type": "arc",
+                "center": state.center,
+                "clockwise": state.clockwise,
+                "radius": line["radius"],
+                "start": line["start"],
+                "end": line["end"],
+            })
+
+        elif line_type == 'DB':
+            state.block['elements'].append({
+                "type": "arc",
+                "center": state.center,
+                "clockwise": state.clockwise,
+                "start": line["start"],
+                "end": line["end"],
+            })
+
+        elif line_type == 'DC':
+            if not state.center:
+                raise ValueError('center undefined')
+
+            state.block['elements'].append({
+                "type": "circle",
+                "center": state.center,
+                "radius": line["value"],
+            })
+
+        elif line_type == 'DY':
+            state.block['elements'].append({
+                "type": "airway",
+                "location": line["value"],
+            })
+
 
 
 class LowLevelReader:
