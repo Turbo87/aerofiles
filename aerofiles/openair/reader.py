@@ -72,7 +72,7 @@ class Reader:
                 state.block['zoom'] = line["value"]
 
         elif line_type == 'DP':
-            state.block['elements'].append({
+            state.add_element({
                 "type": "point",
                 "location": line["value"],
             })
@@ -81,7 +81,7 @@ class Reader:
             if not state.center:
                 raise ValueError('center undefined')
 
-            state.block['elements'].append({
+            state.add_element({
                 "type": "arc",
                 "center": state.center,
                 "clockwise": state.clockwise,
@@ -91,7 +91,7 @@ class Reader:
             })
 
         elif line_type == 'DB':
-            state.block['elements'].append({
+            state.add_element({
                 "type": "arc",
                 "center": state.center,
                 "clockwise": state.clockwise,
@@ -103,14 +103,14 @@ class Reader:
             if not state.center:
                 raise ValueError('center undefined')
 
-            state.block['elements'].append({
+            state.add_element({
                 "type": "circle",
                 "center": state.center,
                 "radius": line["value"],
             })
 
         elif line_type == 'DY':
-            state.block['elements'].append({
+            state.add_element({
                 "type": "airway",
                 "location": line["value"],
             })
@@ -154,6 +154,9 @@ class Reader:
         def reset(self):
             self.clockwise = True
             self.block = None
+
+        def add_element(self, element):
+            self.block['elements'].append(element)
 
 
 class LowLevelReader:
