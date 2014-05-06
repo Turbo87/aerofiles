@@ -54,51 +54,53 @@ class Reader:
         state = self.State()
 
         for line, error in self.reader:
-            if line['type'] in ('AC', 'AN', 'TC', 'TO'):
+            line_type = line['type']
+
+            if line_type in ('AC', 'AN', 'TC', 'TO'):
                 if state.is_ready():
                     yield state.block
                     state.reset()
 
-            if line['type'] == 'AC':
+            if line_type == 'AC':
                 if not state.block:
                     state.reset_airspace()
 
                 state.block["class"] = line["value"]
 
-            elif line['type'] == 'AN':
+            elif line_type == 'AN':
                 if not state.block:
                     state.reset_airspace()
 
                 state.block["name"] = line["value"]
 
-            elif line['type'] == 'TC':
+            elif line_type == 'TC':
                 if not state.block:
                     state.reset_terrain(False)
 
                 state.block["name"] = line["value"]
 
-            elif line['type'] == 'TO':
+            elif line_type == 'TO':
                 if not state.block:
                     state.reset_terrain(True)
 
                 state.block["name"] = line["value"]
 
-            elif line['type'] == 'AH':
+            elif line_type == 'AH':
                 state.block["ceiling"] = line["value"]
 
-            elif line['type'] == 'AL':
+            elif line_type == 'AL':
                 state.block["floor"] = line["value"]
 
-            elif line['type'] == 'AT':
+            elif line_type == 'AT':
                 state.block['labels'].append(line["value"])
 
-            elif line['type'] == 'SP':
+            elif line_type == 'SP':
                 state.block["outline"] = line["value"]
 
-            elif line['type'] == 'SB':
+            elif line_type == 'SB':
                 state.block["fill"] = line["value"]
 
-            elif line['type'] == 'V':
+            elif line_type == 'V':
                 if line['name'] == 'X':
                     state.center = line["value"]
                 elif line['name'] == 'D':
@@ -106,13 +108,13 @@ class Reader:
                 elif line['name'] == 'Z':
                     state.block['zoom'] = line["value"]
 
-            elif line['type'] == 'DP':
+            elif line_type == 'DP':
                 state.block['elements'].append({
                     "type": "point",
                     "location": line["value"],
                 })
 
-            elif line['type'] == 'DA':
+            elif line_type == 'DA':
                 if not state.center:
                     raise ValueError('center undefined')
 
@@ -125,7 +127,7 @@ class Reader:
                     "end": line["end"],
                 })
 
-            elif line['type'] == 'DB':
+            elif line_type == 'DB':
                 state.block['elements'].append({
                     "type": "arc",
                     "center": state.center,
@@ -134,7 +136,7 @@ class Reader:
                     "end": line["end"],
                 })
 
-            elif line['type'] == 'DC':
+            elif line_type == 'DC':
                 if not state.center:
                     raise ValueError('center undefined')
 
@@ -144,7 +146,7 @@ class Reader:
                     "radius": line["value"],
                 })
 
-            elif line['type'] == 'DY':
+            elif line_type == 'DY':
                 state.block['elements'].append({
                     "type": "airway",
                     "location": line["value"],
