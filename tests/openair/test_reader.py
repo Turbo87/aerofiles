@@ -40,6 +40,23 @@ def test_reader(json):
             assert_block(record, expected)
 
 
+def test_reader_error():
+    with open(path.join(DATA, 'broken.txt')) as fp:
+        reader = Reader(fp)
+
+        for i, record_err in enumerate(reader):
+            record, error = record_err
+
+            if i == 1:
+                assert isinstance(error, ValueError)
+                assert record is None
+            else:
+                assert error is None
+                assert record is not None
+
+        assert i == 2
+
+
 def test_low_level_reader(low_level_json):
     with open(path.join(DATA, 'sample.txt')) as fp:
         reader = LowLevelReader(fp)
@@ -49,6 +66,23 @@ def test_low_level_reader(low_level_json):
 
             assert error is None
             assert_line(line, expected)
+
+
+def test_low_level_reader_error():
+    with open(path.join(DATA, 'broken.txt')) as fp:
+        reader = LowLevelReader(fp)
+
+        for i, line_err in enumerate(reader):
+            line, error = line_err
+
+            if i == 8:
+                assert isinstance(error, ValueError)
+                assert line is None
+            else:
+                assert error is None
+                assert line is not None
+
+        assert i + 1 == 6 * 3
 
 
 # Assertions ##################################################################
