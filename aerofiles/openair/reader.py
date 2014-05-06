@@ -3,6 +3,101 @@ from aerofiles.openair import patterns
 
 class Reader:
 
+    """
+    A higher-level reader for the OpenAir airspace file format::
+
+        with open('airspace.txt') as fp:
+            reader = Reader(fp)
+
+    see `OpenAir file format specification
+    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_
+
+    This class should be used as a generator and will return ``(record,
+    error)`` tuples for each airspace or terrain record::
+
+        for record, error in reader:
+            if error:
+                raise error  # or handle it otherwise
+
+            # handle record
+
+    If there is a parsing error while reading a record the whole record is
+    skipped and the parsing error will be returned from the generator. It is
+    up to the calling code whether that parsing error should be handled as
+    fatal or not.
+
+    Airspace records have the following structure::
+
+        {
+            "type": "airspace",
+            "class": "C",
+            "name": "Sacramento",
+            "floor": "500ft",
+            "ceiling": "UNLIM",
+            "labels": [
+                [39.61333, -119.76833],
+            ],
+            "elements": [
+                ...
+            ],
+        }
+
+    Terrain records have the following structure::
+
+        {
+            "type": "terrain",
+            "open": False,
+            "name": "Lake Michigan",
+            "fill": [200, 200, 255],
+            "outline": [0, 1, 0, 0, 255],
+            "zoom": 30.0,
+            "elements": [
+                ...
+            ],
+        }
+
+    Possible elements in both record types::
+
+        # DP elements
+        {
+            "type": "point",
+            "location": [39.61333, -119.76833],
+        }
+
+        # DA elements
+        {
+            "type": "arc",
+            "center": [39.61333, -119.76833],
+            "clockwise": True,
+            "radius": 30.0,
+            "start": 70.0,
+            "end": 180.0,
+        }
+
+        # DB elements
+        {
+            "type": "arc",
+            "center": [39.61333, -119.76833],
+            "clockwise": False,
+            "start": [39.61333, -119.76833],
+            "end": [39.61333, -119.76833],
+        }
+
+        # DC elements
+        {
+            "type": "circle",
+            "center": [39.61333, -119.76833],
+            "radius": 15.0,
+        }
+
+        # DY elements
+        {
+            "type": "airway",
+            "location": [39.61333, -119.76833],
+        }
+
+    """
+
     def __init__(self, fp):
         self.reader = LowLevelReader(fp)
 
