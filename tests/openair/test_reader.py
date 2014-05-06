@@ -49,6 +49,7 @@ def test_reader_error():
 
             if i == 1:
                 assert isinstance(error, ValueError)
+                assert error.lineno == 10
                 assert record is None
             else:
                 assert error is None
@@ -77,6 +78,7 @@ def test_low_level_reader_error():
 
             if i == 8:
                 assert isinstance(error, ValueError)
+                assert error.lineno == 10
                 assert line is None
             else:
                 assert error is None

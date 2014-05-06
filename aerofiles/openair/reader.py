@@ -236,6 +236,7 @@ class LowLevelReader:
                     yield (result, None)
 
             except Exception as e:
+                e.lineno = self.lineno
                 yield (None, e)
 
     def parse_line(self, line):
