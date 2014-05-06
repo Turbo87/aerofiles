@@ -56,10 +56,9 @@ class Reader:
         for line, error in self.reader:
             line_type = line['type']
 
-            if line_type in ('AC', 'AN', 'TC', 'TO'):
-                if state.is_ready():
-                    yield state.block
-                    state.reset()
+            if line_type in ('AC', 'AN', 'TC', 'TO') and state.is_ready():
+                yield state.block
+                state.reset()
 
             if not state.block:
                 if line_type in ('AC', 'AN'):
