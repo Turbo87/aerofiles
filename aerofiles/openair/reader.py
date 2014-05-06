@@ -61,28 +61,24 @@ class Reader:
                     yield state.block
                     state.reset()
 
-            if line_type == 'AC':
-                if not state.block:
+            if not state.block:
+                if line_type in ('AC', 'AN'):
                     state.reset_airspace()
+                elif line_type == 'TC':
+                    state.reset_terrain(False)
+                elif line_type == 'TO':
+                    state.reset_terrain(True)
 
+            if line_type == 'AC':
                 state.block["class"] = line["value"]
 
             elif line_type == 'AN':
-                if not state.block:
-                    state.reset_airspace()
-
                 state.block["name"] = line["value"]
 
             elif line_type == 'TC':
-                if not state.block:
-                    state.reset_terrain(False)
-
                 state.block["name"] = line["value"]
 
             elif line_type == 'TO':
-                if not state.block:
-                    state.reset_terrain(True)
-
                 state.block["name"] = line["value"]
 
             elif line_type == 'AH':
