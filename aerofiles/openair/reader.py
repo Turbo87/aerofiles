@@ -10,46 +10,6 @@ class Reader:
     def __iter__(self):
         return self.next()
 
-    class State:
-        def __init__(self):
-            self.center = None
-            self.reset()
-
-        def is_ready(self):
-            if not self.block:
-                return False
-
-            block_type = self.block.get("type")
-
-            return block_type == "terrain" or (block_type == "airspace" and
-                self.block.get("name") and self.block.get("class"))  # noqa
-
-        def reset_airspace(self):
-            self.block = {
-                "type": "airspace",
-                "class": None,
-                "name": None,
-                "floor": None,
-                "ceiling": None,
-                "labels": [],
-                "elements": []
-            }
-
-        def reset_terrain(self, open):
-            self.block = {
-                "type": "terrain",
-                "open": open,
-                "name": None,
-                "fill": None,
-                "outline": None,
-                "zoom": None,
-                "elements": []
-            }
-
-        def reset(self):
-            self.clockwise = True
-            self.block = None
-
     def next(self):
         state = self.State()
 
@@ -154,6 +114,46 @@ class Reader:
                 "type": "airway",
                 "location": line["value"],
             })
+
+    class State:
+        def __init__(self):
+            self.center = None
+            self.reset()
+
+        def is_ready(self):
+            if not self.block:
+                return False
+
+            block_type = self.block.get("type")
+
+            return block_type == "terrain" or (block_type == "airspace" and
+                self.block.get("name") and self.block.get("class"))  # noqa
+
+        def reset_airspace(self):
+            self.block = {
+                "type": "airspace",
+                "class": None,
+                "name": None,
+                "floor": None,
+                "ceiling": None,
+                "labels": [],
+                "elements": []
+            }
+
+        def reset_terrain(self, open):
+            self.block = {
+                "type": "terrain",
+                "open": open,
+                "name": None,
+                "fill": None,
+                "outline": None,
+                "zoom": None,
+                "elements": []
+            }
+
+        def reset(self):
+            self.clockwise = True
+            self.block = None
 
 
 class LowLevelReader:
