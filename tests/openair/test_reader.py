@@ -13,6 +13,8 @@ from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
 DATA = path.join(path.dirname(path.realpath(__file__)), 'data')
 
 
+## Fixtures ###################################################################
+
 @pytest.fixture
 def json():
     with open(path.join(DATA, 'sample.json')) as fp:
@@ -24,6 +26,8 @@ def low_level_json():
     with open(path.join(DATA, 'sample-low-level.json')) as fp:
         return load_json(fp)
 
+
+## Tests ######################################################################
 
 def test_reader(json):
     with open(path.join(DATA, 'sample.txt')) as fp:
@@ -45,6 +49,8 @@ def test_low_level_reader(low_level_json):
             assert error is None
             assert_line(line, expected)
 
+
+## Assertions #################################################################
 
 def assert_float(value, expected, threshold):
     assert abs(value - expected) < threshold
