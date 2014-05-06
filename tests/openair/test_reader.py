@@ -39,10 +39,11 @@ def test_low_level_reader(low_level_json):
     with open(path.join(DATA, 'sample.txt')) as fp:
         reader = LowLevelReader(fp)
 
-        for result, expected in zip_longest(reader, low_level_json):
-            result, error = result
+        for line_err, expected in zip_longest(reader, low_level_json):
+            line, error = line_err
+
             assert error is None
-            assert_record(result, expected)
+            assert_line(line, expected)
 
 
 def assert_float(value, expected, threshold):
@@ -106,7 +107,7 @@ def assert_element(value, expected):
             assert_location(value['end'], expected['end'])
 
 
-def assert_record(value, expected):
+def assert_line(value, expected):
     assert value['type'] == expected['type']
 
     if value['type'] == 'V':
