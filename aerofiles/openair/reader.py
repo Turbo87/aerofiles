@@ -33,7 +33,13 @@ class Reader:
                     state.reset_terrain(True)
 
             if state.record:
-                self.handle_line(line, state)
+                try:
+                    self.handle_line(line, state)
+
+                except Exception as e:
+                    e.lineno = self.reader.lineno
+                    yield None, e
+                    state.reset()
 
         if state.is_ready():
             yield state.record, None

@@ -47,9 +47,13 @@ def test_reader_error():
         for i, record_err in enumerate(reader):
             record, error = record_err
 
-            if i == 1:
+            if i == 0:
                 assert isinstance(error, ValueError)
-                assert error.lineno == 10
+                assert error.lineno == 5
+                assert record is None
+            elif i == 1:
+                assert isinstance(error, ValueError)
+                assert error.lineno == 9
                 assert record is None
             else:
                 assert error is None
@@ -76,15 +80,15 @@ def test_low_level_reader_error():
         for i, line_err in enumerate(reader):
             line, error = line_err
 
-            if i == 8:
+            if i == 7:
                 assert isinstance(error, ValueError)
-                assert error.lineno == 10
+                assert error.lineno == 9
                 assert line is None
             else:
                 assert error is None
                 assert line is not None
 
-        assert i + 1 == 6 * 3
+        assert i == 16
 
 
 # Assertions ##################################################################
