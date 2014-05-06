@@ -32,7 +32,8 @@ class Reader:
                 elif line_type == 'TO':
                     state.reset_terrain(True)
 
-            self.handle_line(line, state)
+            if state.block:
+                self.handle_line(line, state)
 
         if state.is_ready():
             yield state.block, None
