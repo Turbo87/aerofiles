@@ -21,10 +21,10 @@ class Reader:
             line_type = line['type']
 
             if line_type in ('AC', 'AN', 'TC', 'TO') and state.is_ready():
-                yield state.block, None
+                yield state.record, None
                 state.reset()
 
-            if not state.block:
+            if not state.record:
                 if line_type in ('AC', 'AN'):
                     state.reset_airspace()
                 elif line_type == 'TC':
@@ -32,41 +32,41 @@ class Reader:
                 elif line_type == 'TO':
                     state.reset_terrain(True)
 
-            if state.block:
+            if state.record:
                 self.handle_line(line, state)
 
         if state.is_ready():
-            yield state.block, None
+            yield state.record, None
 
     def handle_line(self, line, state):
         line_type = line['type']
 
         if line_type == 'AC':
-            state.block["class"] = line["value"]
+            state.record["class"] = line["value"]
 
         elif line_type == 'AN':
-            state.block["name"] = line["value"]
+            state.record["name"] = line["value"]
 
         elif line_type == 'TC':
-            state.block["name"] = line["value"]
+            state.record["name"] = line["value"]
 
         elif line_type == 'TO':
-            state.block["name"] = line["value"]
+            state.record["name"] = line["value"]
 
         elif line_type == 'AH':
-            state.block["ceiling"] = line["value"]
+            state.record["ceiling"] = line["value"]
 
         elif line_type == 'AL':
-            state.block["floor"] = line["value"]
+            state.record["floor"] = line["value"]
 
         elif line_type == 'AT':
-            state.block['labels'].append(line["value"])
+            state.record['labels'].append(line["value"])
 
         elif line_type == 'SP':
-            state.block["outline"] = line["value"]
+            state.record["outline"] = line["value"]
 
         elif line_type == 'SB':
-            state.block["fill"] = line["value"]
+            state.record["fill"] = line["value"]
 
         elif line_type == 'V':
             if line['name'] == 'X':
@@ -74,7 +74,7 @@ class Reader:
             elif line['name'] == 'D':
                 state.clockwise = line["value"]
             elif line['name'] == 'Z':
-                state.block['zoom'] = line["value"]
+                state.record['zoom'] = line["value"]
 
         elif line_type == 'DP':
             state.add_element({
@@ -126,16 +126,16 @@ class Reader:
             self.reset()
 
         def is_ready(self):
-            if not self.block:
+            if not self.record:
                 return False
 
-            block_type = self.block.get("type")
+            record_type = self.record.get("type")
 
-            return block_type == "terrain" or (block_type == "airspace" and
-                self.block.get("name") and self.block.get("class"))  # noqa
+            return record_type == "terrain" or (record_type == "airspace" and
+                self.record.get("name") and self.record.get("class"))  # noqa
 
         def reset_airspace(self):
-            self.block = {
+            self.record = {
                 "type": "airspace",
                 "class": None,
                 "name": None,
@@ -146,7 +146,7 @@ class Reader:
             }
 
         def reset_terrain(self, open):
-            self.block = {
+            self.record = {
                 "type": "terrain",
                 "open": open,
                 "name": None,
@@ -158,10 +158,10 @@ class Reader:
 
         def reset(self):
             self.clockwise = True
-            self.block = None
+            self.record = None
 
         def add_element(self, element):
-            self.block['elements'].append(element)
+            self.record['elements'].append(element)
 
 
 class LowLevelReader:
