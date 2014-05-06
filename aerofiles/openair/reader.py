@@ -5,7 +5,6 @@ class Reader:
 
     def __init__(self, fp):
         self.reader = LowLevelReader(fp)
-        self.warnings = []
 
     def __iter__(self):
         return self.next()
@@ -14,10 +13,15 @@ class Reader:
         state = self.State()
 
         for line, error in self.reader:
+            if error:
+                yield None, error
+                state.reset()
+                continue
+
             line_type = line['type']
 
             if line_type in ('AC', 'AN', 'TC', 'TO') and state.is_ready():
-                yield state.block
+                yield state.block, None
                 state.reset()
 
             if not state.block:
@@ -31,7 +35,7 @@ class Reader:
             self.handle_line(line, state)
 
         if state.is_ready():
-            yield state.block
+            yield state.block, None
 
     def handle_line(self, line, state):
         line_type = line['type']

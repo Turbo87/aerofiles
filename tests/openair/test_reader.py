@@ -33,8 +33,11 @@ def test_reader(json):
     with open(path.join(DATA, 'sample.txt')) as fp:
         reader = Reader(fp)
 
-        for block, expected in zip_longest(reader, json):
-            assert_block(block, expected)
+        for record_err, expected in zip_longest(reader, json):
+            record, error = record_err
+
+            assert error is None
+            assert_block(record, expected)
 
         assert reader.warnings == []
 
