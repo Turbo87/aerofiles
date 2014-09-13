@@ -29,6 +29,22 @@ def read_file(filename):
     return open(path, 'rb').read()
 
 
+def test_write_line(writer):
+    writer.write_line('line')
+    assert writer.fp.getvalue() == b'line\n'
+
+
+def test_write_line_with_utf8(writer):
+    writer.write_line(u'Köln')
+    assert writer.fp.getvalue() == b'K\xc3\xb6ln\n'
+
+
+def test_write_line_with_latin1(output):
+    writer = Writer(output, 'latin1')
+    writer.write_line(u'Köln')
+    assert writer.fp.getvalue() == b'K\xf6ln\n'
+
+
 def test_write_sample_task(writer):
     with writer.write_task(
         start_max_height_ref=AltitudeReference.AGL,

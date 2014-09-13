@@ -16,13 +16,14 @@ class Writer:
     :meth:`~aerofiles.xcsoar.Writer.write_task` method.
     """
 
-    def __init__(self, fp=None):
+    def __init__(self, fp, encoding='utf-8'):
         self.fp = fp
+        self.encoding = encoding
         self.indent_level = 0
 
     def write_line(self, line):
         indent = '\t' * self.indent_level
-        self.fp.write(indent + line + '\n')
+        self.fp.write((indent + line + '\n').encode(self.encoding))
 
     def format_tag_content(self, _name, **kw):
         params = list(map(lambda item: '%s="%s"' % item, kw.items()))
