@@ -7,7 +7,6 @@ python:
   - "pypy"
 
 install:
-  - pip install pytest pytest-cov coveralls
   - pip install -r requirements-test.txt
   - ./download_test_data.sh
 
@@ -16,4 +15,5 @@ script:
   - py.test --cov aerofiles --cov-report term-missing
 
 after_success:
+  - pip install coveralls==0.4.2
   - coveralls
