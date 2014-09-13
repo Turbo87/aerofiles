@@ -13,7 +13,7 @@
    height="340"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48+devel r"
+   inkscape:version="0.48.4 r9939"
    viewBox="0 0 1175 340.00001"
    sodipodi:docname="logo.svg"
    inkscape:export-filename="/home/turbo/Code/aerofiles/img/logo.png"
@@ -28,9 +28,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.8"
-     inkscape:cx="587.5"
-     inkscape:cy="170"
+     inkscape:zoom="0.28284271"
+     inkscape:cx="317.57793"
+     inkscape:cy="53.157108"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -39,7 +39,12 @@
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
-     fit-margin-bottom="0" />
+     fit-margin-bottom="0"
+     inkscape:window-width="1440"
+     inkscape:window-height="852"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -59,18 +64,18 @@
      transform="translate(-96.974645,-179.00163)">
     <text
        xml:space="preserve"
-       style="font-size:187.5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:0%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal'"
-       x="404.28577"
+       style="font-size:187.5px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:0%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal'"
+       x="820.53674"
        y="448.07645"
        id="text4102"
        sodipodi:linespacing="0%"><tspan
          sodipodi:role="line"
          id="tspan4104"
-         x="404.28577"
+         x="820.53674"
          y="448.07645"><tspan
-           style="fill:#9fc58b;fill-opacity:1"
-           id="tspan4106">aero.</tspan><tspan
-           style="fill:#6f6f6f;fill-opacity:1"
+           style="text-align:center;text-anchor:middle;fill:#9fc58b;fill-opacity:1"
+           id="tspan4106">aero</tspan><tspan
+           style="text-align:center;text-anchor:middle;fill:#6f6f6f;fill-opacity:1"
            id="tspan4110">files</tspan></tspan></text>
     <g
        id="g4131">
