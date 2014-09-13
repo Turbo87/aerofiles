@@ -1,12 +1,11 @@
+# -*- coding: utf-8 -*-
+
 import pytest
 
 import os.path
 import datetime
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import BytesIO
 
 from aerofiles.xcsoar import (
     Writer, TaskType, PointType, ObservationZoneType, AltitudeReference
@@ -17,7 +16,7 @@ FOLDER = os.path.dirname(os.path.realpath(__file__))
 
 @pytest.fixture()
 def output():
-    return StringIO()
+    return BytesIO()
 
 
 @pytest.fixture()
@@ -27,7 +26,7 @@ def writer(output):
 
 def read_file(filename):
     path = os.path.join(FOLDER, 'data', filename)
-    return open(path).read()
+    return open(path, 'rb').read()
 
 
 def test_write_sample_task(writer):
