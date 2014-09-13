@@ -55,10 +55,17 @@ def test_write_line(writer):
     assert writer.fp.getvalue() == b'line\r\n'
 
 
-def test_write_line_with_unicode(writer):
+def test_write_line_with_utf8(writer):
     writer.fp = BytesIO()
     writer.write_line(u'Köln')
     assert writer.fp.getvalue() == b'K\xc3\xb6ln\r\n'
+
+
+def test_write_line_with_latin1(output):
+    writer = Writer(output, 'latin1')
+    writer.fp = BytesIO()
+    writer.write_line(u'Köln')
+    assert writer.fp.getvalue() == b'K\xf6ln\r\n'
 
 
 def test_write_fields(writer):
