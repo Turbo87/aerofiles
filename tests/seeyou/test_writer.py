@@ -3,17 +3,14 @@
 import pytest
 import datetime
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
+from io import BytesIO
 
 from aerofiles.seeyou import Writer, WaypointStyle, ObservationZoneStyle
 
 
 @pytest.fixture()
 def output():
-    return StringIO()
+    return BytesIO()
 
 
 @pytest.fixture()
@@ -49,25 +46,32 @@ def writer_with_waypoints(writer):
 
 def test_header(writer):
     assert writer.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n'
 
 
 def test_write_line(writer):
-    writer.fp = StringIO()
+    writer.fp = BytesIO()
     writer.write_line('line')
-    assert writer.fp.getvalue() == 'line\r\n'
+    assert writer.fp.getvalue() == b'line\r\n'
 
 
-def test_write_line_with_unicode(writer):
-    writer.fp = StringIO()
+def test_write_line_with_utf8(writer):
+    writer.fp = BytesIO()
     writer.write_line(u'Köln')
-    assert writer.fp.getvalue() == u'Köln\r\n'
+    assert writer.fp.getvalue() == b'K\xc3\xb6ln\r\n'
+
+
+def test_write_line_with_latin1(output):
+    writer = Writer(output, 'latin1')
+    writer.fp = BytesIO()
+    writer.write_line(u'Köln')
+    assert writer.fp.getvalue() == b'K\xf6ln\r\n'
 
 
 def test_write_fields(writer):
-    writer.fp = StringIO()
-    writer.write_fields(['col1', 'col2', 'col3', 'bla'])
-    assert writer.fp.getvalue() == 'col1,col2,col3,bla\r\n'
+    writer.fp = BytesIO()
+    writer.write_fields([u'col1', u'col2', u'col3', u'bla'])
+    assert writer.fp.getvalue() == b'col1,col2,col3,bla\r\n'
 
 
 def test_write_waypoint(writer):
@@ -79,8 +83,8 @@ def test_write_waypoint(writer):
         (6 + 24.765 / 60.),
     )
     assert writer.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,,\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,,\r\n'
 
 
 def test_write_waypoint_with_negative_coordinates(writer):
@@ -92,8 +96,8 @@ def test_write_waypoint_with_negative_coordinates(writer):
         longitude=-(178 + .001 / 60.),
     )
     assert writer.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"Somewhere else","ABCDEF42",NZ,1232.112S,17800.001W,,1,,,,\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"Somewhere else","ABCDEF42",NZ,1232.112S,17800.001W,,1,,,,\r\n'
 
 
 def test_write_waypoint_with_metadata(writer):
@@ -111,9 +115,9 @@ def test_write_waypoint_with_metadata(writer):
         'cozy little airfield'
     )
     assert writer.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"Meiersberg","MEIER",DE,5107.345N,00624.765E,146.0m,2,120,930m,' \
-        '"130.125","cozy little airfield"\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,146.0m,2,120,930m,' \
+        b'"130.125","cozy little airfield"\r\n'
 
 
 def test_write_task(writer_with_waypoints):
@@ -122,13 +126,13 @@ def test_write_task(writer_with_waypoints):
     ])
 
     assert writer_with_waypoints.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
-        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
-        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
-        '\r\n' \
-        '-----Related Tasks-----\r\n' \
-        '"TestTask","TP1","TP2","TP3","TP1"\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        b'"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        b'"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        b'\r\n' \
+        b'-----Related Tasks-----\r\n' \
+        b'"TestTask","TP1","TP2","TP3","TP1"\r\n'
 
 
 def test_write_task_with_unknown_waypoint(writer_with_waypoints):
@@ -161,15 +165,15 @@ def test_write_task_options(writer_with_waypoints):
     )
 
     assert writer_with_waypoints.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
-        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
-        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
-        '\r\n' \
-        '-----Related Tasks-----\r\n' \
-        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
-        'Options,NoStart=12:34:56,TaskTime=01:45:12,WpDis=False,' \
-        'NearDis=0.7km,NearAlt=300.0m\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        b'"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        b'"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        b'\r\n' \
+        b'-----Related Tasks-----\r\n' \
+        b'"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        b'Options,NoStart=12:34:56,TaskTime=01:45:12,WpDis=False,' \
+        b'NearDis=0.7km,NearAlt=300.0m\r\n'
 
 
 def test_write_task_options2(writer_with_waypoints):
@@ -187,15 +191,15 @@ def test_write_task_options2(writer_with_waypoints):
     )
 
     assert writer_with_waypoints.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
-        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
-        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
-        '\r\n' \
-        '-----Related Tasks-----\r\n' \
-        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
-        'Options,MinDis=False,RandomOrder=False,MaxPts=5,BeforePts=1,' \
-        'AfterPts=2,Bonus=200\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        b'"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        b'"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        b'\r\n' \
+        b'-----Related Tasks-----\r\n' \
+        b'"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        b'Options,MinDis=False,RandomOrder=False,MaxPts=5,BeforePts=1,' \
+        b'AfterPts=2,Bonus=200\r\n'
 
 
 def test_write_task_options_in_waypoints_section(writer_with_waypoints):
@@ -222,16 +226,16 @@ def test_write_observation_zone(writer_with_waypoints):
     )
 
     assert writer_with_waypoints.fp.getvalue() == \
-        'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
-        '"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
-        '"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
-        '"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
-        '\r\n' \
-        '-----Related Tasks-----\r\n' \
-        '"TestTask","TP1","TP2","TP3","TP1"\r\n' \
-        'ObsZone=0,Style=2,R1=400m,A1=180,Line=1\r\n' \
-        'ObsZone=1,Style=0,R1=35000m,A1=30,R2=12000m,A2=12,A12=123.4\r\n' \
-        'ObsZone=2,Style=3,R1=2000m,A1=180,Line=1\r\n'
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
+        b'"TP1","TP1",DE,5107.345N,00824.765E,,1,,,,\r\n' \
+        b'"TP2","TP2",NL,5007.345N,00624.765E,,1,,,,\r\n' \
+        b'"TP3","TP3",DE,4907.345N,00724.765E,,1,,,,\r\n' \
+        b'\r\n' \
+        b'-----Related Tasks-----\r\n' \
+        b'"TestTask","TP1","TP2","TP3","TP1"\r\n' \
+        b'ObsZone=0,Style=2,R1=400m,A1=180,Line=1\r\n' \
+        b'ObsZone=1,Style=0,R1=35000m,A1=30,R2=12000m,A2=12,A12=123.4\r\n' \
+        b'ObsZone=2,Style=3,R1=2000m,A1=180,Line=1\r\n'
 
 
 def test_write_observation_zone_in_waypoints_section(writer_with_waypoints):

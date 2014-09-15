@@ -22,8 +22,9 @@ class Writer:
     ANGLE_FORMAT_INT = u'%d'
     ANGLE_FORMAT_OTHER = u'%s'
 
-    def __init__(self, fp):
+    def __init__(self, fp, encoding='utf-8'):
         self.fp = fp
+        self.encoding = encoding
         self.wps = set()
         self.in_task_section = False
 
@@ -107,7 +108,7 @@ class Writer:
         return timedelta
 
     def write_line(self, line=u''):
-        self.fp.write(line + u'\r\n')
+        self.fp.write((line + u'\r\n').encode(self.encoding))
 
     def write_fields(self, fields):
         self.write_line(u','.join(fields))
