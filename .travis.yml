@@ -1,19 +1,25 @@
 language: python
+python: 2.7
 
-python:
-  - "2.6"
-  - "2.7"
-  - "3.3"
-  - "pypy"
+env:
+  - TOX_ENV=py26
+  - TOX_ENV=py27
+  - TOX_ENV=py33
+  - TOX_ENV=py34
+  - TOX_ENV=pypy
 
 install:
-  - pip install -r requirements-test.txt
-  - ./download_test_data.sh
+  # Install tox and flake8 style checker
+  - pip install tox==1.7.2 flake8==2.1.0
 
 script:
+  # Run the library through flake8
   - flake8 --exclude=".git,docs" --ignore=E501 .
-  - py.test --cov aerofiles --cov-report term-missing
+
+  # Run the unit test suite
+  - tox -e $TOX_ENV --  --cov aerofiles --cov-report term-missing
 
 after_success:
+  # Report coverage results to coveralls.io
   - pip install coveralls==0.4.2
   - coveralls
