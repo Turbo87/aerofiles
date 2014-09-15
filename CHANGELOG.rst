@@ -4,6 +4,13 @@ Changelog
 Here you can see the full list of changes between each aerofiles release.
 
 
+aerofiles v0.3
+--------------
+
+- OpenAir airspace file reader
+- Fixed encoding issues in SeeYou/XCSoar file writers
+
+
 aerofiles v0.2
 --------------
 
