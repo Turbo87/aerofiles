@@ -48,7 +48,7 @@ class Writer:
             value, default='00000000E', is_latitude=False)
 
     def write_line(self, line):
-        self.fp.write(line + '\r\n')
+        self.fp.write((line + u'\r\n').encode('ascii', 'replace'))
 
     def write_config(self, key, value):
         self.write_line('$PFLAC,S,%s,%s' % (key, value))
