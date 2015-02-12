@@ -25,3 +25,12 @@ after_success:
   # Report coverage results to coveralls.io
   - pip install coveralls==0.4.2
   - coveralls
+
+deploy:
+  provider: pypi
+  user: Tobias.Bieniek
+  password:
+    secure: nyCow38ZEMiLmdYWnSTAOzigFQSEOwHv0AHMF8dQQd3zTOF0pA128C5L2vIrrAdjlK5mS7yUIojwbuvDyZ9ZFV01LQil9/Cy2kV4NQ4mbPtdHIIyNacBT6TyZtHSRBALswNPdFsM2Ony1SH6bdS/b4CYxm/sU+OuzhsitAETzwU=
+  on:
+    tags: true
+    repo: Turbo87/aerofiles
