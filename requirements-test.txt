@@ -5,5 +5,5 @@
 pytest==2.6.2
 pytest-cov==1.8.0
 flake8==2.1.0
-freezegun==0.1.11
+freezegun==0.2.8
 six==1.4
