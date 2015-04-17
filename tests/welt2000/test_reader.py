@@ -288,8 +288,7 @@ def check_waypoint(waypoint):
             assert frq['frequency'][3] == '.'
 
     assert 'elevation' in waypoint
-    assert (waypoint['elevation'] is None
-            or -999 <= waypoint['elevation'] <= 9999)
+    assert (waypoint['elevation'] is None or -999 <= waypoint['elevation'] <= 9999)
 
     assert 'latitude' in waypoint
     assert -90 <= waypoint['latitude'] <= 90
