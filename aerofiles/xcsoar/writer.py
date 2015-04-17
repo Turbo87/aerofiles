@@ -107,7 +107,7 @@ class Writer:
         """
         Write a task point to the file::
 
-            with writer.write_point(type=TaskType.TURN):
+            with writer.write_point(type=PointType.TURN):
                 writer.write_waypoint(...)
                 writer.write_observation_zone(...)
 
