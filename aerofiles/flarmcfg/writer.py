@@ -7,8 +7,8 @@ class Writer:
         with open('flarmcfg.txt', 'w') as fp:
             writer = Writer(fp)
 
-    see `FLARM_DataportManual_v6.00E.pdf
-    <http://flarm.de/support/manual/FLARM_DataportManual_v6.00E.pdf>`_ and
+    see `FTD-14 FLARM Configuration Specification
+    <http://flarm.com/support/manuals-documents/>`_ and
     annotated example `flarmcfg.txt
     <http://www.ftv-spandau.de/streckenfluege/flarm-informationen/flarmcfg.txt>`_
     """
