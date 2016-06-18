@@ -400,9 +400,9 @@ def test_decode_options():
     }
 
     assert len(response) == len(reference)
-    for key, value in reference.iteritems():
+    for key in reference.keys():
         assert key in response
-        assert response[key] == value
+        assert response[key] == reference[key]
 
 
 def test_decode_tasklist():
