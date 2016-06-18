@@ -34,113 +34,113 @@ WAYPOINT_LISTS = [
     ]
 ]
 
-TASK_DICTS = [  #list op tuples (input dictionary, output string)
+TASK_DICTS = [  # list op tuples (input dictionary, output string)
     ({  # complete task dictionary
-         "competition_class": "Club",
-         "competition_id": "GO4",
-         "pilot": "John Doe",
-         "copilot": "Roger",
-         "glider_id": "PH-790",
-         "glider_type": "LS4",
-         "logger_interval": 1,
-         "waypoints": WAYPOINT_LISTS[0],
-         "task_name": "FAI-300k"},
+        "competition_class": "Club",
+        "competition_id": "GO4",
+        "pilot": "John Doe",
+        "copilot": "Roger",
+        "glider_id": "PH-790",
+        "glider_type": "LS4",
+        "logger_interval": 1,
+        "waypoints": WAYPOINT_LISTS[0],
+        "task_name": "FAI-300k"},
 
-     b'\r\n'.join([
-         b'$PFLAC,S,PILOT,John Doe',
-         b'$PFLAC,S,COPIL,Roger',
-         b'$PFLAC,S,COMPCLASS,Club',
-         b'$PFLAC,S,GLIDERTYPE,LS4',
-         b'$PFLAC,S,GLIDERID,PH-790',
-         b'$PFLAC,S,COMPID,GO4',
-         b'$PFLAC,S,LOGINT,1',
-         b'$PFLAC,S,NEWTASK,FAI-300k',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
-         b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
+        b'\r\n'.join([
+            b'$PFLAC,S,PILOT,John Doe',
+            b'$PFLAC,S,COPIL,Roger',
+            b'$PFLAC,S,COMPCLASS,Club',
+            b'$PFLAC,S,GLIDERTYPE,LS4',
+            b'$PFLAC,S,GLIDERID,PH-790',
+            b'$PFLAC,S,COMPID,GO4',
+            b'$PFLAC,S,LOGINT,1',
+            b'$PFLAC,S,NEWTASK,FAI-300k',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
+            b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
      ),
     ({  # Only waypoints and task_name, rest None
-         "competition_class": None,
-         "competition_id": None,
-         "pilot": None,
-         "copilot": None,
-         "glider_id": None,
-         "glider_type": None,
-         "logger_interval": None,
-         "waypoints": WAYPOINT_LISTS[0],
-         "task_name": "FAI-300k"},
+        "competition_class": None,
+        "competition_id": None,
+        "pilot": None,
+        "copilot": None,
+        "glider_id": None,
+        "glider_type": None,
+        "logger_interval": None,
+        "waypoints": WAYPOINT_LISTS[0],
+        "task_name": "FAI-300k"},
 
-     b'\r\n'.join([
-         b'$PFLAC,S,NEWTASK,FAI-300k',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
-         b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
+        b'\r\n'.join([
+            b'$PFLAC,S,NEWTASK,FAI-300k',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
+            b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
      ),
     ({  # Only waypoints and task_name
-         "task_name": "FAI-300k",
-         "waypoints": WAYPOINT_LISTS[0]},
+        "task_name": "FAI-300k",
+        "waypoints": WAYPOINT_LISTS[0]},
 
-     b'\r\n'.join([
-         b'$PFLAC,S,NEWTASK,FAI-300k',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
-         b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
-         b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
-         b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
+        b'\r\n'.join([
+            b'$PFLAC,S,NEWTASK,FAI-300k',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,5022926N,00849263E,Borken Hoxfeld',
+            b'$PFLAC,S,ADDWP,5035427N,00702133E,Hoogeveen',
+            b'$PFLAC,S,ADDWP,5124225N,00624765E,Hilversum',
+            b'$PFLAC,S,ADDWP,0000000N,00000000E,Hilversum']) + b'\r\n'
      )
 ]
 
 TASK_DICTS_WRONG = [  # list of tuples(input dictionary, exception, exception string)
     ({  # waypoints is None -> Error
-         "competition_class": "Club",
-         "competition_id": "GO4",
-         "pilot": "John Doe",
-         "copilot": "Roger",
-         "glider_id": "PH-790",
-         "glider_type": "LS4",
-         "logger_interval": 1,
-         "waypoints": None,
-         "task_name": "FAI-300k"},
+        "competition_class": "Club",
+        "competition_id": "GO4",
+        "pilot": "John Doe",
+        "copilot": "Roger",
+        "glider_id": "PH-790",
+        "glider_type": "LS4",
+        "logger_interval": 1,
+        "waypoints": None,
+        "task_name": "FAI-300k"},
 
-     TypeError,
+        TypeError,
 
-     "waypoints and task_name should be contained in the task dictionary and can not be None"
+        "waypoints and task_name should be contained in the task dictionary and can not be None"
      ),
     ({  # missing task_name -> Error
-         "competition_class": "Club",
-         "competition_id": "GO4",
-         "pilot": "John Doe",
-         "copilot": "Roger",
-         "glider_id": "PH-790",
-         "glider_type": "LS4",
-         "logger_interval": 1,
-         "waypoints": WAYPOINT_LISTS[0]},
+        "competition_class": "Club",
+        "competition_id": "GO4",
+        "pilot": "John Doe",
+        "copilot": "Roger",
+        "glider_id": "PH-790",
+        "glider_type": "LS4",
+        "logger_interval": 1,
+        "waypoints": WAYPOINT_LISTS[0]},
 
-     TypeError,
+        TypeError,
 
-     "waypoints and task_name should be contained in the task dictionary and can not be None"
+        "waypoints and task_name should be contained in the task dictionary and can not be None"
      ),
     ({  # waypoints has less than 5 entries -> Error
-         "competition_class": "Club",
-         "competition_id": "GO4",
-         "pilot": "John Doe",
-         "copilot": "Roger",
-         "glider_id": "PH-790",
-         "glider_type": "LS4",
-         "logger_interval": 1,
-         "waypoints": WAYPOINT_LISTS[1],
-         "task_name": "FAI-300k"},
+        "competition_class": "Club",
+        "competition_id": "GO4",
+        "pilot": "John Doe",
+        "copilot": "Roger",
+        "glider_id": "PH-790",
+        "glider_type": "LS4",
+        "logger_interval": 1,
+        "waypoints": WAYPOINT_LISTS[1],
+        "task_name": "FAI-300k"},
 
-     ValueError,
+        ValueError,
 
-     "There should be at least 5 waypoints (take-off, start, turnpoint, finish, landing"
+        "There should be at least 5 waypoints (take-off, start, turnpoint, finish, landing"
      )
 ]
 
@@ -216,8 +216,7 @@ def test_waypoint(writer):
         longitude=(6 + 24.765 / 60.),
         description='Meiersberg',
     )
-    assert writer.fp.getvalue() == \
-           b'$PFLAC,S,ADDWP,5107345N,00624765E,Meiersberg\r\n'
+    assert writer.fp.getvalue() == b'$PFLAC,S,ADDWP,5107345N,00624765E,Meiersberg\r\n'
 
 
 def test_waypoint_with_negative_coordinates(writer):
@@ -226,8 +225,7 @@ def test_waypoint_with_negative_coordinates(writer):
         longitude=-(178 + .001 / 60.),
         description='TAKEOFF',
     )
-    assert writer.fp.getvalue() == \
-           b'$PFLAC,S,ADDWP,1232112S,17800001W,TAKEOFF\r\n'
+    assert writer.fp.getvalue() == b'$PFLAC,S,ADDWP,1232112S,17800001W,TAKEOFF\r\n'
 
 
 def test_default_waypoint(writer):

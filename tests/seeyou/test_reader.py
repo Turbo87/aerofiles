@@ -176,45 +176,45 @@ TASK_LISTS = [  # list of tuples (tasklist, output_tasklist)
     (["Germany_lap", "Meiersberg", "Meiersberg", "Ulm H Bf", "Vettweiss Soller", "Meiersberg", "Meiersberg"],
      [
          {
-            "ObsZone": -1,
-            "name": "Meiersberg",
-            "latitude": 51.29972222222222,
-            "longitude": 6.956388888888889
+             "ObsZone": -1,
+             "name": "Meiersberg",
+             "latitude": 51.29972222222222,
+             "longitude": 6.956388888888889
          },
          {
-            "ObsZone": 0,
-            "name": "Meiersberg",
-            "latitude": 51.29972222222222,
-            "longitude": 6.956388888888889
+             "ObsZone": 0,
+             "name": "Meiersberg",
+             "latitude": 51.29972222222222,
+             "longitude": 6.956388888888889
          },
          {
-            "ObsZone": 1,
-            "name": "Ulm H Bf",
-            "latitude": 48.39944444444444,
-            "longitude": 9.983055555555556
+             "ObsZone": 1,
+             "name": "Ulm H Bf",
+             "latitude": 48.39944444444444,
+             "longitude": 9.983055555555556
          },
          {
-            "ObsZone": 2,
-            "name": "Vettweiss Soller",
-            "latitude": 50.7475,
-            "longitude": 6.567222222222222
+             "ObsZone": 2,
+             "name": "Vettweiss Soller",
+             "latitude": 50.7475,
+             "longitude": 6.567222222222222
          },
          {
-            "ObsZone": 3,
-            "name": "Meiersberg",
-            "latitude": 51.29972222222222,
-            "longitude": 6.956388888888889
+             "ObsZone": 3,
+             "name": "Meiersberg",
+             "latitude": 51.29972222222222,
+             "longitude": 6.956388888888889
          },
          {
-            "ObsZone": 4,
-            "name": "Meiersberg",
-            "latitude": 51.29972222222222,
-            "longitude": 6.956388888888889
+             "ObsZone": 4,
+             "name": "Meiersberg",
+             "latitude": 51.29972222222222,
+             "longitude": 6.956388888888889
          }
-     ])
+    ])
 ]
 
-TASKPOINTS =[  # list of tuples (input, desired output)
+TASKPOINTS = [  # list of tuples (input, desired output)
     (["ObsZone=0", "Style=2", "R1=1000m", "Line=1"],
      {
          "ObsZone": 0,
@@ -227,47 +227,48 @@ TASKPOINTS =[  # list of tuples (input, desired output)
          "Line": True,
          "Move": False,
          "Reduce": False
-     }),
+    }),
     (["ObsZone=1", "Style=1", "R1=500m", "A1=180"],
      {
-            "ObsZone": 1,
-            "Style": 1,
-            "R1": 500,
-            "A1": 180,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": False,
-            "Move": False,
-            "Reduce": False
-         }),
+         "ObsZone": 1,
+         "Style": 1,
+         "R1": 500,
+         "A1": 180,
+         "R2": None,
+         "A2": None,
+         "A12": None,
+         "Line": False,
+         "Move": False,
+         "Reduce": False
+    }),
     (["ObsZone=2", "Style=1", "R1=500m", "A1=180"],
      {
-            "ObsZone": 2,
-            "Style": 1,
-            "R1": 500,
-            "A1": 180,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": False,
-            "Move": False,
-            "Reduce": False
-         }),
+         "ObsZone": 2,
+         "Style": 1,
+         "R1": 500,
+         "A1": 180,
+         "R2": None,
+         "A2": None,
+         "A12": None,
+         "Line": False,
+         "Move": False,
+         "Reduce": False
+    }),
     (["ObsZone=3", "Style=3", "R1=500m", "Line=1"],
      {
-            "ObsZone": 3,
-            "Style": 3,
-            "R1": 500,
-            "A1": None,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": True,
-            "Move": False,
-            "Reduce": False
-         })
+         "ObsZone": 3,
+         "Style": 3,
+         "R1": 500,
+         "A1": None,
+         "R2": None,
+         "A2": None,
+         "A12": None,
+         "Line": True,
+         "Move": False,
+         "Reduce": False
+    })
 ]
+
 
 def test_comments():
     line = '* this is a comment'
@@ -402,7 +403,6 @@ def test_decode_options():
     for key, value in reference.iteritems():
         assert key in response
         assert response[key] == value
-
 
 
 def test_decode_tasklist():

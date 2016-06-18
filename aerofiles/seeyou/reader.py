@@ -208,7 +208,7 @@ class Reader:
             for waypoint in waypoints:
                 if waypoint["name"] == task_list[index]:
                     taskpoint = {
-                        "ObsZone": index-1,  # ObsZone take-off = -1
+                        "ObsZone": index - 1,  # ObsZone take-off = -1
                         "name": waypoint["name"],
                         "latitude": waypoint["latitude"],
                         "longitude": waypoint["longitude"]
@@ -233,7 +233,7 @@ class Reader:
             "MaxPts": None,
             "BeforePts": None,
             "AfterPts": None,
-            "Bonus": None   
+            "Bonus": None
         }
 
         for field in fields:
@@ -257,6 +257,7 @@ class Reader:
     def decode_taskpoint(self, fields):
 
         taskpoint_info = {
+            "ObsZone": None,
             "Style": None,
             "R1": None,
             "A1": None,
@@ -268,7 +269,6 @@ class Reader:
             "Reduce": False
         }
 
-        ObsZone = None
         for field in fields:
             if field.split("=")[0] in ["ObsZone", "Style", "A1", "A2", "A12"]:
                 taskpoint_info[field.split("=")[0]] = int(field.split("=")[1])
