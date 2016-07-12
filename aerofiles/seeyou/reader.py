@@ -193,3 +193,90 @@ class Reader:
             return None
 
         return description
+
+    def decode_taskname(self, fields):
+        if not fields:
+            raise ParserError('Name field must not be empty')
+
+        return fields[0]
+
+    def decode_tasklist(self, fields, waypoints):
+        task_list = fields[1::]
+        task = []
+
+        for index in range(len(task_list)):
+            for waypoint in waypoints:
+                if waypoint["name"] == task_list[index]:
+                    taskpoint = {
+                        "ObsZone": index - 1,  # ObsZone take-off = -1
+                        "name": waypoint["name"],
+                        "latitude": waypoint["latitude"],
+                        "longitude": waypoint["longitude"]
+                    }
+                    task.append(taskpoint)
+                    break
+
+        return task
+
+    def decode_options(self, fields):
+        if not fields[0] == "Options":
+            return
+
+        task_options = {
+            "NoStart": None,
+            "TaskTime": None,
+            "WpDis": False,
+            "NearDis": None,
+            "NearAlt": None,
+            "MinDis": False,
+            "RandomOrder": False,
+            "MaxPts": None,
+            "BeforePts": None,
+            "AfterPts": None,
+            "Bonus": None
+        }
+
+        for field in fields:
+            if field == "Options":
+                continue
+            elif field.split("=")[0] in ["NoStart", "TaskTime"]:                     # string
+                task_options[field.split("=")[0]] = field.split("=")[1]
+            elif field.split("=")[0] in ["WpDis", "MinDis", "RandomOrder"]:            # boolean
+                task_options[field.split("=")[0]] = field.split("=")[1] == "True"
+            elif field.split("=")[0] in ["MaxPts", "BeforePts", "AfterPts", "Bonus"]:  # int
+                task_options[field.split("=")[0]] = int(field.split("=")[1])
+            elif field.split("=")[0] in ["NearAlt"]:
+                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-1])   # float, take of m
+            elif field.split("=")[0] in ["NearDis"]:
+                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-2])   # float, take of km
+            else:
+                raise Exception("Input contains unsupported option %s" % field)
+
+        return task_options
+
+    def decode_taskpoint(self, fields):
+
+        taskpoint_info = {
+            "ObsZone": None,
+            "Style": None,
+            "R1": None,
+            "A1": None,
+            "R2": None,
+            "A2": None,
+            "A12": None,
+            "Line": False,
+            "Move": False,
+            "Reduce": False
+        }
+
+        for field in fields:
+            if field.split("=")[0] in ["ObsZone", "Style", "A1", "A2", "A12"]:
+                taskpoint_info[field.split("=")[0]] = int(field.split("=")[1])
+            elif field.split("=")[0] in ["R1", "R2"]:
+                taskpoint_info[field.split("=")[0]] = int(field.split("=")[1][0:-1])  # taking off m
+            elif (field.split("=")[0] in ["Line", "Move", "Reduce"]) and (field.split("=")[1] == "1"):
+                taskpoint_info[field.split("=")[0]] = True
+            else:
+                raise Exception("A taskpoint does not contain key %s" % field.split("=")[0])
+
+        return taskpoint_info

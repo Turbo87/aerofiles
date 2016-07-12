@@ -47,6 +47,16 @@ class Writer:
         return self.format_coordinate(
             value, default='00000000E', is_latitude=False)
 
+    def format_waypoints(self, SeeYou_task):
+        flarm_waypoints = []
+        for taskpoint in SeeYou_task:
+            flarm_waypoints.append([
+                taskpoint["latitude"],
+                taskpoint["longitude"],
+                taskpoint["name"]
+            ])
+        return flarm_waypoints
+
     def write_line(self, line):
         self.fp.write((line + u'\r\n').encode('ascii', 'replace'))
 
@@ -210,3 +220,39 @@ class Writer:
                 raise ValueError('Invalid number of task point tuple items')
 
             self.write_waypoint(*args)
+
+    def write_field(self, key, value):
+        if key == "pilot":
+            self.write_pilot(value)
+        elif key == "copilot":
+            self.write_copilot(value)
+        elif key == "competition_class":
+            self.write_competition_class(value)
+        elif key == "glider_type":
+            self.write_glider_type(value)
+        elif key == "glider_id":
+            self.write_glider_id(value)
+        elif key == "competition_id":
+            self.write_competition_id(value)
+        elif key == "logger_interval":
+            self.write_logger_interval(value)
+        elif key == "task_name":
+            self.write_task_declaration(value)
+        elif key == "waypoints":
+            self.write_waypoints(value)
+        else:
+            raise ValueError("There is no functions to write %s" % key)
+
+    def write_declared_task(self, task_dict):
+        if "waypoints" not in task_dict or "task_name" not in task_dict or task_dict["waypoints"] is None or task_dict["task_name"] is None:
+            raise TypeError("waypoints and task_name should be contained in the task dictionary and can not be None")
+        else:
+            if len(task_dict["waypoints"]) < 5:
+                raise ValueError("There should be at least 5 waypoints (take-off, start, turnpoint, finish, landing")
+
+            writing_order = ["pilot", "copilot", "competition_class", "glider_type", "glider_id", "competition_id",
+                             "logger_interval", "task_name", "waypoints"]
+
+            for key in writing_order:
+                if key in task_dict and task_dict[key] is not None:
+                    self.write_field(key, task_dict[key])
