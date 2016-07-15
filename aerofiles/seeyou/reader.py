@@ -26,10 +26,9 @@ class Reader:
         return self.next()
 
     def next(self):
-        for fields in csv.reader(self.fp):
-            wp = self.decode_waypoint(fields)
-            if wp:
-                yield wp
+        waypoints = self.read(self.fp)['waypoints']
+        for waypoint in waypoints:
+            yield waypoint
 
     def read(self, fp):
         waypoints = list(filter(None, map(self.decode_waypoint, csv.reader(fp))))

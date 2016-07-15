@@ -242,7 +242,7 @@ def test_original():
 
 def test_read():
     with open(CUPFILE_WAYPOINTS) as f:
-        waypoints = Reader().read(f)["waypoints"]
+        waypoints = Reader().read(f)['waypoints']
         for index in range(len(waypoints)):
             assert_waypoint(waypoints[index], WAYPOINTS[index][1])
 
