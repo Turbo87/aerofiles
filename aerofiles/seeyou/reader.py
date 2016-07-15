@@ -31,8 +31,21 @@ class Reader:
             yield waypoint
 
     def read(self, fp):
-        waypoints = list(filter(None, map(self.decode_waypoint, csv.reader(fp))))
-        return dict(waypoints=waypoints)
+        waypoints = []
+        tasks = []
+        task_information = False
+        for fields in csv.reader(fp):
+            if fields == ["-----Related Tasks-----"]:
+                task_information = True
+                continue
+            if task_information:
+                tasks = self.decode_task_info(tasks, fields)
+            else:
+                waypoint = self.decode_waypoint(fields)
+                if waypoint:
+                    waypoints.append(waypoint)
+
+        return dict(waypoints=waypoints, tasks=tasks)
 
     def decode_waypoint(self, fields):
         # Ignore header line
@@ -67,6 +80,23 @@ class Reader:
             'frequency': self.decode_frequency(fields[9]),
             'description': self.decode_description(fields[10]),
         }
+
+    def decode_task_info(self, tasks, fields):
+        if fields[0] == 'Options':
+            tasks[-1]['Options'] = self.decode_task_options(fields)
+        elif fields[0].startswith('ObsZone'):
+            tasks[-1]['ObsZones'].append(self.decode_task_ObsZone(fields))
+        else:
+            tasks.append(
+                {
+                    'name': self.decode_task_name(fields),
+                    'waypoints': self.decode_task_waypoints(fields),
+                    'Options': None,
+                    'ObsZones': []
+                }
+            )
+
+        return tasks
 
     def decode_name(self, name):
         if not name:
@@ -196,3 +226,71 @@ class Reader:
             return None
 
         return description
+
+    def decode_task_options(self, fields):
+        if not fields[0] == "Options":
+            return
+
+        task_options = {
+            'NoStart': None,
+            'TaskTime': None,
+            'WpDis': False,
+            'NearDis': None,
+            'NearAlt': None,
+            'MinDis': False,
+            'RandomOrder': False,
+            'MaxPts': None,
+            'BeforePts': None,
+            'AfterPts': None,
+            'Bonus': None
+        }
+
+        for field in fields:
+            if field == "Options":
+                continue
+            elif field.split("=")[0] in ["NoStart", "TaskTime"]:                       # string
+                task_options[field.split("=")[0]] = field.split("=")[1]
+            elif field.split("=")[0] in ["WpDis", "MinDis", "RandomOrder"]:            # boolean
+                task_options[field.split("=")[0]] = field.split("=")[1] == "True"
+            elif field.split("=")[0] in ["MaxPts", "BeforePts", "AfterPts", "Bonus"]:  # int
+                task_options[field.split("=")[0]] = int(field.split("=")[1])
+            elif field.split("=")[0] in ["NearAlt"]:
+                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-1])   # float, take of m
+            elif field.split("=")[0] in ["NearDis"]:
+                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-2])   # float, take of km
+            else:
+                raise Exception("Input contains unsupported option %s" % field)
+
+        return task_options
+
+    def decode_task_ObsZone(self, fields):
+        task_ObsZone = {
+            "ObsZone": None,
+            "Style": None,
+            "R1": None,
+            "A1": None,
+            "R2": None,
+            "A2": None,
+            "A12": None,
+            "Line": False,
+            "Move": False,
+            "Reduce": False
+        }
+
+        for field in fields:
+            if field.split("=")[0] in ["ObsZone", "Style", "A1", "A2", "A12"]:
+                task_ObsZone[field.split("=")[0]] = int(field.split("=")[1])
+            elif field.split("=")[0] in ["R1", "R2"]:
+                task_ObsZone[field.split("=")[0]] = int(field.split("=")[1][0:-1])  # taking off m
+            elif (field.split("=")[0] in ["Line", "Move", "Reduce"]) and (field.split("=")[1] == "1"):
+                task_ObsZone[field.split("=")[0]] = True
+            else:
+                raise Exception("A taskpoint does not contain key %s" % field.split("=")[0])
+
+        return task_ObsZone
+
+    def decode_task_name(self, fields):
+        return fields[0]
+
+    def decode_task_waypoints(self, fields):
+        return fields[1::]

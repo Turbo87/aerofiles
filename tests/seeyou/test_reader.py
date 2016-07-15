@@ -7,10 +7,9 @@ from aerofiles.seeyou import Reader, Converter
 
 from tests import assert_waypoint
 
-
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
-CUPFILE_WAYPOINTS = path.join(FOLDER, 'data', 'waypoints.cup')
+SIMPLE_CUPFILE = path.join(FOLDER, 'data', 'simple.cup')
 
 if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
@@ -241,7 +240,7 @@ def test_original():
 
 
 def test_read():
-    with open(CUPFILE_WAYPOINTS) as f:
+    with open(SIMPLE_CUPFILE) as f:
         waypoints = Reader().read(f)['waypoints']
         for index in range(len(waypoints)):
             assert_waypoint(waypoints[index], WAYPOINTS[index][1])
@@ -286,3 +285,58 @@ def check_waypoint(waypoint):
 
     assert 'country' in waypoint
     assert len(waypoint['country']) == 2
+
+
+def test_task():
+    with open(SIMPLE_CUPFILE) as f:
+
+        tasks = Reader().read(f)['tasks']
+        assert len(tasks) == 1
+
+        assert tasks[0]['name'] == '3 turnpoints'
+        assert tasks[0]['Options'] == {
+            'NoStart': None,
+            'TaskTime': '03:00:00',
+            'WpDis': True,
+            'NearDis': None,
+            'NearAlt': None,
+            'MinDis': True,
+            'RandomOrder': False,
+            'MaxPts': 13,
+            'BeforePts': None,
+            'AfterPts': None,
+            'Bonus': None,
+
+        }
+
+        assert tasks[0]['waypoints'] == ['Meiersberg', 'Meiersberg', 'Vettweiss Soller', 'Weisweiler Kw 10',
+                                         'Eddln0 Eddl N P', 'Meiersberg', 'Meiersberg']
+
+        ObsZones = tasks[0]['ObsZones']
+        assert len(ObsZones) == 5
+
+        assert tasks[0]['ObsZones'][0] == {
+            "ObsZone": 0,
+            "Style": 2,
+            "R1": 2500,
+            "A1": None,
+            "R2": None,
+            "A2": None,
+            "A12": None,
+            "Line": True,
+            "Move": False,
+            "Reduce": False
+        }
+
+        assert tasks[0]['ObsZones'][2] == {
+            "ObsZone": 2,
+            "Style": 1,
+            "R1": 500,
+            "A1": 180,
+            "R2": None,
+            "A2": None,
+            "A12": None,
+            "Line": False,
+            "Move": False,
+            "Reduce": False
+        }
