@@ -10,16 +10,11 @@ from tests import assert_waypoint
 
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
-CUPFILE_WAYPOINTS = path.join(FOLDER, 'data', 'WAYPOINTS.CUP')
+CUPFILE_WAYPOINTS = path.join(FOLDER, 'data', 'waypoints.cup')
 
 if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
     reason="requires SEEYOU.CUP"
-)
-
-if_waypoints_cup_available = pytest.mark.skipif(
-    not path.exists(CUPFILE_WAYPOINTS),
-    reason="requires WAYPOINTS.CUP"
 )
 
 WAYPOINTS = [
@@ -245,7 +240,6 @@ def test_original():
             check_waypoint(waypoint)
 
 
-@if_waypoints_cup_available
 def test_read():
     with open(CUPFILE_WAYPOINTS) as f:
         waypoints = Reader().read(f)["waypoints"]
