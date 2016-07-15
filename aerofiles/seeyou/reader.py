@@ -31,6 +31,10 @@ class Reader:
             if wp:
                 yield wp
 
+    def read(self, fp):
+        waypoints = list(filter(None, map(self.decode_waypoint, csv.reader(fp))))
+        return dict(waypoints=waypoints)
+
     def decode_waypoint(self, fields):
         # Ignore header line
         if fields == ['name', 'code', 'country', 'lat', 'lon', 'elev',
