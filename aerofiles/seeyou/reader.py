@@ -39,7 +39,19 @@ class Reader:
                 task_information = True
                 continue
             if task_information:
-                tasks = self.decode_task_info(tasks, fields)
+                if fields[0] == 'Options':
+                    tasks[-1]['Options'] = self.decode_task_options(fields)
+                elif fields[0].startswith('ObsZone'):
+                    tasks[-1]['obs_zones'].append(self.decode_task_obs_zone(fields))
+                else:
+                    tasks.append(
+                        {
+                            'name': self.decode_task_name(fields),
+                            'waypoints': self.decode_task_waypoints(fields),
+                            'options': None,
+                            'obs_zones': []
+                        }
+                    )
             else:
                 waypoint = self.decode_waypoint(fields)
                 if waypoint:
@@ -80,23 +92,6 @@ class Reader:
             'frequency': self.decode_frequency(fields[9]),
             'description': self.decode_description(fields[10]),
         }
-
-    def decode_task_info(self, tasks, fields):
-        if fields[0] == 'Options':
-            tasks[-1]['Options'] = self.decode_task_options(fields)
-        elif fields[0].startswith('ObsZone'):
-            tasks[-1]['ObsZones'].append(self.decode_task_ObsZone(fields))
-        else:
-            tasks.append(
-                {
-                    'name': self.decode_task_name(fields),
-                    'waypoints': self.decode_task_waypoints(fields),
-                    'Options': None,
-                    'ObsZones': []
-                }
-            )
-
-        return tasks
 
     def decode_name(self, name):
         if not name:
@@ -232,62 +227,92 @@ class Reader:
             return
 
         task_options = {
-            'NoStart': None,
-            'TaskTime': None,
-            'WpDis': False,
-            'NearDis': None,
-            'NearAlt': None,
-            'MinDis': False,
-            'RandomOrder': False,
-            'MaxPts': None,
-            'BeforePts': None,
-            'AfterPts': None,
-            'Bonus': None
+            'no_start': None,
+            'task_time': None,
+            'wp_dis': False,
+            'near_dis': None,
+            'near_alt': None,
+            'min_dis': False,
+            'random_order': False,
+            'max_pts': None,
+            'before_pts': None,
+            'after_pts': None,
+            'bonus': None
         }
 
-        for field in fields:
-            if field == "Options":
-                continue
-            elif field.split("=")[0] in ["NoStart", "TaskTime"]:                       # string
-                task_options[field.split("=")[0]] = field.split("=")[1]
-            elif field.split("=")[0] in ["WpDis", "MinDis", "RandomOrder"]:            # boolean
-                task_options[field.split("=")[0]] = field.split("=")[1] == "True"
-            elif field.split("=")[0] in ["MaxPts", "BeforePts", "AfterPts", "Bonus"]:  # int
-                task_options[field.split("=")[0]] = int(field.split("=")[1])
-            elif field.split("=")[0] in ["NearAlt"]:
-                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-1])   # float, take of m
-            elif field.split("=")[0] in ["NearDis"]:
-                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-2])   # float, take of km
+        for field in fields[1:]:
+            field_type = field.split("=")[0]
+            field_entry = field.split("=")[1]
+
+            if field_type == 'NoStart':
+                task_options['no_start'] = field_entry
+            elif field_type == 'TaskTime':
+                task_options['task_time'] = field_entry
+            elif field_type == 'WpDis':
+                task_options['wp_dis'] = field_entry == "True"
+            elif field_type == 'NearDis':
+                task_options[field_type] = float(field_entry[0:-2])   # take of km
+            elif field_type == 'NearAlt':
+                task_options[field_type] = float(field_entry[0:-1])   # take of m
+            elif field_type == 'MinDis':
+                task_options['min_dis'] = field_entry == "True"
+            elif field_type == 'RandomOrder':
+                task_options['random_order'] = field_entry == "True"
+            elif field_type == 'MaxPts':
+                task_options['max_pts'] = int(field_entry)
+            elif field_type == 'BeforePts':
+                task_options['before_pts'] = int(field_entry)
+            elif field_type == 'AfterPts':
+                task_options['after_pts'] = int(field_entry)
+            elif field_type == 'Bonus':
+                task_options['bonus'] = int(field_entry)
             else:
-                raise Exception("Input contains unsupported option %s" % field)
+                raise Exception('Input contains unsupported option %s' % field)
 
         return task_options
 
-    def decode_task_ObsZone(self, fields):
-        task_ObsZone = {
-            "ObsZone": None,
-            "Style": None,
-            "R1": None,
-            "A1": None,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": False,
-            "Move": False,
-            "Reduce": False
+    def decode_task_obs_zone(self, fields):
+        task_obs_zone = {
+            'obs_zone': None,
+            'style': None,
+            'r1': None,
+            'a1': None,
+            'r2': None,
+            'a2': None,
+            'a12': None,
+            'line': False,
+            'move': False,
+            'reduce': False
         }
 
         for field in fields:
-            if field.split("=")[0] in ["ObsZone", "Style", "A1", "A2", "A12"]:
-                task_ObsZone[field.split("=")[0]] = int(field.split("=")[1])
-            elif field.split("=")[0] in ["R1", "R2"]:
-                task_ObsZone[field.split("=")[0]] = int(field.split("=")[1][0:-1])  # taking off m
-            elif (field.split("=")[0] in ["Line", "Move", "Reduce"]) and (field.split("=")[1] == "1"):
-                task_ObsZone[field.split("=")[0]] = True
-            else:
-                raise Exception("A taskpoint does not contain key %s" % field.split("=")[0])
+            field_type = field.split("=")[0]
+            field_entry = field.split("=")[1]
 
-        return task_ObsZone
+            if field_type == 'ObsZone':
+                task_obs_zone['obs_zone'] = int(field_entry)
+            elif field_type == 'Style':
+                task_obs_zone['style'] = int(field_entry)
+            elif field_type == 'A1':
+                task_obs_zone['a1'] = int(field_entry)
+            elif field_type == 'A2':
+                task_obs_zone['a2'] = int(field_entry)
+            elif field_type == 'A12':
+                task_obs_zone['a12'] = int(field_entry)
+            elif field_type == 'R1':
+                task_obs_zone['r1'] = int(field_entry[0:-1])  # taking off m
+            elif field_type == 'R2':
+                task_obs_zone['r2'] = int(field_entry[0:-1])  # taking off m
+            elif field_type == 'Line' and field_entry == "1":
+                task_obs_zone['line'] = True
+            elif field_type == 'Move' and field_entry == "1":
+                task_obs_zone['move'] = True
+            elif field_type == 'Reduce' and field_entry == "1":
+                task_obs_zone['reduce'] = True
+            else:
+                raise Exception('A taskpoint does not contain key %s' % field_type)
+
+        return task_obs_zone
 
     def decode_task_name(self, fields):
         return fields[0]

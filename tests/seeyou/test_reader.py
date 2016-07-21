@@ -295,48 +295,48 @@ def test_task():
 
         assert tasks[0]['name'] == '3 turnpoints'
         assert tasks[0]['Options'] == {
-            'NoStart': None,
-            'TaskTime': '03:00:00',
-            'WpDis': True,
-            'NearDis': None,
-            'NearAlt': None,
-            'MinDis': True,
-            'RandomOrder': False,
-            'MaxPts': 13,
-            'BeforePts': None,
-            'AfterPts': None,
-            'Bonus': None,
+            'no_start': None,
+            'task_time': '03:00:00',
+            'wp_dis': True,
+            'near_dis': None,
+            'near_alt': None,
+            'min_dis': True,
+            'random_order': False,
+            'max_pts': 13,
+            'before_pts': None,
+            'after_pts': None,
+            'bonus': None,
 
         }
 
         assert tasks[0]['waypoints'] == ['Meiersberg', 'Meiersberg', 'Vettweiss Soller', 'Weisweiler Kw 10',
                                          'Eddln0 Eddl N P', 'Meiersberg', 'Meiersberg']
 
-        ObsZones = tasks[0]['ObsZones']
-        assert len(ObsZones) == 5
+        obs_zones = tasks[0]['obs_zones']
+        assert len(obs_zones) == 5
 
-        assert tasks[0]['ObsZones'][0] == {
-            "ObsZone": 0,
-            "Style": 2,
-            "R1": 2500,
-            "A1": None,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": True,
-            "Move": False,
-            "Reduce": False
+        assert tasks[0]['obs_zones'][0] == {
+            "obs_zone": 0,
+            "style": 2,
+            "r1": 2500,
+            "a1": None,
+            "r2": None,
+            "a2": None,
+            "a12": None,
+            "line": True,
+            "move": False,
+            "reduce": False
         }
 
-        assert tasks[0]['ObsZones'][2] == {
-            "ObsZone": 2,
-            "Style": 1,
-            "R1": 500,
-            "A1": 180,
-            "R2": None,
-            "A2": None,
-            "A12": None,
-            "Line": False,
-            "Move": False,
-            "Reduce": False
+        assert tasks[0]['obs_zones'][2] == {
+            "obs_zone": 2,
+            "style": 1,
+            "r1": 500,
+            "a1": 180,
+            "r2": None,
+            "a2": None,
+            "a12": None,
+            "line": False,
+            "move": False,
+            "reduce": False
         }
