@@ -189,6 +189,13 @@ def assert_elevation(elevation, expected_value, expected_unit):
     assert elevation['unit'] == expected_unit
 
 
+def assert_coordinate(coordinate, expected_value):
+    if expected_value is None:
+        assert coordinate is None
+    else:
+        assert abs(coordinate - expected_value) < 0.0001
+
+
 def test_decode_elevation():
     assert_elevation(Reader().decode_elevation('125m'), 125, 'm')
     assert_elevation(Reader().decode_elevation('300ft'), 300, 'ft')
@@ -201,6 +208,9 @@ def test_decode_elevation():
     with pytest.raises(ParserError):
         Reader().decode_elevation('x')
 
+    with pytest.raises(ParserError):
+        Reader().decode_elevation('12a50m')
+
 
 def test_decode_runway_length():
     assert_elevation(Reader().decode_runway_length('1250m'), 1250, 'm')
@@ -212,6 +222,45 @@ def test_decode_runway_length():
 
     with pytest.raises(ParserError):
         Reader().decode_runway_length('x')
+
+    with pytest.raises(ParserError):
+        Reader().decode_runway_length('12a50m')
+
+
+def test_decode_latitude():
+    assert_coordinate(Reader().decode_latitude('5117.983N'), 51.29972222222222)
+    assert_coordinate(Reader().decode_latitude('3356.767S'), -33.94611111111111)
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('9117.983N')
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('9117.983S')
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('5117a983N')
+
+
+def test_decode_longitude():
+    assert_coordinate(Reader().decode_longitude('00657.383E'), 6.956388888888889)
+    assert_coordinate(Reader().decode_longitude('09942.706W'), -99.71176666666662)
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('-09942.706W')
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('09942a706W')
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('18142.706W')
+
+
+def test_decode_frequency():
+    assert Reader().decode_frequency('120.500') == '120.500'
+    assert Reader().decode_frequency('') is None
+
+    with pytest.raises(ParserError):
+        Reader().decode_frequency('120a500')
 
 
 @pytest.fixture(params=WAYPOINTS)

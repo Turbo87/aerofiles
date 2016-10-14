@@ -5,11 +5,11 @@ from aerofiles.errors import ParserError
 
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
-RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}.[\d]{3})([NS])$', re.I)
-RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}.[\d]{3})([EW])$', re.I)
-RE_ELEVATION = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
-RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
-RE_FREQUENCY = re.compile(r'^1[\d]{2}.[\d]+?$')
+RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}\.[\d]{3})([NS])$', re.I)
+RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}\.[\d]{3})([EW])$', re.I)
+RE_ELEVATION = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft)?$', re.I)
+RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:\.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
+RE_FREQUENCY = re.compile(r'^1[\d]{2}\.[\d]+?$')
 
 
 class Reader:
