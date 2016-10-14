@@ -10,6 +10,7 @@ RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}\.[\d]{3})([EW])$', re.I)
 RE_ELEVATION = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft)?$', re.I)
 RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:\.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
 RE_FREQUENCY = re.compile(r'^1[\d]{2}\.[\d]+?$')
+RE_DISTANCE = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft|km|ml|nm)?$', re.I)
 
 
 class Reader:
@@ -241,8 +242,7 @@ class Reader:
         }
 
         for field in fields[1:]:
-            field_type = field.split("=")[0]
-            field_entry = field.split("=")[1]
+            field_type, field_entry = field.split("=")
 
             if field_type == 'NoStart':
                 task_options['no_start'] = field_entry
@@ -251,9 +251,9 @@ class Reader:
             elif field_type == 'WpDis':
                 task_options['wp_dis'] = field_entry == "True"
             elif field_type == 'NearDis':
-                task_options[field_type] = float(field_entry[0:-2])   # take of km
+                task_options['near_dis'] = self.decode_distance(field_entry)
             elif field_type == 'NearAlt':
-                task_options[field_type] = float(field_entry[0:-1])   # take of m
+                task_options['near_alt'] = self.decode_distance(field_entry)
             elif field_type == 'MinDis':
                 task_options['min_dis'] = field_entry == "True"
             elif field_type == 'RandomOrder':
@@ -286,8 +286,7 @@ class Reader:
         }
 
         for field in fields:
-            field_type = field.split("=")[0]
-            field_entry = field.split("=")[1]
+            field_type, field_entry = field.split("=")
 
             if field_type == 'ObsZone':
                 task_obs_zone['obs_zone'] = int(field_entry)
@@ -300,9 +299,9 @@ class Reader:
             elif field_type == 'A12':
                 task_obs_zone['a12'] = int(field_entry)
             elif field_type == 'R1':
-                task_obs_zone['r1'] = int(field_entry[0:-1])  # taking off m
+                task_obs_zone['r1'] = self.decode_distance(field_entry)
             elif field_type == 'R2':
-                task_obs_zone['r2'] = int(field_entry[0:-1])  # taking off m
+                task_obs_zone['r2'] = self.decode_distance(field_entry)
             elif field_type == 'Line' and field_entry == "1":
                 task_obs_zone['line'] = True
             elif field_type == 'Move' and field_entry == "1":
@@ -319,3 +318,27 @@ class Reader:
 
     def decode_task_waypoints(self, fields):
         return fields[1::]
+
+    def decode_distance(self, distance_str):
+        if not distance_str:
+            return {
+                'value': None,
+                'unit': None,
+            }
+
+        match = RE_DISTANCE.match(distance_str)
+        if not match:
+            raise ParserError('Reading neardis failed')
+
+        try:
+            value = float(match.group(1))
+        except ValueError:
+            value = None
+
+        unit = match.group(2)
+        if unit and unit.lower() not in ('m', 'ft', 'km', 'ml', 'nm'):
+            raise ParserError('Unknown distance unit')
+        return {
+            'value': value,
+            'unit': unit,
+        }
