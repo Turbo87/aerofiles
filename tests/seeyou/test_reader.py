@@ -153,7 +153,6 @@ WAYPOINTS = [
     ('"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"', {  # noqa
         'name': 'Eddln0 Eddl N P',
         'code': 'EDDLN0',
-        'elevation': 28,
         'latitude': 51.406666666666666,
         'longitude': 6.748333333333333,
         'country': 'DE',
