@@ -7,9 +7,9 @@ from aerofiles.seeyou import Reader, Converter
 
 from tests import assert_waypoint
 
-
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
+SIMPLE_CUPFILE = path.join(FOLDER, 'data', 'simple.cup')
 
 if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
@@ -153,7 +153,6 @@ WAYPOINTS = [
     ('"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"', {  # noqa
         'name': 'Eddln0 Eddl N P',
         'code': 'EDDLN0',
-        'elevation': 28,
         'latitude': 51.406666666666666,
         'longitude': 6.748333333333333,
         'country': 'DE',
@@ -179,39 +178,125 @@ def test_comments():
     assert len(waypoints) == 0
 
 
-def assert_elevation(elevation, expected_value, expected_unit):
-    assert 'value' in elevation
+def assert_value_and_unit(result, expected_value, expected_unit):
+    assert 'value' in result
     if expected_value is None:
-        assert elevation['value'] is None
+        assert result['value'] is None
     else:
-        assert abs(elevation['value'] - expected_value) < 0.0001
-    assert 'unit' in elevation
-    assert elevation['unit'] == expected_unit
+        assert abs(result['value'] - expected_value) < 0.0001
+    assert 'unit' in result
+    assert result['unit'] == expected_unit
+
+
+def assert_value(resulted_value, expected_value):
+    if expected_value is None:
+        assert resulted_value is None
+    else:
+        assert abs(resulted_value - expected_value) < 0.0001
+
+
+def assert_task_options(resuling_task_options, expected_task_options):
+    for key in expected_task_options.keys():
+        if key in ('near_dis', 'near_alt'):
+            assert_value_and_unit(resuling_task_options[key], expected_task_options[key]['value'], expected_task_options[key]['unit'])
+        else:
+            assert resuling_task_options[key] == expected_task_options[key]
+
+
+def assert_task_obs_zones(resulting_task_obs_zones, expected_task_obs_zones):
+    for key in expected_task_obs_zones.keys():
+        if key in ('r1', 'r2') and resulting_task_obs_zones[key] is not None:
+            assert_value_and_unit(resulting_task_obs_zones[key], expected_task_obs_zones[key]['value'], expected_task_obs_zones[key]['unit'])
+        else:
+            assert resulting_task_obs_zones[key] == expected_task_obs_zones[key]
 
 
 def test_decode_elevation():
-    assert_elevation(Reader().decode_elevation('125m'), 125, 'm')
-    assert_elevation(Reader().decode_elevation('300ft'), 300, 'ft')
-    assert_elevation(Reader().decode_elevation('300 m'), 300, 'm')
-    assert_elevation(Reader().decode_elevation('-25.4m'), -25.4, 'm')
-    assert_elevation(Reader().decode_elevation('m'), None, 'm')
-    assert_elevation(Reader().decode_elevation('23'), 23, None)
-    assert_elevation(Reader().decode_elevation(''), None, None)
+    assert_value_and_unit(Reader().decode_elevation('125m'), 125, 'm')
+    assert_value_and_unit(Reader().decode_elevation('300ft'), 300, 'ft')
+    assert_value_and_unit(Reader().decode_elevation('300 m'), 300, 'm')
+    assert_value_and_unit(Reader().decode_elevation('-25.4m'), -25.4, 'm')
+    assert_value_and_unit(Reader().decode_elevation('m'), None, 'm')
+    assert_value_and_unit(Reader().decode_elevation('23'), 23, None)
+    assert_value_and_unit(Reader().decode_elevation(''), None, None)
 
     with pytest.raises(ParserError):
         Reader().decode_elevation('x')
 
+    with pytest.raises(ParserError):
+        Reader().decode_elevation('12a50m')
+
 
 def test_decode_runway_length():
-    assert_elevation(Reader().decode_runway_length('1250m'), 1250, 'm')
-    assert_elevation(Reader().decode_runway_length('3.5ml'), 3.5, 'ml')
-    assert_elevation(Reader().decode_runway_length('0 m'), 0, 'm')
-    assert_elevation(Reader().decode_runway_length('2.4NM'), 2.4, 'NM')
-    assert_elevation(Reader().decode_runway_length('23'), 23, None)
-    assert_elevation(Reader().decode_runway_length(''), None, None)
+    assert_value_and_unit(Reader().decode_runway_length('1250m'), 1250, 'm')
+    assert_value_and_unit(Reader().decode_runway_length('3.5ml'), 3.5, 'ml')
+    assert_value_and_unit(Reader().decode_runway_length('0 m'), 0, 'm')
+    assert_value_and_unit(Reader().decode_runway_length('2.4NM'), 2.4, 'NM')
+    assert_value_and_unit(Reader().decode_runway_length('23'), 23, None)
+    assert_value_and_unit(Reader().decode_runway_length(''), None, None)
 
     with pytest.raises(ParserError):
         Reader().decode_runway_length('x')
+
+    with pytest.raises(ParserError):
+        Reader().decode_runway_length('12a50m')
+
+
+def test_decode_latitude():
+    assert_value(Reader().decode_latitude('5117.983N'), 51.29972222222222)
+    assert_value(Reader().decode_latitude('3356.767S'), -33.94611111111111)
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('9117.983N')
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('9117.983S')
+
+    with pytest.raises(ParserError):
+        Reader().decode_latitude('5117a983N')
+
+
+def test_decode_longitude():
+    assert_value(Reader().decode_longitude('00657.383E'), 6.956388888888889)
+    assert_value(Reader().decode_longitude('09942.706W'), -99.71176666666662)
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('-09942.706W')
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('09942a706W')
+
+    with pytest.raises(ParserError):
+        Reader().decode_longitude('18142.706W')
+
+
+def test_decode_frequency():
+    assert Reader().decode_frequency('120.500') == '120.500'
+    assert Reader().decode_frequency('') is None
+
+    with pytest.raises(ParserError):
+        Reader().decode_frequency('120a500')
+
+
+def test_decode_distance():
+    assert_value_and_unit(Reader().decode_distance('1000m'), 1000, 'm')
+    assert_value_and_unit(Reader().decode_distance('1000ft'), 1000, 'ft')
+    assert_value_and_unit(Reader().decode_distance('1ml'), 1, 'ml')
+    assert_value_and_unit(Reader().decode_distance('1nm'), 1, 'nm')
+    assert_value_and_unit(Reader().decode_distance('1km'), 1, 'km')
+
+    assert_value_and_unit(Reader().decode_distance('1.5 km'), 1.5, 'km')
+    assert_value_and_unit(Reader().decode_distance('5 km'), 5, 'km')
+    assert_value_and_unit(Reader().decode_distance('5 KM'), 5, 'KM')
+
+    assert_value_and_unit(Reader().decode_distance('3'), 3, None)
+    assert_value_and_unit(Reader().decode_distance(''), None, None)
+
+    with pytest.raises(ParserError):
+        Reader().decode_distance('x')
+
+    with pytest.raises(ParserError):
+        Reader().decode_distance('12a50m')
 
 
 @pytest.fixture(params=WAYPOINTS)
@@ -237,6 +322,13 @@ def test_original():
     with open(DATA_PATH) as f:
         for waypoint in Converter(f):
             check_waypoint(waypoint)
+
+
+def test_read():
+    with open(SIMPLE_CUPFILE) as f:
+        waypoints = Reader().read(f)['waypoints']
+        for i, waypoint in enumerate(waypoints):
+            assert_waypoint(waypoint, WAYPOINTS[i][1])
 
 
 def check_waypoint(waypoint):
@@ -278,3 +370,61 @@ def check_waypoint(waypoint):
 
     assert 'country' in waypoint
     assert len(waypoint['country']) == 2
+
+
+def test_task():
+    with open(SIMPLE_CUPFILE) as f:
+
+        tasks = Reader().read(f)['tasks']
+        assert len(tasks) == 1
+        assert tasks[0]['name'] == '3 turnpoints'
+        expected_task_options = {
+            'no_start': None,
+            'task_time': '03:00:00',
+            'wp_dis': True,
+            'near_dis': {'value': 0.7, 'unit': 'km'},
+            'near_alt': {'value': 300.0, 'unit': 'm'},
+            'min_dis': True,
+            'random_order': False,
+            'max_pts': 13,
+            'before_pts': None,
+            'after_pts': None,
+            'bonus': None,
+
+        }
+
+        assert_task_options(tasks[0]['Options'], expected_task_options)
+        assert tasks[0]['waypoints'] == ['Meiersberg', 'Meiersberg', 'Vettweiss Soller', 'Weisweiler Kw 10',
+                                         'Eddln0 Eddl N P', 'Meiersberg', 'Meiersberg']
+
+        obs_zones = tasks[0]['obs_zones']
+        assert len(obs_zones) == 5
+
+        expected_task_obs_zones_1 = {
+            "obs_zone": 0,
+            "style": 2,
+            "r1": {'value': 2500, 'unit': 'm'},
+            "a1": None,
+            "r2": None,
+            "a2": None,
+            "a12": None,
+            "line": True,
+            "move": False,
+            "reduce": False
+        }
+
+        expected_task_obs_zones_2 = {
+            "obs_zone": 2,
+            "style": 1,
+            "r1": {'value': 500, 'unit': 'm'},
+            "a1": 180,
+            "r2": None,
+            "a2": None,
+            "a12": None,
+            "line": False,
+            "move": False,
+            "reduce": False
+        }
+
+        assert_task_obs_zones(tasks[0]['obs_zones'][0], expected_task_obs_zones_1)
+        assert_task_obs_zones(tasks[0]['obs_zones'][2], expected_task_obs_zones_2)

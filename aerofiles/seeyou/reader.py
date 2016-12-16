@@ -5,11 +5,12 @@ from aerofiles.errors import ParserError
 
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
-RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}.[\d]{3})([NS])$', re.I)
-RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}.[\d]{3})([EW])$', re.I)
-RE_ELEVATION = re.compile(r'^(-?[\d]*(?:.[\d]+)?)\s?(m|ft)?$', re.I)
-RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
-RE_FREQUENCY = re.compile(r'^1[\d]{2}.[\d]+?$')
+RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}\.[\d]{3})([NS])$', re.I)
+RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}\.[\d]{3})([EW])$', re.I)
+RE_ELEVATION = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft)?$', re.I)
+RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:\.[\d]+)?)\s?(ml|nm|m)?)?$', re.I)
+RE_FREQUENCY = re.compile(r'^1[\d]{2}\.[\d]+?$')
+RE_DISTANCE = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft|km|ml|nm)?$', re.I)
 
 
 class Reader:
@@ -26,10 +27,38 @@ class Reader:
         return self.next()
 
     def next(self):
-        for fields in csv.reader(self.fp):
-            wp = self.decode_waypoint(fields)
-            if wp:
-                yield wp
+        waypoints = self.read(self.fp)['waypoints']
+        for waypoint in waypoints:
+            yield waypoint
+
+    def read(self, fp):
+        waypoints = []
+        tasks = []
+        task_information = False
+        for fields in csv.reader(fp):
+            if fields == ["-----Related Tasks-----"]:
+                task_information = True
+                continue
+            if task_information:
+                if fields[0] == 'Options':
+                    tasks[-1]['Options'] = self.decode_task_options(fields)
+                elif fields[0].startswith('ObsZone'):
+                    tasks[-1]['obs_zones'].append(self.decode_task_obs_zone(fields))
+                else:
+                    tasks.append(
+                        {
+                            'name': self.decode_task_name(fields),
+                            'waypoints': self.decode_task_waypoints(fields),
+                            'options': None,
+                            'obs_zones': []
+                        }
+                    )
+            else:
+                waypoint = self.decode_waypoint(fields)
+                if waypoint:
+                    waypoints.append(waypoint)
+
+        return dict(waypoints=waypoints, tasks=tasks)
 
     def decode_waypoint(self, fields):
         # Ignore header line
@@ -193,3 +222,123 @@ class Reader:
             return None
 
         return description
+
+    def decode_task_options(self, fields):
+        if not fields[0] == "Options":
+            return
+
+        task_options = {
+            'no_start': None,
+            'task_time': None,
+            'wp_dis': False,
+            'near_dis': None,
+            'near_alt': None,
+            'min_dis': False,
+            'random_order': False,
+            'max_pts': None,
+            'before_pts': None,
+            'after_pts': None,
+            'bonus': None
+        }
+
+        for field in fields[1:]:
+            field_type, field_entry = field.split("=")
+
+            if field_type == 'NoStart':
+                task_options['no_start'] = field_entry
+            elif field_type == 'TaskTime':
+                task_options['task_time'] = field_entry
+            elif field_type == 'WpDis':
+                task_options['wp_dis'] = field_entry == "True"
+            elif field_type == 'NearDis':
+                task_options['near_dis'] = self.decode_distance(field_entry)
+            elif field_type == 'NearAlt':
+                task_options['near_alt'] = self.decode_distance(field_entry)
+            elif field_type == 'MinDis':
+                task_options['min_dis'] = field_entry == "True"
+            elif field_type == 'RandomOrder':
+                task_options['random_order'] = field_entry == "True"
+            elif field_type == 'MaxPts':
+                task_options['max_pts'] = int(field_entry)
+            elif field_type == 'BeforePts':
+                task_options['before_pts'] = int(field_entry)
+            elif field_type == 'AfterPts':
+                task_options['after_pts'] = int(field_entry)
+            elif field_type == 'Bonus':
+                task_options['bonus'] = int(field_entry)
+            else:
+                raise Exception('Input contains unsupported option %s' % field)
+
+        return task_options
+
+    def decode_task_obs_zone(self, fields):
+        task_obs_zone = {
+            'obs_zone': None,
+            'style': None,
+            'r1': None,
+            'a1': None,
+            'r2': None,
+            'a2': None,
+            'a12': None,
+            'line': False,
+            'move': False,
+            'reduce': False
+        }
+
+        for field in fields:
+            field_type, field_entry = field.split("=")
+
+            if field_type == 'ObsZone':
+                task_obs_zone['obs_zone'] = int(field_entry)
+            elif field_type == 'Style':
+                task_obs_zone['style'] = int(field_entry)
+            elif field_type == 'A1':
+                task_obs_zone['a1'] = int(field_entry)
+            elif field_type == 'A2':
+                task_obs_zone['a2'] = int(field_entry)
+            elif field_type == 'A12':
+                task_obs_zone['a12'] = int(field_entry)
+            elif field_type == 'R1':
+                task_obs_zone['r1'] = self.decode_distance(field_entry)
+            elif field_type == 'R2':
+                task_obs_zone['r2'] = self.decode_distance(field_entry)
+            elif field_type == 'Line' and field_entry == "1":
+                task_obs_zone['line'] = True
+            elif field_type == 'Move' and field_entry == "1":
+                task_obs_zone['move'] = True
+            elif field_type == 'Reduce' and field_entry == "1":
+                task_obs_zone['reduce'] = True
+            else:
+                raise Exception('A taskpoint does not contain key %s' % field_type)
+
+        return task_obs_zone
+
+    def decode_task_name(self, fields):
+        return fields[0]
+
+    def decode_task_waypoints(self, fields):
+        return fields[1::]
+
+    def decode_distance(self, distance_str):
+        if not distance_str:
+            return {
+                'value': None,
+                'unit': None,
+            }
+
+        match = RE_DISTANCE.match(distance_str)
+        if not match:
+            raise ParserError('Reading neardis failed')
+
+        try:
+            value = float(match.group(1))
+        except ValueError:
+            value = None
+
+        unit = match.group(2)
+        if unit and unit.lower() not in ('m', 'ft', 'km', 'ml', 'nm'):
+            raise ParserError('Unknown distance unit')
+        return {
+            'value': value,
+            'unit': unit,
+        }
