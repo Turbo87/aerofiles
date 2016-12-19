@@ -47,16 +47,6 @@ class Writer:
         return self.format_coordinate(
             value, default='00000000E', is_latitude=False)
 
-    def format_waypoints(self, SeeYou_task):
-        flarm_waypoints = []
-        for taskpoint in SeeYou_task:
-            flarm_waypoints.append([
-                taskpoint["latitude"],
-                taskpoint["longitude"],
-                taskpoint["name"]
-            ])
-        return flarm_waypoints
-
     def write_line(self, line):
         self.fp.write((line + u'\r\n').encode('ascii', 'replace'))
 
