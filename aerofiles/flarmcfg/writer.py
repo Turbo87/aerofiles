@@ -233,20 +233,21 @@ class Writer:
         elif key == "glider_id":
             self.write_glider_id(value)
         elif key == "competition_id":
-            self.write_competition_id(value)
+            self.write_competition_class(value)
         elif key == "logger_interval":
-            self.write_logger_interval(value)
+            self.write_competition_class(value)
         elif key == "task_name":
-            self.write_task_declaration(value)
+            self.write_competition_class(value)
         elif key == "waypoints":
-            self.write_waypoints(value)
+            self.write_competition_class(value)
         else:
             raise ValueError("There is no functions to write %s" % key)
 
     def write_declared_task(self, task_dict):
-        if "waypoints" not in task_dict or "task_name" not in task_dict or task_dict["waypoints"] is None or task_dict["task_name"] is None:
-            raise TypeError("waypoints and task_name should be contained in the task dictionary and can not be None")
+        if "waypoints" not in task_dict:
+            raise TypeError("There is no task provided in the task dictionary")
         else:
+
             if len(task_dict["waypoints"]) < 5:
                 raise ValueError("There should be at least 5 waypoints (take-off, start, turnpoint, finish, landing")
 
@@ -254,5 +255,5 @@ class Writer:
                              "logger_interval", "task_name", "waypoints"]
 
             for key in writing_order:
-                if key in task_dict and task_dict[key] is not None:
+                if key in task_dict:
                     self.write_field(key, task_dict[key])

@@ -195,9 +195,6 @@ class Reader:
         return description
 
     def decode_taskname(self, fields):
-        if not fields:
-            raise ParserError('Name field must not be empty')
-
         return fields[0]
 
     def decode_tasklist(self, fields, waypoints):
@@ -223,38 +220,31 @@ class Reader:
             return
 
         task_options = {
-            "NoStart": None,
             "TaskTime": None,
             "WpDis": False,
-            "NearDis": None,
-            "NearAlt": None,
             "MinDis": False,
             "RandomOrder": False,
-            "MaxPts": None,
-            "BeforePts": None,
-            "AfterPts": None,
-            "Bonus": None   
+            "MaxPts": None
         }
 
         for field in fields:
             if field == "Options":
                 continue
-            elif field.split("=")[0] in ["NoStart", "TaskTime"]:                     # string
+            elif field.split("=")[0] in ["TaskTime"]:                                # string
                 task_options[field.split("=")[0]] = field.split("=")[1]
-            elif field.split("=")[0] in ["WpDis", "MinDis", "RandomOrder"]:            # boolean
-                task_options[field.split("=")[0]] = field.split("=")[1] == "True"
-            elif field.split("=")[0] in ["MaxPts", "BeforePts", "AfterPts", "Bonus"]:  # int
+            elif field.split("=")[0] in ["WpDis", "MinDis", "RandomOrder"]:          # boolean
+                task_options[field.split("=")[0]] = bool(field.split("=")[1])
+            elif field.split("=")[0] in ["MaxPts"]:                                  # int
                 task_options[field.split("=")[0]] = int(field.split("=")[1])
-            elif field.split("=")[0] in ["NearAlt"]:
-                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-1])   # float, take of m
-            elif field.split("=")[0] in ["NearDis"]:
-                task_options[field.split("=")[0]] = float(field.split("=")[1][0:-2])   # float, take of km
             else:
                 raise Exception("Input contains unsupported option %s" % field)
 
         return task_options
 
-    def decode_taskpoint(self, fields):
+    def decode_taskpoint(self, fields, task):
+
+        if len(task) == 0:
+            raise ValueError("Task is empty, but should filled with taskpoints")
 
         taskpoint_info = {
             "Style": None,
@@ -270,13 +260,15 @@ class Reader:
 
         ObsZone = None
         for field in fields:
-            if field.split("=")[0] in ["ObsZone", "Style", "A1", "A2", "A12"]:
-                taskpoint_info[field.split("=")[0]] = int(field.split("=")[1])
+            if field.split("=")[0] == "ObsZone":
+                ObsZone = int(field.split("=")[1])
+            elif field.split("=")[0] in ["Style", "A1", "A2", "A12"]:
+                taskpoint_info[field.split("=")[0]] = field.split("=")[1]
             elif field.split("=")[0] in ["R1", "R2"]:
-                taskpoint_info[field.split("=")[0]] = int(field.split("=")[1][0:-1])  # taking off m
+                taskpoint_info[field.split("=")[0]] = field.split("=")[1][0:-1]  # taking off m
             elif (field.split("=")[0] in ["Line", "Move", "Reduce"]) and (field.split("=")[1] == "1"):
                 taskpoint_info[field.split("=")[0]] = True
             else:
                 raise Exception("A taskpoint does not contain key %s" % field.split("=")[0])
 
-        return taskpoint_info
+        return task[ObsZone+1].update(taskpoint_info)
