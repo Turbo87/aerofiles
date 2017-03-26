@@ -60,6 +60,9 @@ class Reader:
             elif line_type == 'L':
                 comment_records.append(line['value'])  # todo
 
+        # delete source inside header dict from last H-record
+        del header['source']
+
         return dict(logger_id=logger_id,                            # A record
                     fix_records=fix_records,                        # B records
                     task=task,                                      # C records
@@ -177,7 +180,7 @@ class LowLevelReader:
         elif tlc == 'PLT':
             value = LowLevelReader.decode_H_pilot(line)
         elif tlc == 'CM2':
-            value = LowLevelReader.decode_H_second_pilot(line)
+            value = LowLevelReader.decode_H_copilot(line)
         elif tlc == 'GTY':
             value = LowLevelReader.decode_H_glider_model(line)
         elif tlc == 'GID':
@@ -191,7 +194,7 @@ class LowLevelReader:
         elif tlc == 'FTY':
             value = LowLevelReader.decode_H_manufacturer_model(line)
         elif tlc == 'GPS':
-            value = LowLevelReader.decode_H_gps_sensor(line)
+            value = LowLevelReader.decode_H_gps_receiver(line)
         elif tlc == 'PRS':
             value = LowLevelReader.decode_H_pressure_sensor(line)
         elif tlc == 'CID':
@@ -201,20 +204,14 @@ class LowLevelReader:
         else:
             raise ValueError('Invalid h-record')
 
+        value.update({'source': source})
+
         return {'type': 'H', 'value': value}
 
     @staticmethod
     def decode_H_utc_date(line):
-        dd = int(line[5:7])
-        mm = int(line[7:9])
-        yy = int(line[9:11])
-
-        current_year_yyyy = datetime.date.today().year
-        current_year_yy = current_year_yyyy % 100
-        current_century = current_year_yyyy - current_year_yy
-        yyyy = current_century + yy if yy < current_year_yy else current_century - 100 + yy
-
-        return {'utc_date': datetime.date(yyyy, mm, dd)}
+        date_str = line[5:11]
+        return {'utc_date': LowLevelReader.decode_date(date_str)}
 
     @staticmethod
     def decode_H_fix_accuracy(line):
@@ -227,7 +224,7 @@ class LowLevelReader:
         return {'pilot': None} if pilot == '' else {'pilot': pilot}
 
     @staticmethod
-    def decode_H_second_pilot(line):
+    def decode_H_copilot(line):
         second_pilot = line[11:].strip()
         return {'second_pilot': None} if second_pilot == '' else {'second_pilot': second_pilot}
 
@@ -272,7 +269,7 @@ class LowLevelReader:
                 'model': model}
 
     @staticmethod
-    def decode_H_gps_sensor(line):
+    def decode_H_gps_receiver(line):
 
         # can contain string in maxalt? (YX.igc)
         # HFGPS:uBLOX_TIM-LP,16,max9000m
@@ -364,6 +361,23 @@ class LowLevelReader:
         # todo
         value = None
         return {'type': 'L', 'value': value}
+
+    @staticmethod
+    def decode_date(date_str):
+
+        if len(date_str) != 6:
+            raise ValueError('Date string does not have correct length')
+
+        dd = int(date_str[0:2])
+        mm = int(date_str[2:4])
+        yy = int(date_str[4:6])
+
+        current_year_yyyy = datetime.date.today().year
+        current_year_yy = current_year_yyyy % 100
+        current_century = current_year_yyyy - current_year_yy
+        yyyy = current_century + yy if yy < current_year_yy else current_century - 100 + yy
+
+        return datetime.date(yyyy, mm, dd)
 
 
 class InvalidIGCFileError(Exception):
