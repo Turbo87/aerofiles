@@ -6,60 +6,53 @@ class Reader:
     """
 
     def __init__(self):
-        pass
+        self.reader = None
 
     def read(self, fp):
-        logger_id, fix_records, task, dgps_records, event_records, satellite_records, security_records, header,\
-            fix_record_extensions, k_record_extensions, k_records, comment_records = (None,) * 12
 
-        for line in fp:
+        self.reader = LowLevelReader(fp)
 
-            if line.startswith('A'):
-                logger_id = self.decode_a_record(line)
-            elif line.startswith('B'):
-                if fix_records is None:
-                    fix_records = []
-                fix_records.append(self.decode_b_record(line))
-            elif line.startswith('C'):
-                if task is None:
-                    task = self.decode_c_record(line, first_line=True)
-                else:
-                    array_key, value = self.decode_c_record(line)
-                    task[array_key].append(value)
-            elif line.startswith('D'):
-                if dgps_records is None:
-                    dgps_records = []
-                dgps_records.append(self.decode_d_record(line))
-            elif line.startswith('E'):
-                if event_records is None:
-                    event_records = []
-                event_records.append(self.decode_e_record(line))
-            elif line.startswith('F'):
-                if satellite_records is None:
-                    satellite_records = []
-                satellite_records.append(self.decode_f_record(line))
-            elif line.startswith('G'):
-                if security_records is None:
-                    security_records = []
-                security_records.append(self.decode_g_record(line))
-            elif line.startswith('H'):
-                if header is None:
-                    header = self.decode_h_record(line, first_line=True)
-                else:
-                    key, value = self.decode_h_record(line)
-                    header[key] = value
-            elif line.startswith('I'):
-                fix_record_extensions = self.decode_i_record(line)
-            elif line.startswith('J'):
-                k_record_extensions = self.decode_j_record(line)
-            elif line.startswith('K'):
-                if k_records is None:
-                    k_records = []
-                k_records.append(self.decode_k_record(line))
-            elif line.startswith('L'):
-                if comment_records is None:
-                    comment_records = []
-                comment_records.append(self.decode_k_record(line))
+        logger_id, task, header, fix_record_extensions, k_record_extensions = (None,) * 5
+
+        fix_records = []
+        dgps_records = []
+        event_records = []
+        satellite_records = []
+        security_records = []
+        k_records = []
+        comment_records = []
+
+        for line, error in self.reader:
+
+            if error:
+                raise InvalidIGCFileError
+
+            line_type = line['type']
+
+            if line_type == 'A':
+                logger_id = line['value']
+            elif line_type == 'B':
+                fix_records.append(line['value'])
+            elif line_type == 'C':
+                task = line['value']
+            elif line_type == 'D':
+                dgps_records.append(line['value'])
+            elif line_type == 'E':
+                event_records.append(line['value'])
+            elif line_type == 'F':
+                satellite_records.append(line['value'])
+            elif line_type == 'G':
+                security_records.append(line['value'])
+            elif line_type == 'H':
+                header = line['value']
+            elif line_type == 'I':
+                fix_record_extensions = line['value']
+            elif line_type == 'J':
+                k_record_extensions = line['value']
+            elif line_type == 'K':
+                k_records.append(line['value'])
+            elif line_type == 'L':
+                comment_records.append(line['value'])
 
         return dict(logger_id=logger_id,                            # A record
                     fix_records=fix_records,                        # B records
@@ -75,74 +68,114 @@ class Reader:
                     comment_records=comment_records,                # L records
                     )
 
-    def decode_a_record(self, line):
-        pass
 
-    def decode_b_record(self, line):
-        pass
+class LowLevelReader:
+    """
+    A low level reader for the IGC flight log file format.
 
-    def decode_c_record(self, line, first_line=False):
-        if first_line:
-            task = {
-                'id': None,
-                'description': None,
-                'utc_date_declaration': None,
-                'utc_time_declaration': None,
-                'local_date_intended_flight': None,
-                'no_turnpoints': None,
-                'content': []
-            }
+    see http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html
+    """
 
-            # todo: implement extraction of task information from first line
+    def __init__(self, fp):
+        self.fp = fp
+        self.line_number = 0
 
-            return task
-        else:
-            pass
+    def __iter__(self):
+        return self.next()
 
-    def decode_d_record(self, line):
-        pass
+    def next(self):
+        for line in self.fp:
+            self.line_number += 1
 
-    def decode_e_record(self, line):
-        pass
+            try:
+                result = self.parse_line(line)
+                if result:
+                    yield (result, None)
 
-    def decode_f_record(self, line):
-        pass
+            except Exception as e:
+                e.line_number = self.line_number
+                yield (None, e)
 
-    def decode_g_record(self, line):
-        pass
+    def parse_line(self, line):
 
-    def decode_h_record(self, line, first_line=False):
-        if first_line:
-            header = {
-                'utc_date': None,
-                'fix_accuracy': None,
-                'pilot': None,
-                'second_pilot': None,
-                'glider_model': None,
-                'glider_registration': None,
-                'gps_datum': None,
-                'firmware_revision': None,
-                'hardware_revision': None,
-                'manufacturer_model': None,
-                'pressure_sensor': None,
-                'competition_id': None,
-                'competition_class': None,
-            }
+        record_type = line[0]
+        record_value = line[1::]
+        decoder_name = self.get_decoder_method(record_type)
+        decoder = getattr(self, decoder_name)
 
-            # todo: implement extraction of header information from first line
+        return decoder(record_value)
 
-            return header
-        else:
-            pass
+    def get_decoder_method(self, record_type):
+        decoder = getattr(self, 'decode_{}_record'.format(record_type))
+        if not decoder:
+            raise ValueError('Unknown record type')
 
-    def decode_i_record(self, line):
-        pass
+    @staticmethod
+    def decode_A_record(record_value):
+        id_addition = None if len(record_value) == 6 else record_value[6:]
+        value = {
+            'manufacturer': record_value[0:3],
+            'id': record_value[3:6],
+            'id-addition': id_addition
+        }
+        return {'type': 'A', 'value': value}
 
-    def decode_j_record(self, line):
-        pass
+    @staticmethod
+    def decode_B_record(record_value):
+        # todo
+        value = None
+        return {'type': 'B', 'value': value}
 
-    def decode_k_record(self, line):
-        pass
+    def decode_C_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'C', 'value': value}
 
-    def decode_l_record(self, line):
-        pass
+    def decode_D_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'D', 'value': value}
+
+    def decode_E_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'E', 'value': value}
+
+    def decode_F_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'F', 'value': value}
+
+    def decode_G_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'G', 'value': value}
+
+    def decode_H_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'H', 'value': value}
+
+    def decode_I_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'I', 'value': value}
+
+    def decode_J_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'J', 'value': value}
+
+    def decode_K_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'K', 'value': value}
+
+    def decode_L_record(self, record_value):
+        # todo
+        value = None
+        return {'type': 'L', 'value': value}
+
+
+class InvalidIGCFileError(Exception):
+    pass
