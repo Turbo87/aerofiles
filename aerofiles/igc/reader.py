@@ -42,23 +42,23 @@ class Reader:
             elif line_type == 'C':
                 task = line['value']  # todo
             elif line_type == 'D':
-                dgps_records.append(line['value'])  # todo
+                dgps_records.append(line['value'])
             elif line_type == 'E':
                 event_records.append(line['value'])  # todo
             elif line_type == 'F':
-                satellite_records.append(line['value'])  # todo
+                satellite_records.append(line['value'])
             elif line_type == 'G':
-                security_records.append(line['value'])  # todo
+                security_records.append(line['value'])
             elif line_type == 'H':
                 header.update(line['value'])
             elif line_type == 'I':
-                fix_record_extensions = line['value']  # todo
+                fix_record_extensions = line['value']
             elif line_type == 'J':
-                k_record_extensions = line['value']  # todo
+                k_record_extensions = line['value']
             elif line_type == 'K':
                 k_records.append(line['value'])  # todo
             elif line_type == 'L':
-                comment_records.append(line['value'])  # todo
+                comment_records.append(line['value'])
 
         # delete source inside header dict from last H-record
         del header['source']
@@ -143,8 +143,20 @@ class LowLevelReader:
 
     @staticmethod
     def decode_D_record(line):
-        # todo
-        value = None
+
+        qualifier = line[1]
+        if qualifier == '1':
+            qualifier = 'GPS'
+        elif qualifier == '2':
+            qualifier = 'DGPS'
+        else:
+            raise ValueError('This qualifier is not possible')
+
+        value = {
+            'qualifier': qualifier,
+            'station_id': line[2:6]
+        }
+
         return {'type': 'D', 'value': value}
 
     @staticmethod
@@ -155,14 +167,32 @@ class LowLevelReader:
 
     @staticmethod
     def decode_F_record(line):
-        # todo
-        value = None
+
+        time_str = line[1:7]
+        time = LowLevelReader.decode_time(time_str)
+
+        # each satelite ID should have two digits
+        if (len(line.strip()) - 7) % 2 != 0:
+            raise ValueError('F record formatting is incorrect')
+
+        satelites = []
+        no_satelites = (len(line.strip()) - 7) / 2
+
+        starting_byte = 7
+        for satelite_index in range(no_satelites):
+            satelites.append(line[starting_byte:starting_byte+2])
+            starting_byte += 2
+
+        value = {
+            'time': time,
+            'satelites': satelites
+        }
+
         return {'type': 'F', 'value': value}
 
     @staticmethod
     def decode_G_record(line):
-        # todo
-        value = None
+        value = line.strip()[1::]
         return {'type': 'G', 'value': value}
 
     @staticmethod
@@ -340,14 +370,14 @@ class LowLevelReader:
 
     @staticmethod
     def decode_I_record(line):
-        # todo
-        value = None
+        extensions = LowLevelReader.decode_extension_record(line)
+        value = None if len(extensions) == 0 else extensions
         return {'type': 'I', 'value': value}
 
     @staticmethod
     def decode_J_record(line):
-        # todo
-        value = None
+        extensions = LowLevelReader.decode_extension_record(line)
+        value = None if len(extensions) == 0 else extensions
         return {'type': 'J', 'value': value}
 
     @staticmethod
@@ -358,8 +388,11 @@ class LowLevelReader:
 
     @staticmethod
     def decode_L_record(line):
-        # todo
-        value = None
+
+        value = {
+            'source': line[1:4],
+            'comment': line[4::].strip()
+        }
         return {'type': 'L', 'value': value}
 
     @staticmethod
@@ -378,6 +411,37 @@ class LowLevelReader:
         yyyy = current_century + yy if yy < current_year_yy else current_century - 100 + yy
 
         return datetime.date(yyyy, mm, dd)
+
+    @staticmethod
+    def decode_time(time_str):
+
+        if len(time_str) != 6:
+            raise ValueError('Time string does not have correct size')
+
+        h = int(time_str[0:2])
+        m = int(time_str[2:4])
+        s = int(time_str[4:6])
+
+        return datetime.time(h, m, s)
+
+    @staticmethod
+    def decode_extension_record(line):
+
+        no_extensions = int(line[1:3])
+
+        if no_extensions * 7 + 3 != len(line.strip()):
+            raise ValueError('I record contains incorrect number of digits')
+
+        extensions = []
+        for extension_index in range(no_extensions):
+            extension_str = line[extension_index * 7 + 3:(extension_index + 1) * 7 + 3]
+            start_byte = extension_str[0:2]
+            end_byte = extension_str[2:4]
+            tlc = extension_str[4:7]
+
+            extensions.append({'bytes': (start_byte, end_byte), 'extension-type': tlc})
+
+        return extensions
 
 
 class InvalidIGCFileError(Exception):
