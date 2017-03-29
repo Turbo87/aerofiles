@@ -38,7 +38,8 @@ class Reader:
             if line_type == 'A':
                 logger_id = line['value']
             elif line_type == 'B':
-                fix_records.append(line['value'])  # todo
+                fix_record = LowLevelReader.process_B_record(line['value'], fix_record_extensions)
+                fix_records.append(fix_record)
             elif line_type == 'C':
                 task = line['value']  # todo
             elif line_type == 'D':
@@ -56,7 +57,8 @@ class Reader:
             elif line_type == 'J':
                 k_record_extensions = line['value']
             elif line_type == 'K':
-                k_records.append(line['value'])  # todo
+                k_record = LowLevelReader.process_K_record(line['value'], k_record_extensions)
+                k_records.append(k_record)
             elif line_type == 'L':
                 comment_records.append(line['value'])
 
@@ -71,8 +73,6 @@ class Reader:
                     satellite_records=satellite_records,            # F records
                     security_records=security_records,              # G records
                     header=header,                                  # H records
-                    fix_record_extensions=fix_record_extensions,    # I record
-                    k_record_extensions=k_record_extensions,        # J record
                     k_records=k_records,                            # K records
                     comment_records=comment_records,                # L records
                     )
@@ -122,18 +122,51 @@ class LowLevelReader:
     @staticmethod
     def decode_A_record(line):
         id_addition = None if len(line) == 7 else line[7:].strip()
-        value = {
-            'manufacturer': line[0:3],
-            'id': line[3:6],
-            'id-addition': id_addition
+        return {
+            'type': 'A',
+            'value': {
+                'manufacturer': line[0:3],
+                'id': line[3:6],
+                'id-addition': id_addition
+            }
         }
-        return {'type': 'A', 'value': value}
 
     @staticmethod
     def decode_B_record(line):
-        # todo
-        value = None
-        return {'type': 'B', 'value': value}
+        return {
+            'type': 'B',
+            'value': {
+                'time': LowLevelReader.decode_time(line[1:7]),
+                'lat': LowLevelReader.decode_latitude(line[7:15]),
+                'lon': LowLevelReader.decode_longitude(line[15:24]),
+                'validity': line[24],
+                'pressure_alt': int(line[25:30]),
+                'gps_alt': int(line[30:35]),
+                'start_index_extensions': 35,
+                'extensions_string': line[35::].strip()
+            }
+        }
+
+    @staticmethod
+    def process_B_record(decoded_b_record, fix_record_extensions):
+
+        i = decoded_b_record['start_index_extensions']
+        ext = decoded_b_record['extensions_string']
+
+        b_record = decoded_b_record
+        del b_record['start_index_extensions']
+        del b_record['extensions_string']
+
+        for extension in fix_record_extensions:
+            start_byte, end_byte = extension['bytes']
+            start_byte -= i
+            end_byte -= i
+
+            b_record.update(
+                {extension['extension_type']: int(ext[start_byte:end_byte])}
+            )
+
+        return b_record
 
     @staticmethod
     def decode_C_record(line):
@@ -152,12 +185,13 @@ class LowLevelReader:
         else:
             raise ValueError('This qualifier is not possible')
 
-        value = {
-            'qualifier': qualifier,
-            'station_id': line[2:6]
+        return {
+            'type': 'D',
+            'value': {
+                'qualifier': qualifier,
+                'station_id': line[2:6]
+            }
         }
-
-        return {'type': 'D', 'value': value}
 
     @staticmethod
     def decode_E_record(line):
@@ -183,17 +217,20 @@ class LowLevelReader:
             satelites.append(line[starting_byte:starting_byte+2])
             starting_byte += 2
 
-        value = {
-            'time': time,
-            'satelites': satelites
+        return {
+            'type': 'F',
+            'value': {
+                'time': time,
+                'satelites': satelites
+            }
         }
-
-        return {'type': 'F', 'value': value}
 
     @staticmethod
     def decode_G_record(line):
-        value = line.strip()[1::]
-        return {'type': 'G', 'value': value}
+        return {
+            'type': 'G',
+            'value': line.strip()[1::]
+        }
 
     @staticmethod
     def decode_H_record(line):
@@ -315,14 +352,17 @@ class LowLevelReader:
         else:
             gps_sensor = line[5:].split(',')
 
-        if len(gps_sensor) >= 1:
-            manufacturer = gps_sensor[0] if gps_sensor[0] != '' else None
-        if len(gps_sensor) >= 2:
-            model = gps_sensor[1] if gps_sensor[1] != '' else None
-        if len(gps_sensor) >= 3:
-            channels = int(gps_sensor[2]) if gps_sensor[2] != '' else None
-        if len(gps_sensor) == 4:
-            max_alt = int(gps_sensor[3]) if gps_sensor[3] != '' else None
+        manufacturer = None
+        model = None
+        channels = None
+        max_alt = None
+        for detail_index, detail in enumerate(gps_sensor):
+            if detail_index == 0:
+                manufacturer, model = detail.split(':')
+            elif detail_index == 1:
+                channels = detail.strip()
+            elif detail_index == 2:
+                max_alt = detail.strip()
 
         return {'manufacturer': manufacturer,
                 'model': model,
@@ -382,18 +422,42 @@ class LowLevelReader:
 
     @staticmethod
     def decode_K_record(line):
-        # todo
-        value = None
-        return {'type': 'K', 'value': value}
+        return {
+            'type': 'K',
+            'value': {
+                'time': LowLevelReader.decode_time(line[1:7]),
+                'value_string': line.strip()[7::],
+                'start_index': 7
+            }
+        }
+
+    @staticmethod
+    def process_K_record(decoded_k_record, k_record_extensions):
+
+        i = decoded_k_record['start_index']
+        t = decoded_k_record['time']
+        val = decoded_k_record['value_string']
+
+        k_record = {'time': t}
+        for extension in k_record_extensions:
+
+            start_byte, end_byte = extension['bytes']
+            start_byte -= i
+            end_byte -= i
+
+            k_record[extension['extension_type']] = val[start_byte:end_byte]
+
+        return k_record
 
     @staticmethod
     def decode_L_record(line):
-
-        value = {
-            'source': line[1:4],
-            'comment': line[4::].strip()
+        return {
+            'type': 'L',
+            'value': {
+                'source': line[1:4],
+                'comment': line[4::].strip()
+            }
         }
-        return {'type': 'L', 'value': value}
 
     @staticmethod
     def decode_date(date_str):
@@ -435,13 +499,23 @@ class LowLevelReader:
         extensions = []
         for extension_index in range(no_extensions):
             extension_str = line[extension_index * 7 + 3:(extension_index + 1) * 7 + 3]
-            start_byte = extension_str[0:2]
-            end_byte = extension_str[2:4]
+            start_byte = int(extension_str[0:2])
+            end_byte = int(extension_str[2:4])
             tlc = extension_str[4:7]
 
-            extensions.append({'bytes': (start_byte, end_byte), 'extension-type': tlc})
+            extensions.append({'bytes': (start_byte, end_byte), 'extension_type': tlc})
 
         return extensions
+
+    @staticmethod
+    def decode_latitude(lat_string):
+        # todo
+        return lat_string
+
+    @staticmethod
+    def decode_longitude(lon_string):
+        # todo
+        return lon_string
 
 
 class InvalidIGCFileError(Exception):
