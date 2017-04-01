@@ -419,6 +419,16 @@ def test_decode_H_site():
     assert LowLevelReader.decode_H_site(line) == expected_result
 
 
+def test_decode_H_units_of_measure():
+
+    line = 'HFUNTUnits: km,ft,kt'
+    expected_result = {
+        'units_of_measure': ['km', 'ft', 'kt']
+    }
+
+    assert LowLevelReader.decode_H_units_of_measure(line) == expected_result
+
+
 def test_decode_I_record():
 
     line = 'I033638FXA3940SIU4143ENL\r\n'

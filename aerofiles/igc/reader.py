@@ -310,6 +310,10 @@ class LowLevelReader:
             value = LowLevelReader.decode_H_mop_sensor(line)
         elif tlc == 'SIT':
             value = LowLevelReader.decode_H_site(line)
+        elif tlc == 'TZO':
+            value = LowLevelReader.decode_H_time_zone_offset(line)
+        elif tlc == 'UNT':
+            value = LowLevelReader.decode_H_units_of_measure(line)
         else:
             print tlc
             raise ValueError('Invalid h-record')
@@ -527,6 +531,10 @@ class LowLevelReader:
     @staticmethod
     def decode_H_site(line):
         return {'site': line[10::].strip()}
+
+    @staticmethod
+    def decode_H_units_of_measure(line):
+        return {'units_of_measure': line[11::].strip().split(',')}
 
     @staticmethod
     def decode_I_record(line):
