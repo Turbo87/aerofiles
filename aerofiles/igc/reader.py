@@ -17,8 +17,8 @@ class Reader:
 
         logger_id = None
         task = {"waypoints": []}
-        fix_record_extensions = None
-        k_record_extensions = None
+        fix_record_extensions = []
+        k_record_extensions = []
         header = {}
         fix_records = []
         dgps_records = []
@@ -41,7 +41,6 @@ class Reader:
                 fix_record = LowLevelReader.process_B_record(line['value'], fix_record_extensions)
                 fix_records.append(fix_record)
             elif line_type == 'C':
-
                 task_item = line['value']
 
                 if task_item['subtype'] == 'task_info':
@@ -106,10 +105,9 @@ class LowLevelReader:
             self.line_number += 1
 
             try:
-                result = self.parse_line(line)
+                result = self.parse_line(line) if line.strip() else None  # skip empty lines
                 if result:
                     yield (result, None)
-
             except Exception as e:
                 e.line_number = self.line_number
                 yield (None, e)
@@ -134,9 +132,9 @@ class LowLevelReader:
         return {
             'type': 'A',
             'value': {
-                'manufacturer': line[0:3],
-                'id': line[3:6],
-                'id-addition': id_addition
+                'manufacturer': line[1:4],
+                'id': line[4:7],
+                'id_addition': id_addition
             }
         }
 
@@ -190,9 +188,9 @@ class LowLevelReader:
                     'declaration_date': LowLevelReader.decode_date(line[1:7]),
                     'declaration_time': LowLevelReader.decode_time(line[7:13]),
                     'flight_date': LowLevelReader.decode_date(line[13:19]),
-                    'task_number': line[19:23],
+                    'number': line[19:23],
                     'num_turnpoints': int(line[23:25]),
-                    'task_description': line[25::].strip()
+                    'description': line[25::].strip()
                 }
             }
         else:
@@ -202,7 +200,7 @@ class LowLevelReader:
                     'subtype': 'waypoint_info',
                     'latitude': LowLevelReader.decode_latitude(line[1:9]),
                     'longitude': LowLevelReader.decode_longitude(line[9:18]),
-                    'waypoint_description': line[18::].strip()
+                    'description': line[18::].strip()
                 }
             }
 
@@ -245,7 +243,8 @@ class LowLevelReader:
 
         # each satellite ID should have two digits
         if (len(line.strip()) - 7) % 2 != 0:
-            raise ValueError('F record formatting is incorrect')
+            print 'error in F record'
+            # raise ValueError('F record formatting is incorrect')
 
         satelites = []
         no_satelites = (len(line.strip()) - 7) / 2
@@ -306,7 +305,14 @@ class LowLevelReader:
             value = LowLevelReader.decode_H_competition_id(line)
         elif tlc == 'CCL':
             value = LowLevelReader.decode_H_competition_class(line)
+        elif tlc == 'TZN':
+            value = LowLevelReader.decode_H_time_zone_offset(line)
+        elif tlc == 'MOP':
+            value = LowLevelReader.decode_H_mop_sensor(line)
+        elif tlc == 'SIT':
+            value = LowLevelReader.decode_H_site(line)
         else:
+            print tlc
             raise ValueError('Invalid h-record')
 
         value.update({'source': source})
@@ -325,13 +331,13 @@ class LowLevelReader:
 
     @staticmethod
     def decode_H_pilot(line):
-        pilot = line[11:].strip()
+        pilot = line[19:].strip()
         return {'pilot': None} if pilot == '' else {'pilot': pilot}
 
     @staticmethod
     def decode_H_copilot(line):
         second_pilot = line[11:].strip()
-        return {'second_pilot': None} if second_pilot == '' else {'second_pilot': second_pilot}
+        return {'copilot': None} if second_pilot == '' else {'copilot': second_pilot}
 
     @staticmethod
     def decode_H_glider_model(line):
@@ -367,17 +373,14 @@ class LowLevelReader:
         model = None
         manufacturer_model = line[12:].strip().split(',')
         if manufacturer_model[0] != '':
-            manufacturer = manufacturer_model[0]
+            manufacturer = manufacturer_model[0].strip()
         if len(manufacturer_model) == 2 and manufacturer_model[1].lstrip() != '':
-            model = manufacturer_model[1]
-        return {'manufacturer': manufacturer,
-                'model': model}
+            model = manufacturer_model[1].strip()
+        return {'logger_manufacturer': manufacturer,
+                'logger_model': model}
 
     @staticmethod
     def decode_H_gps_receiver(line):
-
-        # can contain string in maxalt? (YX.igc)
-        # HFGPS:uBLOX_TIM-LP,16,max9000m
 
         # some IGC files use colon, others don't
         if line[5] == ':':
@@ -389,26 +392,66 @@ class LowLevelReader:
         model = None
         channels = None
         max_alt = None
-        for detail_index, detail in enumerate(gps_sensor):
-            if detail_index == 0:
-                manufacturer, model = detail.split(':')
-            elif detail_index == 1:
-                channels = detail.strip()
-            elif detail_index == 2:
-                max_alt = detail.strip()
+        for detail_index, detail in enumerate(reversed(gps_sensor)):
+            if len(gps_sensor) == 1 or (len(gps_sensor) == 2 and gps_sensor[1].strip() == ''):
+                manufacturer = detail.strip()
+            elif len(gps_sensor) == 3:
+                if detail_index == 0:
+                    max_alt = detail.strip()
+                elif detail_index == 1:
+                    channels = detail.strip()
+                else:  # detail_index == 2
+                    manufacturer = detail.strip()
+            elif len(gps_sensor) == 4:
+                if detail_index == 0:
+                    max_alt = detail.strip()
+                elif detail_index == 1:
+                    channels = detail.strip()
+                elif detail_index == 2:
+                    model = detail.strip()
+                else:  # detail_index == 3
+                    manufacturer = detail.strip()
+            else:
+                print gps_sensor
+                raise NotImplementedError
 
-        return {'manufacturer': manufacturer,
-                'model': model,
-                'channels': channels,
-                'max_alt': max_alt}
+        # stripping of ch from '12ch'
+        if channels is not None:
+            if channels.endswith('ch') or channels.endswith('Ch') or channels.endswith('CH'):
+                channels = int(channels[:-2])
+            else:
+                channels = int(channels)
+
+        # stripping of max from 'max10000m'
+        if max_alt is not None and max_alt.startswith('max'):
+            max_alt = max_alt[3::]
+
+        # separate unit from value
+        if max_alt is not None and max_alt.endswith('m'):
+            max_alt_value = int(max_alt[:-1])
+            max_alt_unit = 'm'
+        elif max_alt is not None and max_alt.endswith('ft'):
+            max_alt_value = int(max_alt[:-2])
+            max_alt_unit = 'ft'
+        elif max_alt is not None:
+            max_alt_value = int(max_alt)
+            max_alt_unit = 'm'
+        else:
+            max_alt_value = None
+            max_alt_unit = None
+
+        return {
+            'gps_manufacturer': manufacturer,
+            'gps_model': model,
+            'gps_channels': channels,
+            'gps_max_alt': {
+                'value': max_alt_value,
+                'unit': max_alt_unit
+            }
+        }
 
     @staticmethod
     def decode_H_pressure_sensor(line):
-
-        # check whether pressure has same colon problem as gps_sensor
-
-        # can contain string inside max alt? (YX.igc)
-        # HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max8000m
 
         manufacturer = None
         model = None
@@ -420,16 +463,49 @@ class LowLevelReader:
         else:
             pressure_sensor = line[19:].split(',')
 
-        if len(pressure_sensor) >= 1:
-            manufacturer = pressure_sensor[0] if pressure_sensor[0] != '' else None
-        if len(pressure_sensor) >= 2:
-            model = pressure_sensor[1] if pressure_sensor[1] != '' else None
-        if len(pressure_sensor) == 3:
-            max_alt = pressure_sensor[2] if pressure_sensor[2] != '' else None
+        if len(pressure_sensor) == 1:
+            manufacturer = pressure_sensor[0].strip() if pressure_sensor[0] != '' else None
+        elif len(pressure_sensor) == 2:
+            manufacturer_model = pressure_sensor[0].strip().split(' ') if pressure_sensor[0] != '' else None
 
-        return {'manufacturer': manufacturer,
-                'model': model,
-                'max_alt': max_alt}
+            if len(manufacturer_model) == 2:
+                manufacturer = manufacturer_model[0]
+                model = manufacturer_model[1]
+            else:
+                manufacturer = manufacturer_model[0]
+
+            max_alt = pressure_sensor[1].strip() if pressure_sensor[1] != '' else None
+        elif len(pressure_sensor) == 3:
+            manufacturer = pressure_sensor[0].strip() if pressure_sensor[0] != '' else None
+            model = pressure_sensor[1].strip() if pressure_sensor[1] != '' else None
+            max_alt = pressure_sensor[2].strip() if pressure_sensor[2] != '' else None
+
+        # stripping of max from 'max10000m'
+        if max_alt is not None and max_alt.startswith('max'):
+            max_alt = max_alt[3::]
+
+        # separate unit from value
+        if max_alt is not None and max_alt.endswith('m'):
+            max_alt_value = int(max_alt[:-1])
+            max_alt_unit = 'm'
+        elif max_alt is not None and max_alt.endswith('ft'):
+            max_alt_value = int(max_alt[:-2])
+            max_alt_unit = 'ft'
+        elif max_alt is not None:
+            max_alt_value = int(max_alt)
+            max_alt_unit = 'm'
+        else:
+            max_alt_value = None
+            max_alt_unit = None
+
+        return {
+            'pressure_sensor_manufacturer': manufacturer,
+            'pressure_sensor_model': model,
+            'pressure_sensor_max_alt': {
+                'value': max_alt_value,
+                'unit': max_alt_unit
+            }
+        }
 
     @staticmethod
     def decode_H_competition_id(line):
@@ -442,16 +518,26 @@ class LowLevelReader:
         return {'competition_class': None} if competition_class == '' else {'competition_class': competition_class}
 
     @staticmethod
+    def decode_H_time_zone_offset(line):
+        return {'time_zone_offset': int(float(line[14::].strip()))}
+
+    @staticmethod
+    def decode_H_mop_sensor(line):
+        return {'mop_sensor': line[12::].strip()}
+
+    @staticmethod
+    def decode_H_site(line):
+        return {'site': line[10::].strip()}
+
+    @staticmethod
     def decode_I_record(line):
         extensions = LowLevelReader.decode_extension_record(line)
-        value = None if len(extensions) == 0 else extensions
-        return {'type': 'I', 'value': value}
+        return {'type': 'I', 'value': extensions}
 
     @staticmethod
     def decode_J_record(line):
         extensions = LowLevelReader.decode_extension_record(line)
-        value = None if len(extensions) == 0 else extensions
-        return {'type': 'J', 'value': value}
+        return {'type': 'J', 'value': extensions}
 
     @staticmethod
     def decode_K_record(line):
@@ -497,6 +583,8 @@ class LowLevelReader:
 
         if len(date_str) != 6:
             raise ValueError('Date string does not have correct length')
+        elif date_str == '000000':
+            return None
 
         dd = int(date_str[0:2])
         mm = int(date_str[2:4])
@@ -543,13 +631,14 @@ class LowLevelReader:
     @staticmethod
     def decode_latitude(lat_string):
 
-        d = float(lat_string[0:2])
+        d = int(lat_string[0:2])
         m = float(lat_string[2:7]) / 1000
         ordinal = lat_string[7]
 
         latitude = d + m / 60.
 
         if not (0. <= latitude <= 90):
+            print lat_string
             raise ValueError('Latitude format is invalid')
 
         if ordinal == 'S':
