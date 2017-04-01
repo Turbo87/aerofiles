@@ -243,8 +243,7 @@ class LowLevelReader:
 
         # each satellite ID should have two digits
         if (len(line.strip()) - 7) % 2 != 0:
-            print 'error in F record'
-            # raise ValueError('F record formatting is incorrect')
+            raise ValueError('F record formatting is incorrect')
 
         satelites = []
         no_satelites = (len(line.strip()) - 7) / 2
