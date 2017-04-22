@@ -7,7 +7,7 @@ class Writer:
     """
     A writer for SeeYou CUP files. Supports waypoints and tasks::
 
-        with open('competition.cup', 'w') as fp:
+        with open('competition.cup', 'wb') as fp:
             writer = Writer(fp)
     """
 
