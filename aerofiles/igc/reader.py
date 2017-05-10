@@ -15,59 +15,113 @@ class Reader:
 
         self.reader = LowLevelReader(fp)
 
-        logger_id = None
-        task = {"waypoints": []}
-        fix_record_extensions = []
-        k_record_extensions = []
-        header = {}
-        fix_records = []
-        dgps_records = []
-        event_records = []
-        satellite_records = []
-        security_records = []
-        k_records = []
-        comment_records = []
+        logger_id = [[], None]
+        fix_records = [[], []]
+        task = [[], {"waypoints": []}]
+        dgps_records = [[], []]
+        event_records = [[], []]
+        satellite_records = [[], []]
+        security_records = [[], []]
+        header = [[], {}]
+        fix_record_extensions = [[], []]
+        k_record_extensions = [[], []]
+        k_records = [[], []]
+        comment_records = [[], []]
 
         for record_type, line, error in self.reader:
 
-            if error:
-                raise InvalidIGCFileError
-
             if record_type == 'A':
-                logger_id = line
+                if error:
+                    logger_id[0].append(error)
+                else:
+                    logger_id[1] = line
             elif record_type == 'B':
-                fix_record = LowLevelReader.process_B_record(line, fix_record_extensions)
-                fix_records.append(fix_record)
+                if error:
+                    if MissingRecordsError not in fix_records[0]:
+                        fix_records[0].append(MissingRecordsError)
+                else:
+
+                    # add MissingExtensionsError when fix_record_extensions contains error
+                    if len(fix_record_extensions[0]) > 0 and MissingExtensionsError not in fix_records[0]:
+                        fix_records[0].append(MissingExtensionsError)
+
+                    fix_record = LowLevelReader.process_B_record(line, fix_record_extensions[1])
+                    fix_records[1].append(fix_record)
             elif record_type == 'C':
                 task_item = line
 
-                if task_item['subtype'] == 'task_info':
-                    del task_item['subtype']
-                    task.update(task_item)
-                elif task_item['subtype'] == 'waypoint_info':
-                    del task_item['subtype']
-                    task['waypoints'].append(task_item)
+                if error:
+                    if MissingRecordsError not in task[0]:
+                        task[0].append(MissingRecordsError)
+                else:
+                    if task_item['subtype'] == 'task_info':
+                        del task_item['subtype']
+                        task[1].update(task_item)
+                    elif task_item['subtype'] == 'waypoint_info':
+                        del task_item['subtype']
+                        task[1]['waypoints'].append(task_item)
+
             elif record_type == 'D':
-                dgps_records.append(line)
+                if error:
+                    if MissingRecordsError not in dgps_records[0]:
+                        dgps_records[0].append(MissingRecordsError)
+                else:
+                    dgps_records[1].append(line)
             elif record_type == 'E':
-                event_records.append(line)
+                if error:
+                    if MissingRecordsError not in event_records[0]:
+                        event_records[0].append(MissingRecordsError)
+                else:
+                    event_records[1].append(line)
             elif record_type == 'F':
-                satellite_records.append(line)
+                if error:
+                    if MissingRecordsError not in satellite_records[0]:
+                        satellite_records[0].append(MissingRecordsError)
+                else:
+                    satellite_records[1].append(line)
             elif record_type == 'G':
-                security_records.append(line)
+                if error:
+                    if MissingRecordsError not in security_records[0]:
+                        security_records[0].append(MissingRecordsError)
+                else:
+                    security_records[1].append(line)
             elif record_type == 'H':
                 header_item = line
-                del header_item['source']
-                header.update(header_item)
+
+                if error:
+                    if MissingRecordsError not in header[0]:
+                        header[0].append(MissingRecordsError)
+                else:
+                    del header_item['source']
+                    header[1].update(header_item)
             elif record_type == 'I':
-                fix_record_extensions = line
+                if error:
+                    fix_record_extensions[0].append(error)
+                else:
+                    fix_record_extensions[1] = line
             elif record_type == 'J':
-                k_record_extensions = line
+                if error:
+                    k_record_extensions[0].append(error)
+                else:
+                    k_record_extensions[1] = line
             elif record_type == 'K':
-                k_record = LowLevelReader.process_K_record(line, k_record_extensions)
-                k_records.append(k_record)
+                if error:
+                    if MissingRecordsError not in k_records[0]:
+                        k_records[0].append(MissingRecordsError)
+                else:
+
+                    # add MissingExtensionsError when fix_record_extensions contains error
+                    if len(k_record_extensions[0]) > 0 and MissingExtensionsError not in k_records[0]:
+                        k_records[0].append(MissingExtensionsError)
+
+                    k_record = LowLevelReader.process_K_record(line, k_record_extensions[1])
+                    k_records[1].append(k_record)
             elif record_type == 'L':
-                comment_records.append(line)
+                if error:
+                    if MissingRecordsError not in comment_records[0]:
+                        comment_records[0].append(MissingRecordsError)
+                else:
+                    comment_records[1].append(line)
 
         return dict(logger_id=logger_id,                            # A record
                     fix_records=fix_records,                        # B records
@@ -635,4 +689,12 @@ class LowLevelReader:
 
 
 class InvalidIGCFileError(Exception):
+    pass
+
+
+class MissingRecordsError(Exception):
+    pass
+
+
+class MissingExtensionsError(Exception):
     pass
