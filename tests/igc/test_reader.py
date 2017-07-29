@@ -424,34 +424,35 @@ def test_decode_longitude():
 def test_highlevel_reader():
     reader = Reader()
 
-    with open(os.path.join('data', 'example.igc'), 'r') as f:
+    cur_dir = os.path.dirname(__file__)
+    with open(os.path.join(cur_dir, 'data', 'example.igc'), 'r') as f:
         result = reader.read(f)
 
-    assert result['logger_id'] == {
+    assert result['logger_id'][1] == {
         'id': 'ABC',
         'id_addition': 'FLIGHT:1',
         'manufacturer': 'XXX'
     }
 
-    assert len(result['fix_records']) == 9
+    assert len(result['fix_records'][1]) == 9
 
-    assert result['task']['declaration_date'] == datetime.date(2001, 7, 15)
-    assert result['task']['declaration_time'] == datetime.time(21, 38, 41)
-    assert result['task']['flight_date'] == datetime.date(2001, 7, 16)
-    assert result['task']['num_turnpoints'] == 2
-    assert result['task']['description'] == '500K Tri'
-    assert result['task']['number'] == '0001'
-    assert len(result['task']['waypoints']) == 6
+    assert result['task'][1]['declaration_date'] == datetime.date(2001, 7, 15)
+    assert result['task'][1]['declaration_time'] == datetime.time(21, 38, 41)
+    assert result['task'][1]['flight_date'] == datetime.date(2001, 7, 16)
+    assert result['task'][1]['num_turnpoints'] == 2
+    assert result['task'][1]['description'] == '500K Tri'
+    assert result['task'][1]['number'] == '0001'
+    assert len(result['task'][1]['waypoints']) == 6
 
-    assert len(result['dgps_records']) == 1
+    assert len(result['dgps_records'][1]) == 1
 
-    assert len(result['event_records']) == 2
+    assert len(result['event_records'][1]) == 2
 
-    assert len(result['satellite_records']) == 2
+    assert len(result['satellite_records'][1]) == 2
 
-    assert len(result['security_records']) == 5
+    assert len(result['security_records'][1]) == 5
 
-    assert result['header'] == {
+    assert result['header'][1] == {
         'competition_class': '15m Motor Glider',
         'competition_id': 'XYZ-78910',
         'copilot': 'Smith-Barry John A',
@@ -478,18 +479,18 @@ def test_highlevel_reader():
         'utc_date': datetime.date(2001, 7, 16)
     }
 
-    assert len(result['fix_record_extensions']) == 3
-    assert result['fix_record_extensions'] == [
+    assert len(result['fix_record_extensions'][1]) == 3
+    assert result['fix_record_extensions'][1] == [
         {'bytes': (36, 38), 'extension_type': 'FXA'},
         {'bytes': (39, 40), 'extension_type': 'SIU'},
         {'bytes': (41, 43), 'extension_type': 'ENL'}
     ]
 
-    assert len(result['k_record_extensions']) == 1
-    assert result['k_record_extensions'] == [
+    assert len(result['k_record_extensions'][1]) == 1
+    assert result['k_record_extensions'][1] == [
         {'bytes': (8, 12), 'extension_type': 'HDT'}
     ]
 
-    assert len(result['k_records']) == 1
+    assert len(result['k_records'][1]) == 1
 
-    assert len(result['comment_records']) == 2
+    assert len(result['comment_records'][1]) == 2
