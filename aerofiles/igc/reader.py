@@ -175,7 +175,7 @@ class LowLevelReader:
         return decoder(line)
 
     def get_decoder_method(self, record_type):
-        decoder = getattr(self, 'decode_{}_record'.format(record_type))
+        decoder = getattr(self, 'decode_%s_record' % record_type)
         if not decoder:
             raise ValueError('Unknown record type')
 
@@ -287,7 +287,7 @@ class LowLevelReader:
 
         starting_byte = 7
         for satelite_index in range(no_satelites):
-            satelites.append(line[starting_byte:starting_byte+2])
+            satelites.append(line[starting_byte:starting_byte + 2])
             starting_byte += 2
 
         return {

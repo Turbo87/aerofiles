@@ -36,9 +36,9 @@ def test_decode_C_record1():
     line = 'C150701213841160701000102 500K Tri\r\n'
     expected_result = {
         'subtype': 'task_info',
-        'declaration_date': datetime.date(2001, 07, 15),
+        'declaration_date': datetime.date(2001, 7, 15),
         'declaration_time': datetime.time(21, 38, 41),
-        'flight_date': datetime.date(2001, 07, 16),
+        'flight_date': datetime.date(2001, 7, 16),
         'number': '0001',
         'num_turnpoints': 2,
         'description': '500K Tri'
@@ -72,7 +72,7 @@ def test_decode_D_record():
 def test_decode_E_record():
     line = 'E160245PEV\r\n'
     expected_result = {
-        'time': datetime.time(16, 02, 45),
+        'time': datetime.time(16, 2, 45),
         'tlc': 'PEV',
         'extension_string': ''
     }
@@ -83,7 +83,7 @@ def test_decode_E_record():
 def test_decode_F_record():
     line = 'F160240040609123624221821\r\n'
     expected_result = {
-        'time': datetime.time(16, 02, 40),
+        'time': datetime.time(16, 2, 40),
         'satelites': ['04', '06', '09', '12', '36', '24', '22', '18', '21']
     }
 
@@ -110,7 +110,7 @@ def test_decode_H_record():
 def test_decode_H_utc_date():
     line = 'HFDTE160701\r\n'
     expected_result = {
-        'utc_date': datetime.date(2001, 07, 16)
+        'utc_date': datetime.date(2001, 7, 16)
     }
 
     assert LowLevelReader.decode_H_utc_date(line) == expected_result
@@ -393,7 +393,7 @@ def test_decode_J_record():
 def test_decode_K_record():
     line = 'K16024800090\r\n'
     expected_result = {
-        'time': datetime.time(16, 02, 48),
+        'time': datetime.time(16, 2, 48),
         'value_string': '00090',
         'start_index': 7
     }
