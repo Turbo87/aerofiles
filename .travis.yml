@@ -24,7 +24,7 @@ matrix:
 
 install:
   # Install tox and flake8 style checker
-  - pip install tox==1.7.2 flake8==2.1.0
+  - pip install tox==2.9.1 flake8==2.1.0
 
 script:
   # Run the library through flake8
