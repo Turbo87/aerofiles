@@ -4,6 +4,13 @@ Changelog
 Here you can see the full list of changes between each aerofiles release.
 
 
+aerofiles v0.4
+--------------
+
+- IGC file reader
+- Expanded SeeYou reader with task reading
+
+
 aerofiles v0.3
 --------------
 
