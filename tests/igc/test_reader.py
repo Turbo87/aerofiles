@@ -32,7 +32,7 @@ def test_decode_B_record():
     assert LowLevelReader.decode_B_record(line) == expected_result
 
 
-def test_process_B_record(self):
+def test_process_B_record():
 
     """Check whether correct extension information is taken from B record"""
 
@@ -40,7 +40,7 @@ def test_process_B_record(self):
     i_record = 'I08' + '3638FXA' + '3941ENL' + '4246TAS' + '4751GSP' + '5254TRT' + '5559VAT' + '6063OAT' + '6467ACZ'
     fix_record_extensions = LowLevelReader.decode_I_record(i_record)
 
-    self.assertIn({'bytes': (39, 41), 'extension_type': 'ENL'}, fix_record_extensions)
+    assert {'bytes': (39, 41), 'extension_type': 'ENL'} in fix_record_extensions
 
     # split up per 10 to enable easy counting
     b_record = 'B093232520' + '2767N00554' + '786EA00128' '0019600600' '1145771529' + '3177005930' + '2770090'
@@ -50,8 +50,8 @@ def test_process_B_record(self):
     decoded_b_record = LowLevelReader.decode_B_record(b_record)
     processed_b_record = LowLevelReader.process_B_record(decoded_b_record, fix_record_extensions)
 
-    self.assertIn('ENL', processed_b_record)
-    self.assertEqual(expected_enl, processed_b_record['ENL'])
+    assert 'ENL' in processed_b_record
+    assert expected_enl == processed_b_record['ENL']
 
 
 def test_decode_C_record1():
