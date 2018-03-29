@@ -691,10 +691,6 @@ class LowLevelReader:
         return longitude
 
 
-class InvalidIGCFileError(Exception):
-    pass
-
-
 class MissingRecordsError(Exception):
     pass
 
