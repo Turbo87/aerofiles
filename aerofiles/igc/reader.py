@@ -167,10 +167,6 @@ class LowLevelReader:
                 yield (record_type, None, e)
 
     def parse_line(self, record_type, line):
-
-        if len(line) > 76:
-            raise LineLengthError
-
         decoder = self.get_decoder_method(record_type)
         return decoder(line)
 
@@ -696,8 +692,4 @@ class MissingRecordsError(Exception):
 
 
 class MissingExtensionsError(Exception):
-    pass
-
-
-class LineLengthError(Exception):
     pass
