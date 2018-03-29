@@ -35,6 +35,7 @@ def test_decode_B_record():
 
     assert LowLevelReader.decode_B_record(line) == expected_result
 
+
 def test_decode_invalid_B_record():
     """Test whether decoding invalid B record raise Error"""
 
@@ -51,8 +52,9 @@ def test_decode_invalid_B_record():
     ]
 
     for b_record in invalid_b_records:
-        with pytest.raises(ValueError) as e_info:
-            decoded_record = LowLevelReader.decode_B_record(b_record)
+        with pytest.raises(ValueError):
+            LowLevelReader.decode_B_record(b_record)
+
 
 def test_decode_C_record1():
     line = 'C150701213841160701000102 500K Tri\r\n'
