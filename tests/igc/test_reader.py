@@ -67,7 +67,7 @@ def test_process_B_record():
         assert extension in processed_b_record
         assert expected_value == processed_b_record[extension]
 
-        
+
 def test_decode_invalid_B_record():
     """Test whether decoding invalid B record raise Error"""
 
