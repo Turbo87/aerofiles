@@ -1,5 +1,9 @@
+# This Python file uses the following encoding: utf-8
+
 import datetime
 import os
+
+import pytest
 
 from aerofiles.igc.reader import Reader
 from aerofiles.igc.reader import LowLevelReader
@@ -30,6 +34,26 @@ def test_decode_B_record():
     }
 
     assert LowLevelReader.decode_B_record(line) == expected_result
+
+
+def test_decode_invalid_B_record():
+    """Test whether decoding invalid B record raise Error"""
+
+    invalid_b_records = [
+        'B1053175438931N0ÿÿÿøÈÐÀÀÜÐáÀÄÈàÔÀÄÈÌØÀÀÜÀÀ',
+        'BÿÿÿøÄÀÈÌÄàÐäÐàààÁ8ÀÄÔÀäÈÌå��ÀÄàÔäÀ',
+        'B1140ÿÿÿøÌÈÔÐÌÌààÑ8ÀÈÐÈÌàÌÕÀÀääÈÀÀäÔ',
+        'B1309044931600N0153ÿÿÿøÐÀÄÍÀÄÔÌØÀÄÔÜØÀÀäÀ',
+        'B10470349ÿÿÿøÌÔäØÕ8ÀÄÔÄÈàÜÙÀÄàÐÐÀÄäÀÜÀÀØÀ',
+        'B11052249474ÿÿÿøÀÉ8ÀÄÔÀÜÜäÕÀÄÌÐÌÀÄÐÀÈÀÀÔÀ',
+        'B12ÿÿÿøÐØÀÌÐäÐÈØäÝ8ÀÄÔÄÜÌÐÑÀÄØÐàÀÄÜÐÀÀÀÜÀÀÀ4)ÄÈ',
+        'B1124185148269N9833N00553309EA0084800873000068000000',
+        'B1245085122369N00614242EÿÿÿùÀÄÜØÄÀÄàÐäÀÀØÀ',
+    ]
+
+    for b_record in invalid_b_records:
+        with pytest.raises(ValueError):
+            LowLevelReader.decode_B_record(b_record)
 
 
 def test_decode_C_record1():
