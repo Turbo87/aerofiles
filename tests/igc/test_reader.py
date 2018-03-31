@@ -36,6 +36,38 @@ def test_decode_B_record():
     assert LowLevelReader.decode_B_record(line) == expected_result
 
 
+def test_process_B_record():
+
+    """Check whether correct extension information is taken from B record"""
+
+    # split up per extension for easy reading
+    i_record = 'I08' + '3638FXA' + '3941ENL' + '4246TAS' + '4751GSP' + '5254TRT' + '5559VAT' + '6063OAT' + '6467ACZ'
+    fix_record_extensions = LowLevelReader.decode_I_record(i_record)
+
+    # split up per 10 to enable easy counting
+    b_record = 'B093232520' + '2767N00554' + '786EA00128' '0019600600' '1145771529' + '3177005930' + '2770090'
+
+    decoded_b_record = LowLevelReader.decode_B_record(b_record)
+    processed_b_record = LowLevelReader.process_B_record(decoded_b_record, fix_record_extensions)
+
+    # split per extension: 006 001 14577 15293 177 00593 0277 0090
+    expected_values = [
+        ('FXA', (36, 38), 6),
+        ('ENL', (39, 41), 1),
+        ('TAS', (42, 46), 14577),
+        ('GSP', (47, 51), 15293),
+        ('TRT', (52, 54), 177),
+        ('VAT', (55, 59), 593),
+        ('OAT', (60, 63), 277),
+        ('ACZ', (64, 67), 90),
+    ]
+
+    for extension, bytes, expected_value in expected_values:
+        assert {'bytes': bytes, 'extension_type': extension} in fix_record_extensions
+        assert extension in processed_b_record
+        assert expected_value == processed_b_record[extension]
+
+
 def test_decode_invalid_B_record():
     """Test whether decoding invalid B record raise Error"""
 

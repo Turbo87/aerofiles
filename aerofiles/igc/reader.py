@@ -211,11 +211,11 @@ class LowLevelReader:
 
         for extension in fix_record_extensions:
             start_byte, end_byte = extension['bytes']
-            start_byte -= i
-            end_byte -= i
+            start_byte = start_byte - i - 1
+            end_byte = end_byte - i - 1
 
             b_record.update(
-                {extension['extension_type']: int(ext[start_byte:end_byte])}
+                {extension['extension_type']: int(ext[start_byte:end_byte + 1])}
             )
 
         return b_record
