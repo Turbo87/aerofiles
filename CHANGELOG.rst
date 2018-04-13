@@ -4,6 +4,13 @@ Changelog
 Here you can see the full list of changes between each aerofiles release.
 
 
+aerofiles v0.4.1
+----------------
+
+- fix extensions in IGC file fix record
+- remove igc line limit
+
+
 aerofiles v0.4
 --------------
 
