@@ -617,7 +617,7 @@ class LowLevelReader:
         current_year_yyyy = datetime.date.today().year
         current_year_yy = current_year_yyyy % 100
         current_century = current_year_yyyy - current_year_yy
-        yyyy = current_century + yy if yy < current_year_yy else current_century - 100 + yy
+        yyyy = current_century + yy if yy <= current_year_yy else current_century - 100 + yy
 
         return datetime.date(yyyy, mm, dd)
 
