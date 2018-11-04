@@ -3,6 +3,9 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+[Unreleased]
+-------------
+- remove python2.6 and python3.3 support
 
 aerofiles v0.4.1
 ----------------
