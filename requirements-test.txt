@@ -7,4 +7,4 @@ coverage==4.5.1
 pytest-cov==2.5.1
 flake8==3.5.0
 freezegun==0.3.10
-six==1.10
+six==1.11.0
