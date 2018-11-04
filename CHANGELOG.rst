@@ -5,7 +5,14 @@ Here you can see the full list of changes between each aerofiles release.
 
 [Unreleased]
 -------------
+
+
+aerofiles v1.0.0
+----------------
+
+- fix decode_date bug in igc.reader
 - remove python2.6 and python3.3 support
+
 
 aerofiles v0.4.1
 ----------------
