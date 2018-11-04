@@ -39,4 +39,5 @@ deploy:
     secure: nyCow38ZEMiLmdYWnSTAOzigFQSEOwHv0AHMF8dQQd3zTOF0pA128C5L2vIrrAdjlK5mS7yUIojwbuvDyZ9ZFV01LQil9/Cy2kV4NQ4mbPtdHIIyNacBT6TyZtHSRBALswNPdFsM2Ony1SH6bdS/b4CYxm/sU+OuzhsitAETzwU=
   on:
     tags: true
+    python: '3.6'
     repo: Turbo87/aerofiles
