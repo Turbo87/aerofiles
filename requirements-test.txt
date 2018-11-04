@@ -2,9 +2,9 @@
 -e .
 
 # Additional requirements for running the testsuite
-pytest==3.2.3
+pytest==3.9.3
 coverage==4.5.1
-pytest-cov==2.5.1
-flake8==3.5.0
-freezegun==0.3.10
-six==1.10
+pytest-cov==2.6.0
+flake8==3.6.0
+freezegun==0.3.11
+six==1.11.0
