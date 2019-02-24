@@ -5,8 +5,6 @@ class Reader:
     """
     A reader for the IGC flight log file format.
 
-    See http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html.
-
     Example:
 
     .. sourcecode:: python
