@@ -5,15 +5,26 @@ class Reader:
     """
     A reader for the IGC flight log file format.
 
-    see http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html
+    Example:
+
+    .. sourcecode:: python
+
+        >>> with open('track.igc', 'r') as f:
+        ...     parsed = Reader().read(f)
+
     """
 
     def __init__(self):
         self.reader = None
 
-    def read(self, fp):
+    def read(self, file_obj):
+        """
+        Read the specified file object and return a dictionary with the parsed data.
 
-        self.reader = LowLevelReader(fp)
+        :param file_obj: a Python file object
+
+        """
+        self.reader = LowLevelReader(file_obj)
 
         logger_id = [[], None]
         fix_records = [[], []]
@@ -145,15 +156,15 @@ class LowLevelReader:
     see http://carrier.csi.cam.ac.uk/forsterlewis/soaring/igc_file_format/igc_format_2008.html
     """
 
-    def __init__(self, fp):
-        self.fp = fp
+    def __init__(self, file_obj):
+        self.file_obj = file_obj
         self.line_number = 0
 
     def __iter__(self):
         return self.next()
 
     def next(self):
-        for line in self.fp:
+        for line in self.file_obj:
             self.line_number += 1
 
             record_type = line[0]
