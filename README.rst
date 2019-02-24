@@ -33,6 +33,20 @@ You can run the testsuite with::
 
     $ tox
 
+Building Docs
+-------------
+
+Make sure that you have checked out git submodules::
+
+    $ git submodule update --init
+
+Then build docs using Sphinx and Make::
+
+   $ cd docs
+   $ make html
+
+The HTML output can be found in the `_build/html` directory.
+
 License
 -------
 
