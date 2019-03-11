@@ -2,5 +2,5 @@
 -r requirements-test.txt
 
 # Additional requirements for development
-sphinx==1.8.4
+sphinx==1.8.5
 tox==3.7.0
