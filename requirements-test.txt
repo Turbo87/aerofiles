@@ -3,7 +3,7 @@
 
 # Additional requirements for running the testsuite
 pytest==4.3.0
-coverage==4.5.2
+coverage==4.5.3
 pytest-cov==2.6.1
 flake8==3.7.7
 freezegun==0.3.11
