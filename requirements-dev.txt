@@ -3,4 +3,4 @@
 
 # Additional requirements for development
 sphinx==1.8.5
-tox==3.8.6
+tox==3.9.0
