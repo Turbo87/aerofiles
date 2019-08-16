@@ -17,7 +17,7 @@ class Reader:
     """
     A reader for the SeeYou CUP waypoint file format.
 
-    see http://www.keepitsoaring.com/LKSC/Downloads/cup_format.pdf
+    see http://download.naviter.com/docs/CUP-file-format-description.pdf
     """
 
     def __init__(self, fp=None):
