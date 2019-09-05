@@ -12,7 +12,7 @@ Features
 
 -  `Flarm <http://flarm.com/>`_ configuration file writer
    (``aerofiles.flarmcfg``)
--  `IGC <http://www.fai.org/gliding>`_ file reader and writer (``aerofiles.igc``)
+-  `IGC <https://www.fai.org/commission/igc>`_ file reader and writer (``aerofiles.igc``)
 -  `OpenAir <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_ file
    reader (``aerofiles.openair``)
 -  `SeeYou <http://www.naviter.com/products/seeyou/>`_ CUP file reader and
