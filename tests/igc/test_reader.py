@@ -181,6 +181,24 @@ def test_decode_H_pilot():
     assert LowLevelReader.decode_H_pilot(line) == expected_result
 
 
+def test_decode_H_pilot_pwca_header():
+    line = 'HFPLTPILOT: Bloggs Bill D\r\n'
+    expected_result = {
+        'pilot': 'Bloggs Bill D'
+    }
+
+    assert LowLevelReader.decode_H_pilot(line) == expected_result
+
+
+def test_decode_H_pilot_unkown_header():
+    line = 'HFPLT XXX : Bloggs Bill D\r\n'
+    expected_result = {
+        'pilot': 'Bloggs Bill D'
+    }
+
+    assert LowLevelReader.decode_H_pilot(line) == expected_result
+
+
 def test_decode_H_copilot():
     line = 'HFCM2CREW2: Smith-Barry John A\r\n'
     expected_result = {
