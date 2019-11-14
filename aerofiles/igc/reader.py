@@ -371,7 +371,7 @@ class LowLevelReader:
 
     @staticmethod
     def decode_H_pilot(line):
-        pilot = line[19:].strip()
+        pilot = line[line.find(':') + 1:].strip()
         return {'pilot': None} if pilot == '' else {'pilot': pilot}
 
     @staticmethod
