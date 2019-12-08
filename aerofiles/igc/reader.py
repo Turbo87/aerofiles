@@ -289,17 +289,17 @@ class LowLevelReader:
         if (len(line.strip()) - 7) % 2 != 0:
             raise ValueError('F record formatting is incorrect')
 
-        satelites = []
-        no_satelites = int((len(line.strip()) - 7) / 2)
+        satellites = []
+        no_satellites = int((len(line.strip()) - 7) / 2)
 
         starting_byte = 7
-        for satelite_index in range(no_satelites):
-            satelites.append(line[starting_byte:starting_byte + 2])
+        for satellite_index in range(no_satellites):
+            satellites.append(line[starting_byte:starting_byte + 2])
             starting_byte += 2
 
         return {
             'time': time,
-            'satelites': satelites
+            'satellites': satellites
         }
 
     @staticmethod
