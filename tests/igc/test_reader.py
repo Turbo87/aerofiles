@@ -140,7 +140,7 @@ def test_decode_F_record():
     line = 'F160240040609123624221821\r\n'
     expected_result = {
         'time': datetime.time(16, 2, 40),
-        'satelites': ['04', '06', '09', '12', '36', '24', '22', '18', '21']
+        'satellites': ['04', '06', '09', '12', '36', '24', '22', '18', '21']
     }
 
     assert LowLevelReader.decode_F_record(line) == expected_result
