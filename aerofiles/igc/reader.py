@@ -67,6 +67,7 @@ class Reader:
                 else:
                     if task_item['subtype'] == 'task_info':
                         del task_item['subtype']
+                        task[1]['waypoints'] = []
                         task[1].update(task_item)
                     elif task_item['subtype'] == 'waypoint_info':
                         del task_item['subtype']
