@@ -81,7 +81,6 @@ class Reader:
         if num_fields > 13:
             raise ParserError('Too many fields provided. Expecting at maximum following 13 fileds:\nname,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc,userdata,pics')
 
-            
         fields = [field.strip() for field in fields]
 
         return {
