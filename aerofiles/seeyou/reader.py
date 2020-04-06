@@ -75,9 +75,13 @@ class Reader:
         if fields[0].startswith('*'):
             return
 
-        if num_fields != 11:
-            raise ParserError('Fields are missing')
+        if num_fields < 11:
+            raise ParserError('Not enough fields provided. Expecting at minimum following 11 fileds:\nname,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc')
 
+        if num_fields > 13:
+            raise ParserError('Too many fields provided. Expecting at maximum following 13 fileds:\nname,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc,userdata,pics')
+
+            
         fields = [field.strip() for field in fields]
 
         return {
