@@ -76,7 +76,7 @@ class Reader:
         reader = csv.reader(fp)
         headers = next(reader, [])
         if not all(h in headers for h in BASE_HEADERS):
-            raise ParserError(f"Headers must include {BASE_HEADERS}")
+            raise ParserError("Headers must include at least include name, code, country, lat, lon, elev, style")
 
         for fields in reader:
             if fields == ["-----Related Tasks-----"]:
@@ -116,16 +116,14 @@ class Reader:
 
         if num_fields < len(BASE_HEADERS):
             raise ParserError(
-                f"Not enough fields provided. Expecting at minimum following fields: {BASE_HEADERS}"
+                "Not enough fields provided. Expecting at minimum following fields: \nname, code, country, lat, lon, elev, style"
             )
 
         if num_fields > len(BASE_HEADERS) + len(PLUS_HEADERS):
-            raise ParserError(
-                f"Too many fields provided. Expecting at maximum following 14 fields: {BASE_HEADERS + PLUS_HEADERS}"
-            )
+            raise ParserError("Too many fields provided. Expecting at maximum following 14 fields")
 
         return {
-            MAPPING[h]: getattr(self, f"decode_{MAPPING[h]}")(field.strip())
+            MAPPING[h]: getattr(self, "decode_%s" % MAPPING[h])(field.strip())
             for h, field in zip(headers, fields)
             if MAPPING.get(h)
         }
