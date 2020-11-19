@@ -1,0 +1,13 @@
+name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics
+"CUW_1",CUW_1,,5004.298N,00757.516E,443.0m,1,,,,,,,
+"CUW_2",CUW_2,,4928.697N,00646.924E,346.0m,1,,,,,,,
+"CUW_3",CUW_3,,4934.661N,01017.803E,386.0m,1,,,,,,,
+"CUW_4",CUW_4,,5051.797N,00944.636E,277.0m,1,,,,,,,
+"CUW_5",CUW_5,,5004.298N,00757.516E,443.0m,1,,,,,,,
+-----Related Tasks-----
+"TSK 664.7 / 664.7 Triangle","???","CUW_1","CUW_2","CUW_3","CUW_4","CUW_5","???"
+ObsZone=0,Style=2,R1=1000m,A1=45,SpeedStyle=1
+ObsZone=1,Style=1,R1=1000m,A1=45,SpeedStyle=1
+ObsZone=2,Style=1,R1=1000m,A1=45,SpeedStyle=1
+ObsZone=3,Style=1,R1=1000m,A1=45,SpeedStyle=1
+ObsZone=4,Style=3,R1=1000m,A1=45,SpeedStyle=1
