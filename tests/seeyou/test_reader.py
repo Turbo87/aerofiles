@@ -10,6 +10,7 @@ from tests import assert_waypoint
 FOLDER = path.dirname(path.realpath(__file__))
 DATA_PATH = path.join(FOLDER, 'data', 'SEEYOU.CUP')
 SIMPLE_CUPFILE = path.join(FOLDER, 'data', 'simple.cup')
+CLOUD_CUPFILE = path.join(FOLDER, 'data', 'task_container.cup')
 
 if_data_available = pytest.mark.skipif(
     not path.exists(DATA_PATH),
@@ -329,6 +330,9 @@ def test_read():
         waypoints = Reader().read(f)['waypoints']
         for i, waypoint in enumerate(waypoints):
             assert_waypoint(waypoint, WAYPOINTS[i][1])
+
+    with open(CLOUD_CUPFILE) as f:
+        waypoints = Reader().read(f)['waypoints']
 
 
 def check_waypoint(waypoint):
