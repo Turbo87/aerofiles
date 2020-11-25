@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "config:base",
+    ":dependencyDashboard",
+    ":semanticCommitsDisabled"
+  ],
+  "pip_requirements": {
+    "fileMatch": [
+      "(^|/)requirements([\\w-]*).txt$"
+    ]
+  }
+}
