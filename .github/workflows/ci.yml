@@ -46,6 +46,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: pip install -r requirements-dev.txt
+      - run: ./download_test_data.sh
       - run: pytest --cov aerofiles --cov-report term-missing --color=yes
 
   release:
