@@ -171,7 +171,7 @@ class Reader:
             raise ParserError('Reading style failed')
 
         if not (1 <= style <= 17):
-            raise ParserError('Unknown waypoint style')
+            style = 0
 
         return style
 
