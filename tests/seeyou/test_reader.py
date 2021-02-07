@@ -304,7 +304,6 @@ def test_decode_style():
     assert Reader().decode_style('0') == 0
     assert Reader().decode_style('20') == 0
    
-
     with pytest.raises(ParserError):
         Reader().decode_style('u')
 
