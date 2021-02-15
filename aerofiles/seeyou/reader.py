@@ -40,9 +40,9 @@ class Reader:
                 task_information = True
                 continue
             if task_information:
-                if fields[0] == 'Options':
+                if fields[0].lower() == 'options':
                     tasks[-1]['Options'] = self.decode_task_options(fields)
-                elif fields[0].startswith('ObsZone'):
+                elif fields[0].lower().startswith('obszone'):
                     tasks[-1]['obs_zones'].append(self.decode_task_obs_zone(fields))
                 else:
                     tasks.append(

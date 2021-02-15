@@ -12,8 +12,8 @@ name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc
 -----Related Tasks-----
 "3 turnpoints","Meiersberg","Meiersberg","Vettweiss Soller","Weisweiler Kw 10","Eddln0 Eddl N P","Meiersberg","Meiersberg"
 Options,TaskTime=03:00:00,WpDis=True,MinDis=True,RandomOrder=False,MaxPts=13,NearDis=0.7km,NearAlt=300.0m
-ObsZone=0,Style=2,R1=2500m,Line=1
-ObsZone=1,Style=1,R1=500m,A1=180
+OBSZONE=0,Style=2,R1=2500m,Line=1
+obszone=1,Style=1,R1=500m,A1=180
 ObsZone=2,Style=1,R1=500m,A1=180
 ObsZone=3,Style=1,R1=2000m,A1=180
 ObsZone=4,Style=3,R1=500m,Line=1
