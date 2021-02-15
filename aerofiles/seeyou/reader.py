@@ -291,7 +291,7 @@ class Reader:
         for field in fields:
             field_type, field_entry = field.split("=")
 
-            if field_type == 'ObsZone':
+            if field_type.lower() == 'obszone':
                 task_obs_zone['obs_zone'] = int(field_entry)
             elif field_type == 'Style':
                 task_obs_zone['style'] = int(field_entry)
