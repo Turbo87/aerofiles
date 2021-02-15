@@ -297,13 +297,13 @@ def test_decode_distance():
 
     with pytest.raises(ParserError):
         Reader().decode_distance('12a50m')
-        
-        
+
+
 def test_decode_style():
     assert Reader().decode_style('10') == 10
     assert Reader().decode_style('0') == 0
     assert Reader().decode_style('20') == 0
-   
+
     with pytest.raises(ParserError):
         Reader().decode_style('u')
 
