@@ -312,7 +312,7 @@ class Reader:
             elif field_type == 'Reduce' and field_entry == "1":
                 task_obs_zone['reduce'] = True
             else:
-                raise Exception('A taskpoint does not contain key %s' % field_type)
+                raise Exception('A taskpoint may not contain key %s' % field_type)
 
         return task_obs_zone
 
