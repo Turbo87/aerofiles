@@ -172,6 +172,15 @@ def test_decode_H_utc_date():
     assert LowLevelReader.decode_H_utc_date(line) == expected_result
 
 
+def test_decode_H_utc_date_alternate():
+    line = 'HFDTEDATE:160701,01\r\n'
+    expected_result = {
+        'utc_date': datetime.date(2001, 7, 16)
+    }
+
+    assert LowLevelReader.decode_H_utc_date(line) == expected_result
+
+
 def test_decode_H_pilot():
     line = 'HFPLTPILOTINCHARGE: Bloggs Bill D\r\n'
     expected_result = {

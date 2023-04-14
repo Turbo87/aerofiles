@@ -363,6 +363,9 @@ class LowLevelReader:
     @staticmethod
     def decode_H_utc_date(line):
         date_str = line[5:11]
+        # Some IGC file have an alternate syntax for the date: instead of HFDTE280709, it uses HFDTEDATE:280709,01
+        if date_str.startswith('DATE'):
+            date_str = line[10:16]
         return {'utc_date': LowLevelReader.decode_date(date_str)}
 
     @staticmethod
