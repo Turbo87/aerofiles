@@ -362,7 +362,7 @@ class LowLevelReader:
 
     @staticmethod
     def decode_H_utc_date(line):
-        date_str = line[5:11]
+        date_str = line[-7:-1]
         return {'utc_date': LowLevelReader.decode_date(date_str)}
 
     @staticmethod
