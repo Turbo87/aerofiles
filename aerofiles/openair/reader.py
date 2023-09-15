@@ -199,7 +199,6 @@ class Reader:
             })
 
         elif line_type == 'DB':
-            #print(line)
             state.add_element({
                 "type": "arc",
                 "center": state.center,
