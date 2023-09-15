@@ -367,7 +367,7 @@ class LowLevelReader:
     def get_handler_method(self, type):
         handler = getattr(self, 'handle_%s_record' % type, None)
         if not handler:
-            raise ValueError('unknown record type')
+            raise ValueError(f'unknown record type {type} in line {self.lineno}')
 
         return handler
 
