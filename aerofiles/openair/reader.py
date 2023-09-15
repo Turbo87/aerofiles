@@ -181,6 +181,7 @@ class Reader:
             state.add_element({
                 "type": "point",
                 "location": line["value"],
+                "lineno": line["lineno"],
             })
 
         elif line_type == 'DA':
@@ -194,15 +195,18 @@ class Reader:
                 "radius": line["radius"],
                 "start": line["start"],
                 "end": line["end"],
+                "lineno": line["lineno"],
             })
 
         elif line_type == 'DB':
+            #print(line)
             state.add_element({
                 "type": "arc",
                 "center": state.center,
                 "clockwise": state.clockwise,
                 "start": line["start"],
                 "end": line["end"],
+                "lineno": line["lineno"],
             })
 
         elif line_type == 'DC':
@@ -213,12 +217,14 @@ class Reader:
                 "type": "circle",
                 "center": state.center,
                 "radius": line["value"],
+                "lineno": line["lineno"],
             })
 
         elif line_type == 'DY':
             state.add_element({
                 "type": "airway",
                 "location": line["value"],
+                "lineno": line["lineno"],
             })
 
     class State:
@@ -362,7 +368,10 @@ class LowLevelReader:
         value = None if len(record) < 2 else record[1]
 
         # Run handler method and return result
-        return handler(value)
+        result = handler(value)
+        result["lineno"] = self.lineno
+
+        return result
 
     def get_handler_method(self, type):
         handler = getattr(self, 'handle_%s_record' % type, None)
