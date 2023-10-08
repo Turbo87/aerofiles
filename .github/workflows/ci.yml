@@ -30,11 +30,10 @@ jobs:
       fail-fast: true
       matrix:
         python-version:
+          - "3.x"
           - "3.7"
-          - "3.5"
-          - "2.7"
+          - "3.10"
           - "pypy3"
-          - "pypy2"
 
     name: "Tests (Python: ${{ matrix.python-version }})"
     runs-on: ubuntu-latest
