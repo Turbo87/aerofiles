@@ -56,12 +56,15 @@ class Reader:
             ],
         }
 
-    Possible elements in both record types::
+    Possible elements in both record types, where "lineno" contains
+    the line number of the OpenAir file, in which the element is
+    defined::
 
         # DP elements
         {
             "type": "point",
             "location": [39.61333, -119.76833],
+            "lineno": 100,
         }
 
         # DA elements
@@ -72,6 +75,7 @@ class Reader:
             "radius": 30.0,
             "start": 70.0,
             "end": 180.0,
+            "lineno": 105,
         }
 
         # DB elements
@@ -81,6 +85,7 @@ class Reader:
             "clockwise": False,
             "start": [39.61333, -119.76833],
             "end": [39.61333, -119.76833],
+            "lineno": 110,
         }
 
         # DC elements
@@ -88,12 +93,14 @@ class Reader:
             "type": "circle",
             "center": [39.61333, -119.76833],
             "radius": 15.0,
+            "lineno": 115,
         }
 
         # DY elements
         {
             "type": "airway",
             "location": [39.61333, -119.76833],
+            "lineno": 120,
         }
 
     """
@@ -199,7 +206,6 @@ class Reader:
             })
 
         elif line_type == 'DB':
-            #print(line)
             state.add_element({
                 "type": "arc",
                 "center": state.center,
@@ -295,8 +301,10 @@ class LowLevelReader:
 
             # handle result
 
-    Most lines are just parsed into ``type`` and ``value`` strings. The
-    following examples should show the lines that are parsed differently::
+    Most lines are just parsed into ``type`` and ``value`` strings. In
+    addition they have ``lineno`` which contains the line number of
+    the parsed OpenAir file. The following examples should show the
+    lines that are parsed differently::
 
         # AT 39:36.8 N 119:46.1W
         {"type": "AT", "value": [39.61333, -119.76833]}
