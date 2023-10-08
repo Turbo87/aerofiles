@@ -30,7 +30,7 @@ jobs:
       fail-fast: true
       matrix:
         python-version:
-          - "3.6"
+          - "3.7"
           - "3.5"
           - "2.7"
           - "pypy3"
