@@ -20,7 +20,7 @@ jobs:
 
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.6
+          python-version: 3.6.15
 
       - run: pip install -r requirements-dev.txt
       - run: flake8 --exclude=".git,docs" --ignore=E501 .
