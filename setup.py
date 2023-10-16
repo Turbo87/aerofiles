@@ -10,6 +10,7 @@ def read(*paths):
     with open(os.path.join(*paths), 'r') as f:
         return f.read()
 
+
 setup(
     name='aerofiles',
     version='1.0.0',
