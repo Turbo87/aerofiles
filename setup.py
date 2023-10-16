@@ -4,6 +4,7 @@ from setuptools import setup, find_packages
 
 GITHUB_URL = 'https://github.com/Turbo87/aerofiles/'
 
+
 def read(*paths):
     """Build a file path from *paths* and return the contents."""
     with open(os.path.join(*paths), 'r') as f:
@@ -30,4 +31,3 @@ setup(
     ],
     packages=find_packages(exclude=['tests*']),
 )
-
