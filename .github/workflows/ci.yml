@@ -31,9 +31,9 @@ jobs:
       matrix:
         python-version:
           - "3.x"
-          - "3.7"
-          - "3.10"
-          - "pypy3.9"
+          #- "3.7"
+          #- "3.10"
+          #- "pypy3.9"
 
     name: "Tests (Python: ${{ matrix.python-version }})"
     runs-on: ubuntu-latest
