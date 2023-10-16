@@ -32,6 +32,7 @@ jobs:
         python-version:
           - "3.x"
           - "pypy3.9"
+          - "pypy3.10"
           #- "3.7"
           #- "3.10"
           #- "pypy3.9"
