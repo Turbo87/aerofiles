@@ -33,9 +33,6 @@ jobs:
           - "3.x"
           - "pypy3.9"
           - "pypy3.10"
-          #- "3.7"
-          #- "3.10"
-          #- "pypy3.9"
 
     name: "Tests (Python: ${{ matrix.python-version }})"
     runs-on: ubuntu-latest
@@ -64,7 +61,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.x
 
       - run: python setup.py sdist
 
