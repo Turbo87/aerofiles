@@ -23,7 +23,7 @@ jobs:
           python-version: 3.x
 
       - run: pip install -r requirements-dev.txt
-      - run: flake8 --exclude=".git,docs" --ignore=E501 --ignore=W504 .
+      - run: flake8 --exclude=".git,docs" --ignore=E501,W504 .
 
   tests:
     strategy:
