@@ -16,32 +16,30 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.6
+          python-version: 3.x
 
       - run: pip install -r requirements-dev.txt
-      - run: flake8 --exclude=".git,docs" --ignore=E501 .
+      - run: flake8 --exclude=".git,docs" --ignore=E501,W504 .
 
   tests:
     strategy:
       fail-fast: true
       matrix:
         python-version:
-          - "3.6"
-          - "3.5"
-          - "2.7"
-          - "pypy3"
-          - "pypy2"
+          - "3.x"
+          - "pypy3.9"
+          - "pypy3.10"
 
     name: "Tests (Python: ${{ matrix.python-version }})"
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -59,11 +57,11 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.x
 
       - run: python setup.py sdist
 
