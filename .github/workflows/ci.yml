@@ -25,6 +25,19 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: flake8 --exclude=".git,docs" --ignore=E501,W504 .
 
+  vermin:
+    name: Check that python 2.6/3.0 is supported
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - run: pip install vermin
+      - run: vermin --no-tips --target=2.6 --target=3.0 --violations aerofiles
+
   tests:
     strategy:
       fail-fast: true
