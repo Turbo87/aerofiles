@@ -35,8 +35,8 @@ jobs:
         with:
           python-version: 3.x
 
-      - run: pip install vermin
-      - run: vermin --no-tips --target=2.6 --target=3.0 --violations aerofiles
+      - run: pip install -r requirements-dev.txt
+      - run: vermin aerofiles
 
   tests:
     strategy:
