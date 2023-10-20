@@ -66,6 +66,7 @@ jobs:
     needs:
       - lint
       - tests
+      - vermin
 
     name: Release
     runs-on: ubuntu-latest
