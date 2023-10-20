@@ -102,7 +102,7 @@ class Reader:
 
                 if error:
                     if MissingRecordsError not in header[0]:
-                        header[0].append(MissingRecordsError)
+                        header[0].append(MissingRecordsError(error))
                 else:
                     del header_item['source']
                     header[1].update(header_item)
@@ -315,104 +315,125 @@ class LowLevelReader:
         # three letter code
         tlc = line[2:5]
 
-        if tlc == 'DTE':
-            value = LowLevelReader.decode_H_utc_date(line)
-        elif tlc == 'FXA':
-            value = LowLevelReader.decode_H_fix_accuracy(line)
-        elif tlc == 'PLT':
-            value = LowLevelReader.decode_H_pilot(line)
-        elif tlc == 'CM2':
-            value = LowLevelReader.decode_H_copilot(line)
-        elif tlc == 'GTY':
-            value = LowLevelReader.decode_H_glider_model(line)
-        elif tlc == 'GID':
-            value = LowLevelReader.decode_H_glider_registration(line)
-        elif tlc == 'DTM':
-            value = LowLevelReader.decode_H_gps_datum(line)
-        elif tlc == 'RFW':
-            value = LowLevelReader.decode_H_firmware_revision(line)
-        elif tlc == 'RHW':
-            value = LowLevelReader.decode_H_hardware_revision(line)
-        elif tlc == 'FTY':
-            value = LowLevelReader.decode_H_manufacturer_model(line)
-        elif tlc == 'GPS':
-            value = LowLevelReader.decode_H_gps_receiver(line)
-        elif tlc == 'PRS':
-            value = LowLevelReader.decode_H_pressure_sensor(line)
-        elif tlc == 'CID':
-            value = LowLevelReader.decode_H_competition_id(line)
-        elif tlc == 'CCL':
-            value = LowLevelReader.decode_H_competition_class(line)
-        elif tlc == 'TZN':
-            value = LowLevelReader.decode_H_time_zone_offset(line)
-        elif tlc == 'MOP':
-            value = LowLevelReader.decode_H_mop_sensor(line)
-        elif tlc == 'SIT':
-            value = LowLevelReader.decode_H_site(line)
-        elif tlc == 'TZO':
-            value = LowLevelReader.decode_H_time_zone_offset(line)
-        elif tlc == 'UNT':
-            value = LowLevelReader.decode_H_units_of_measure(line)
+        colon = line.find(":", 5)
+        if colon >= 0:
+            # This is the long format
+            long_name = line[5:colon].strip()
+            if long_name == "":
+                long_name = None
+            line_value = line[colon + 1:].strip()
         else:
-            raise ValueError('Invalid h-record')
+            long_name = None
+            line_value = line[5:].strip()
+
+        if tlc == 'DTE':
+            value = LowLevelReader.decode_H_utc_date(line_value)
+        elif tlc == 'FXA':
+            value = LowLevelReader.decode_H_fix_accuracy(line_value)
+        elif tlc == 'PLT':
+            value = LowLevelReader.decode_H_pilot(line_value)
+        elif tlc == 'CM2':
+            value = LowLevelReader.decode_H_copilot(line_value)
+        elif tlc == 'GTY':
+            value = LowLevelReader.decode_H_glider_model(line_value)
+        elif tlc == 'GID':
+            value = LowLevelReader.decode_H_glider_registration(line_value)
+        elif tlc == 'DTM':
+            value = LowLevelReader.decode_H_gps_datum(line_value)
+        elif tlc == 'RFW':
+            value = LowLevelReader.decode_H_firmware_revision(line_value)
+        elif tlc == 'RHW':
+            value = LowLevelReader.decode_H_hardware_revision(line_value)
+        elif tlc == 'FTY':
+            value = LowLevelReader.decode_H_manufacturer_model(line_value)
+        elif tlc == 'GPS':
+            value = LowLevelReader.decode_H_gps_receiver(line_value)
+        elif tlc == 'PRS':
+            value = LowLevelReader.decode_H_pressure_sensor(line_value)
+        elif tlc == 'CID':
+            value = LowLevelReader.decode_H_competition_id(line_value)
+        elif tlc == 'CCL':
+            value = LowLevelReader.decode_H_competition_class(line_value)
+        elif tlc == 'TZN':
+            value = LowLevelReader.decode_H_time_zone_offset(line_value)
+        elif tlc == 'MOP':
+            value = LowLevelReader.decode_H_mop_sensor(line_value)
+        elif tlc == 'SIT':
+            value = LowLevelReader.decode_H_site(line_value)
+        elif tlc == 'TZO':
+            value = LowLevelReader.decode_H_time_zone_offset(line_value)
+        elif tlc == 'UNT':
+            value = LowLevelReader.decode_H_units_of_measure(line_value)
+        elif tlc == 'FRS':
+            value = LowLevelReader.decode_H_security(line_value)
+        elif tlc == 'ALG':
+            value = LowLevelReader.decode_H_gnss_alt(line_value)
+        elif tlc == 'ALP':
+            value = LowLevelReader.decode_H_pressure_alt(line_value)
+        else:
+            raise ValueError('Invalid h-record "%s"' % tlc)
 
         value.update({'source': source})
 
         return value
 
     @staticmethod
-    def decode_H_utc_date(line):
-        date_str = line[5:11]
+    def decode_H_utc_date(value):
+        date_str = value[:6]
         return {'utc_date': LowLevelReader.decode_date(date_str)}
 
     @staticmethod
-    def decode_H_fix_accuracy(line):
-        fix_accuracy = line[5:].strip()
+    def decode_H_fix_accuracy(value):
+        fix_accuracy = value
         return {'fix_accuracy': None} if fix_accuracy == '' else {'fix_accuracy': int(fix_accuracy)}
 
     @staticmethod
-    def decode_H_pilot(line):
-        pilot = line[line.find(':') + 1:].strip()
+    def decode_H_pilot(value):
+        pilot = value
         return {'pilot': None} if pilot == '' else {'pilot': pilot}
 
     @staticmethod
-    def decode_H_copilot(line):
-        second_pilot = line[11:].strip()
+    def decode_H_copilot(value):
+        second_pilot = value
         return {'copilot': None} if second_pilot == '' else {'copilot': second_pilot}
 
     @staticmethod
-    def decode_H_glider_model(line):
-        glider_model = line[16:].strip()
+    def decode_H_glider_model(value):
+        glider_model = value
         return {'glider_model': None} if glider_model == '' else {'glider_model': glider_model}
 
     @staticmethod
-    def decode_H_glider_registration(line):
-        glider_registration = line[14:].strip()
+    def decode_H_glider_registration(value):
+        glider_registration = value
         if glider_registration == '':
             return {'glider_registration': None}
         else:
             return {'glider_registration': glider_registration}
 
     @staticmethod
-    def decode_H_gps_datum(line):
-        gps_datum = line[17:].strip()
+    def decode_H_gps_datum(value):
+        gps_datum = value
         return {'gps_datum': None} if gps_datum == '' else {'gps_datum': gps_datum}
 
     @staticmethod
-    def decode_H_firmware_revision(line):
-        firmware_revision = line[21:].strip()
+    def decode_H_firmware_revision(value):
+        firmware_revision = value
         return {'firmware_revision': None} if firmware_revision == '' else {'firmware_revision': firmware_revision}
 
     @staticmethod
-    def decode_H_hardware_revision(line):
-        hardware_revision = line[21:].strip()
+    def decode_H_security(security):
+        return {'security': None} if security == '' else {'security': security}
+
+    @staticmethod
+    def decode_H_hardware_revision(value):
+        hardware_revision = value
         return {'hardware_revision': None} if hardware_revision == '' else {'hardware_revision': hardware_revision}
 
     @staticmethod
-    def decode_H_manufacturer_model(line):
+    def decode_H_manufacturer_model(value):
         manufacturer = None
         model = None
-        manufacturer_model = line[12:].strip().split(',')
+        manufacturer_model = value.split(',')
         if manufacturer_model[0] != '':
             manufacturer = manufacturer_model[0].strip()
         if len(manufacturer_model) == 2 and manufacturer_model[1].lstrip() != '':
@@ -421,14 +442,8 @@ class LowLevelReader:
                 'logger_model': model}
 
     @staticmethod
-    def decode_H_gps_receiver(line):
-
-        # some IGC files use colon, others don't
-        if line[5] == ':':
-            gps_sensor = line[6:].lstrip().split(',')
-        else:
-            gps_sensor = line[5:].split(',')
-
+    def decode_H_gps_receiver(value):
+        gps_sensor = value.split(',')
         manufacturer = None
         model = None
         channels = None
@@ -457,10 +472,17 @@ class LowLevelReader:
 
         # stripping of ch from '12ch'
         if channels is not None:
-            if channels.endswith('ch') or channels.endswith('Ch') or channels.endswith('CH'):
-                channels = int(channels[:-2])
+            # Special case for SkyBean SkyDrop/Strato vario wrongly
+            # specifying channels as "cm"
+            if manufacturer == 'Quectel' and model == 'L80' and channels == '22cm':
+                channels = 22
+            elif manufacturer == 'u-blox' and model == 'NEO-M8Q' and channels == '22cm':
+                channels = 72
             else:
-                channels = int(channels)
+                if channels.endswith('ch') or channels.endswith('Ch') or channels.endswith('CH'):
+                    channels = int(channels[:-2])
+                else:
+                    channels = int(channels)
 
         # stripping of max from 'max10000m'
         if max_alt is not None and max_alt.startswith('max'):
@@ -491,17 +513,14 @@ class LowLevelReader:
         }
 
     @staticmethod
-    def decode_H_pressure_sensor(line):
+    def decode_H_pressure_sensor(value):
 
         manufacturer = None
         model = None
         max_alt = None
 
         # some IGC files use colon, others don't
-        if line[19] == ':':
-            pressure_sensor = line[20:].strip().split(',')
-        else:
-            pressure_sensor = line[19:].split(',')
+        pressure_sensor = value.split(',')
 
         if len(pressure_sensor) == 1:
             manufacturer = pressure_sensor[0].strip() if pressure_sensor[0] != '' else None
@@ -548,30 +567,42 @@ class LowLevelReader:
         }
 
     @staticmethod
-    def decode_H_competition_id(line):
-        competition_id = line[19:].strip()
+    def decode_H_competition_id(value):
+        competition_id = value
         return {'competition_id': None} if competition_id == '' else {'competition_id': competition_id}
 
     @staticmethod
-    def decode_H_competition_class(line):
-        competition_class = line[22:].strip()
+    def decode_H_competition_class(value):
+        competition_class = value
         return {'competition_class': None} if competition_class == '' else {'competition_class': competition_class}
 
     @staticmethod
-    def decode_H_time_zone_offset(line):
-        return {'time_zone_offset': int(float(line[14::].strip()))}
+    def decode_H_time_zone_offset(value):
+        return {'time_zone_offset': int(float(value))}
 
     @staticmethod
-    def decode_H_mop_sensor(line):
-        return {'mop_sensor': line[12::].strip()}
+    def decode_H_mop_sensor(value):
+        return {'mop_sensor': value}
 
     @staticmethod
-    def decode_H_site(line):
-        return {'site': line[10::].strip()}
+    def decode_H_site(value):
+        return {'site': value}
 
     @staticmethod
-    def decode_H_units_of_measure(line):
-        return {'units_of_measure': line[11::].strip().split(',')}
+    def decode_H_units_of_measure(value):
+        return {'units_of_measure': value.split(',')}
+
+    @staticmethod
+    def decode_H_gnss_alt(value):
+        if value not in ["ELL", "GEO", "NKM", "NIL"]:
+            raise ValueError('Invalid HFALG value "%s"' % value)
+        return {'gnss_altitude': value}
+
+    @staticmethod
+    def decode_H_pressure_alt(value):
+        if value not in ["ISA", "MSL", "NKM", "NIL"]:
+            raise ValueError('Invalid HFALP value "%s"' % value)
+        return {'pressure_altitude': value}
 
     @staticmethod
     def decode_I_record(line):
