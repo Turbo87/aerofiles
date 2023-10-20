@@ -673,6 +673,7 @@ def test_highlevel_reader():
 
     assert len(result['comment_records'][1]) == 2
 
+
 def test_highlevel_reader_examples():
     reader = Reader()
 
