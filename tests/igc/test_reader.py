@@ -166,106 +166,127 @@ def test_decode_H_record():
 def test_decode_H_utc_date():
     line = 'HFDTE160701\r\n'
     expected_result = {
+        'source': 'F',
         'utc_date': datetime.date(2001, 7, 16)
     }
 
-    assert LowLevelReader.decode_H_utc_date(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+def test_decode_H_utc_date2():
+    line = 'HFDTEDATE: 280709,01\r\n'
+    expected_result = {
+        'source': 'F',
+        'utc_date': datetime.date(2009, 7, 28)
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_pilot():
     line = 'HFPLTPILOTINCHARGE: Bloggs Bill D\r\n'
     expected_result = {
+        'source': 'F',
         'pilot': 'Bloggs Bill D'
     }
 
-    assert LowLevelReader.decode_H_pilot(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_pilot_pwca_header():
     line = 'HFPLTPILOT: Bloggs Bill D\r\n'
     expected_result = {
+        'source': 'F',
         'pilot': 'Bloggs Bill D'
     }
 
-    assert LowLevelReader.decode_H_pilot(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_pilot_unkown_header():
     line = 'HFPLT XXX : Bloggs Bill D\r\n'
     expected_result = {
+        'source': 'F',
         'pilot': 'Bloggs Bill D'
     }
 
-    assert LowLevelReader.decode_H_pilot(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_copilot():
     line = 'HFCM2CREW2: Smith-Barry John A\r\n'
     expected_result = {
+        'source': 'F',
         'copilot': 'Smith-Barry John A'
     }
 
-    assert LowLevelReader.decode_H_copilot(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_glider_model():
     line = 'HFGTYGLIDERTYPE: Schleicher ASH-25\r\n'
     expected_result = {
+        'source': 'F',
         'glider_model': 'Schleicher ASH-25'
     }
 
-    assert LowLevelReader.decode_H_glider_model(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_glider_registration():
     line = 'HFGIDGLIDERID: ABCD-1234\r\n'
     expected_result = {
+        'source': 'F',
         'glider_registration': 'ABCD-1234'
     }
 
-    assert LowLevelReader.decode_H_glider_registration(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_datum():
     line = 'HFDTM100GPSDATUM: WGS-1984\r\n'
     expected_result = {
+        'source': 'F',
         'gps_datum': 'WGS-1984'
     }
 
-    assert LowLevelReader.decode_H_gps_datum(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_firmware_revision():
     line = 'HFRFWFIRMWAREVERSION:6.4\r\n'
     expected_result = {
+        'source': 'F',
         'firmware_revision': '6.4'
     }
 
-    assert LowLevelReader.decode_H_firmware_revision(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_hardware_revision():
     line = 'HFRHWHARDWAREVERSION:3.0\r\n'
     expected_result = {
+        'source': 'F',
         'hardware_revision': '3.0'
     }
 
-    assert LowLevelReader.decode_H_hardware_revision(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_manufacturer_model():
     line = 'HFFTYFRTYPE: Manufacturer, Model\r\n'
     expected_result = {
+        'source': 'F',
         'logger_manufacturer': 'Manufacturer',
         'logger_model': 'Model'
     }
 
-    assert LowLevelReader.decode_H_manufacturer_model(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver():
     line = 'HFGPS:MarconiCanada, Superstar, 12ch, max10000m\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'MarconiCanada',
         'gps_model': 'Superstar',
         'gps_channels': 12,
@@ -275,12 +296,13 @@ def test_decode_H_gps_receiver():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver2():
     line = 'HFGPS:GLOBALTOP,FGPMMOPA6,66,max18000m\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'GLOBALTOP',
         'gps_model': 'FGPMMOPA6',
         'gps_channels': 66,
@@ -290,12 +312,13 @@ def test_decode_H_gps_receiver2():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver3():
     line = 'HFGPS:GlobalTopPA6B,66ch,max18000m\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'GlobalTopPA6B',
         'gps_model': None,
         'gps_channels': 66,
@@ -305,12 +328,13 @@ def test_decode_H_gps_receiver3():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver4():
     line = 'HFGPS:UBLOX,NEO-6G,16Ch,50000\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'UBLOX',
         'gps_model': 'NEO-6G',
         'gps_channels': 16,
@@ -320,12 +344,13 @@ def test_decode_H_gps_receiver4():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver5():
     line = 'HFGPS:LX\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'LX',
         'gps_model': None,
         'gps_channels': None,
@@ -335,12 +360,13 @@ def test_decode_H_gps_receiver5():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_gps_receiver6():
     line = 'HFGPS:Cambridge 302,\r\n'
     expected_result = {
+        'source': 'F',
         'gps_manufacturer': 'Cambridge 302',
         'gps_model': None,
         'gps_channels': None,
@@ -350,12 +376,75 @@ def test_decode_H_gps_receiver6():
         }
     }
 
-    assert LowLevelReader.decode_H_gps_receiver(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
+def test_decode_H_gps_receiver7():
+    line = 'HFGPSReceiver:Quectel,L80,22cm,18000m\r\n'
+    expected_result = {
+        'source': 'F',
+        'gps_manufacturer': 'Quectel',
+        'gps_model': 'L80',
+        'gps_channels': 22,
+        'gps_max_alt': {
+            'value': 18000,
+            'unit': 'm'
+        }
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+def test_decode_H_gps_receiver8():
+    line = 'HFGPSReceiver:Quectel,LSomething,32ch,50000\r\n'
+    expected_result = {
+        'source': 'F',
+        'gps_manufacturer': 'Quectel',
+        'gps_model': 'LSomething',
+        'gps_channels': 32,
+        'gps_max_alt': {
+            'value': 50000,
+            'unit': 'm'
+        }
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+def test_decode_H_gps_receiver9():
+    line = 'HFGPSReceiver:u-blox,NEO-M8Q,22cm,70000\r\n'
+    expected_result = {
+        'source': 'F',
+        'gps_manufacturer': 'u-blox',
+        'gps_model': 'NEO-M8Q',
+        'gps_channels': 72,
+        'gps_max_alt': {
+            'value': 70000,
+            'unit': 'm'
+        }
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+def test_decode_H_gnss_alt():
+    line = 'HFALG:GEO\r\n'
+    expected_result = {
+        'source': 'F',
+        'gnss_altitude': 'GEO',
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+def test_decode_H_pressure_alt():
+    line = 'HFALP:MSL\r\n'
+    expected_result = {
+        'source': 'F',
+        'pressure_altitude': 'MSL',
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 def test_decode_H_pressure_sensor():
     line = 'HFPRSPRESSALTSENSOR: Sensyn, XYZ1111, max11000m\r\n'
     expected_result = {
+        'source': 'F',
         'pressure_sensor_manufacturer': 'Sensyn',
         'pressure_sensor_model': 'XYZ1111',
         'pressure_sensor_max_alt': {
@@ -364,12 +453,13 @@ def test_decode_H_pressure_sensor():
         }
     }
 
-    assert LowLevelReader.decode_H_pressure_sensor(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_pressure_sensor2():
     line = 'HFPRSPressAltSensor:Intersema MS5534B,8191\r\n'
     expected_result = {
+        'source': 'F',
         'pressure_sensor_manufacturer': 'Intersema',
         'pressure_sensor_model': 'MS5534B',
         'pressure_sensor_max_alt': {
@@ -378,70 +468,77 @@ def test_decode_H_pressure_sensor2():
         }
     }
 
-    assert LowLevelReader.decode_H_pressure_sensor(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_competition_id():
     line = 'HFCIDCOMPETITIONID: XYZ-78910\r\n'
     expected_result = {
+        'source': 'F',
         'competition_id': 'XYZ-78910'
     }
 
-    assert LowLevelReader.decode_H_competition_id(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_competition_class():
     line = 'HFCCLCOMPETITIONCLASS:15m Motor Glider\r\n'
     expected_result = {
+        'source': 'F',
         'competition_class': '15m Motor Glider'
     }
 
-    assert LowLevelReader.decode_H_competition_class(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_time_zone_offset():
     line = 'HFTZNTIMEZONE:3\r\n'
     expected_result = {
+        'source': 'F',
         'time_zone_offset': 3
     }
 
-    assert LowLevelReader.decode_H_time_zone_offset(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_time_zone_offset2():
     line = 'HFTZNTIMEZONE:11.00\r\n'
     expected_result = {
+        'source': 'F',
         'time_zone_offset': 11
     }
 
-    assert LowLevelReader.decode_H_time_zone_offset(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_mop_sensor():
     line = 'HFMOPSENSOR:MOP-(SN:1,ET=1375,0,1375,0,3.05V,p=0),Ver:0\r\n'
     expected_result = {
+        'source': 'F',
         'mop_sensor': 'MOP-(SN:1,ET=1375,0,1375,0,3.05V,p=0),Ver:0'
     }
 
-    assert LowLevelReader.decode_H_mop_sensor(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_site():
     line = 'HFSITSite: lk15comp\r\n'
     expected_result = {
+        'source': 'F',
         'site': 'lk15comp'
     }
 
-    assert LowLevelReader.decode_H_site(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_H_units_of_measure():
     line = 'HFUNTUnits: km,ft,kt'
     expected_result = {
+        'source': 'F',
         'units_of_measure': ['km', 'ft', 'kt']
     }
 
-    assert LowLevelReader.decode_H_units_of_measure(line) == expected_result
+    assert LowLevelReader.decode_H_record(line) == expected_result
 
 
 def test_decode_I_record():
@@ -568,3 +665,19 @@ def test_highlevel_reader():
     assert len(result['k_records'][1]) == 1
 
     assert len(result['comment_records'][1]) == 2
+
+def test_highlevel_reader_examples():
+    reader = Reader()
+
+    # We try to read in a number of example IGC files and make
+    # sure, that there is not parsing error
+    cur_dir = os.path.dirname(__file__)
+    directory = os.path.join(cur_dir, 'data')
+    for entry in os.listdir(directory):
+        filename = os.path.join(directory, entry)
+        with open(os.path.join(filename), 'r') as f:
+            result = reader.read(f)
+            for key in result:
+                # Assert, that there are no parse errors
+                if len(result[key][0]) != 0:
+                    assert len(result[key][0]) == 0, "%s %s" % (filename, key)
