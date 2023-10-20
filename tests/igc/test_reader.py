@@ -172,6 +172,7 @@ def test_decode_H_utc_date():
 
     assert LowLevelReader.decode_H_record(line) == expected_result
 
+
 def test_decode_H_utc_date2():
     line = 'HFDTEDATE: 280709,01\r\n'
     expected_result = {
@@ -378,6 +379,7 @@ def test_decode_H_gps_receiver6():
 
     assert LowLevelReader.decode_H_record(line) == expected_result
 
+
 def test_decode_H_gps_receiver7():
     line = 'HFGPSReceiver:Quectel,L80,22cm,18000m\r\n'
     expected_result = {
@@ -392,6 +394,7 @@ def test_decode_H_gps_receiver7():
     }
 
     assert LowLevelReader.decode_H_record(line) == expected_result
+
 
 def test_decode_H_gps_receiver8():
     line = 'HFGPSReceiver:Quectel,LSomething,32ch,50000\r\n'
@@ -408,6 +411,7 @@ def test_decode_H_gps_receiver8():
 
     assert LowLevelReader.decode_H_record(line) == expected_result
 
+
 def test_decode_H_gps_receiver9():
     line = 'HFGPSReceiver:u-blox,NEO-M8Q,22cm,70000\r\n'
     expected_result = {
@@ -423,6 +427,7 @@ def test_decode_H_gps_receiver9():
 
     assert LowLevelReader.decode_H_record(line) == expected_result
 
+
 def test_decode_H_gnss_alt():
     line = 'HFALG:GEO\r\n'
     expected_result = {
@@ -432,6 +437,7 @@ def test_decode_H_gnss_alt():
 
     assert LowLevelReader.decode_H_record(line) == expected_result
 
+
 def test_decode_H_pressure_alt():
     line = 'HFALP:MSL\r\n'
     expected_result = {
@@ -440,6 +446,7 @@ def test_decode_H_pressure_alt():
     }
 
     assert LowLevelReader.decode_H_record(line) == expected_result
+
 
 def test_decode_H_pressure_sensor():
     line = 'HFPRSPRESSALTSENSOR: Sensyn, XYZ1111, max11000m\r\n'

@@ -321,7 +321,7 @@ class LowLevelReader:
             long_name = line[5:colon].strip()
             if long_name == "":
                 long_name = None
-            line_value = line[colon+1:].strip()
+            line_value = line[colon + 1:].strip()
         else:
             long_name = None
             line_value = line[5:].strip()
