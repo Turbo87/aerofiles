@@ -3,8 +3,13 @@
 
 **waypoint, task, tracklog readers and writers for aviation**
 
-.. image:: https://travis-ci.org/Turbo87/aerofiles.png?branch=master
-   :target: https://travis-ci.org/Turbo87/aerofiles
+This is a python library to read and write many important file formats
+for aviation. It is compatible with python 3.0 (and newer) and
+2.6. Please read the documentation under
+https://aerofiles.readthedocs.io for further information.
+
+.. image:: actions/workflows/ci.yml/badge.svg
+   :target: actions/workflows/ci.yml
    :alt: Build Status
 
 Features
