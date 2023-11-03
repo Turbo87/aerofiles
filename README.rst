@@ -8,8 +8,8 @@ for aviation. It is compatible with python 3.0 (and newer) and
 2.6. Please read the documentation under
 https://aerofiles.readthedocs.io for further information.
 
-.. image:: actions/workflows/ci.yml/badge.svg
-   :target: actions/workflows/ci.yml
+.. image:: ../../actions/workflows/ci.yml/badge.svg
+   :target: ../../actions/workflows/ci.yml
    :alt: Build Status
 
 Features
