@@ -7,6 +7,14 @@ Here you can see the full list of changes between each aerofiles release.
 -------------
 
 
+aerofiles v1.1.0
+----------------
+
+- IGC/writer: added long_option "RECEIVER" to be compliant with newest spec
+- IGC/reader: allow all H-records to be in short or long format
+- OpenAir/reader: Added "lineno" to all elements to reference source line
+
+
 aerofiles v1.0.0
 ----------------
 
