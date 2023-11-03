@@ -295,7 +295,7 @@ class Writer:
 
         :param gps_receiver: the GPS receiver information
         """
-        self.write_fr_header('GPS', gps_receiver)
+        self.write_fr_header('GPS', gps_receiver, subtype_long='RECEIVER')
 
     def write_pressure_sensor(self, pressure_sensor):
         """
@@ -378,7 +378,7 @@ class Writer:
             # -> HFRFWFIRMWAREVERSION:2.2
             # -> HFRHWHARDWAREVERSION:2
             # -> HFFTYFRTYPE:LXNAVIGATION,LX8000F
-            # -> HFGPSuBLOX LEA-4S-2,16,max9000m
+            # -> HFGPSRECEIVER:uBLOX LEA-4S-2,16,max9000m
             # -> HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max10000m
             # -> HFCIDCOMPETITIONID:2H
             # -> HFCCLCOMPETITIONCLASS:Doubleseater

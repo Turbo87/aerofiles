@@ -213,7 +213,7 @@ def gps_receiver(request):
 def test_gps_receiver(writer, gps_receiver):
     writer.write_gps_receiver(gps_receiver)
     assert writer.fp.getvalue() == \
-        ('HFGPS%s\r\n' % gps_receiver).encode('utf-8')
+        ('HFGPSRECEIVER:%s\r\n' % gps_receiver).encode('utf-8')
 
 
 @pytest.fixture(params=[
@@ -295,7 +295,7 @@ def test_headers(writer):
         b'HFRFWFIRMWAREVERSION:2.2',
         b'HFRHWHARDWAREVERSION:2',
         b'HFFTYFRTYPE:LXNAVIGATION,LX8000F',
-        b'HFGPSuBLOX LEA-4S-2,16,max9000m',
+        b'HFGPSRECEIVER:uBLOX LEA-4S-2,16,max9000m',
         b'HFPRSPRESSALTSENSOR:INTERSEMA,MS5534A,max10000m',
         b'HFCIDCOMPETITIONID:2H',
         b'HFCCLCOMPETITIONCLASS:Doubleseater',
@@ -323,7 +323,7 @@ def test_default_headers(writer):
         b'HFRFWFIRMWAREVERSION:',
         b'HFRHWHARDWAREVERSION:',
         b'HFFTYFRTYPE:Flarm-IGC',
-        b'HFGPSu-blox:LEA-4P,16,8191',
+        b'HFGPSRECEIVER:u-blox:LEA-4P,16,8191',
         b'HFPRSPRESSALTSENSOR:',
     ]) + b'\r\n'
 
@@ -900,7 +900,7 @@ def test_igc_example(writer):
         b'HFRFWFIRMWAREVERSION:6.4',
         b'HFRHWHARDWAREVERSION:3.0',
         b'HFFTYFRTYPE:Manufacturer, Model',
-        b'HFGPSMarconiCanada:Superstar,12ch, max10000m',
+        b'HFGPSRECEIVER:MarconiCanada:Superstar,12ch, max10000m',
         b'HFPRSPRESSALTSENSOR:Sensyn, XYZ1111, max11000m',
         b'HFCIDCOMPETITIONID:XYZ-78910',
         b'HFCCLCOMPETITIONCLASS:15m Motor Glider',
