@@ -246,7 +246,7 @@ WAYPOINTS2 = [
         'description': 'Flugplatz',
         'userdata': 'ThisIsUserData',
         'pics': ['Pic1'],
-      }),
+    }),
     (['name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics',
       '"Meiersberg","MEIER",DE,5117.983S,00657.383W,164m,4,130,800m,,130.125,"Flugplatz",,"Pic1,Pic2"'], {  # noqa
         'name': 'Meiersberg',
@@ -424,14 +424,14 @@ def test_parse_waypoint(waypoint):
 
 
 @pytest.fixture(params=WAYPOINTS2)
-def waypoint(request):
+def waypoint2(request):
     return request.param
 
 
-def test_parse_waypoint(waypoint):
-    waypoints = list(Reader(waypoint[0]))
+def test_parse_waypoint2(waypoint2):
+    waypoints = list(Reader(waypoint2[0]))
     assert len(waypoints) == 1
-    assert_waypoint(waypoints[0], waypoint[1])
+    assert_waypoint(waypoints[0], waypoint2[1])
 
 
 @if_data_available
