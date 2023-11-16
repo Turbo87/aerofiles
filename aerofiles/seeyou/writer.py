@@ -1,6 +1,7 @@
 import datetime
 
 from .converter import WaypointStyle
+from .common import SeeYouFileFormat
 
 
 class Writer:
@@ -9,9 +10,13 @@ class Writer:
 
         with open('competition.cup', 'wb') as fp:
             writer = Writer(fp)
+
+    :param fp: file pointer to write to
+    :param encoding: the encoding used for the output
+    :param file_format: Can be one of the SeeYouFileFormat.
+
     """
 
-    HEADER = u'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc'
     DIVIDER = u'-----Related Tasks-----'
 
     DISTANCE_FORMAT_FLOAT = u'%.1f%s'
@@ -22,13 +27,21 @@ class Writer:
     ANGLE_FORMAT_INT = u'%d'
     ANGLE_FORMAT_OTHER = u'%s'
 
-    def __init__(self, fp, encoding='utf-8'):
+    def __init__(self, fp, encoding='utf-8',
+                 file_format=SeeYouFileFormat.ELEVEN):
         self.fp = fp
         self.encoding = encoding
         self.wps = set()
         self.in_task_section = False
 
-        self.write_line(self.HEADER)
+        if file_format == SeeYouFileFormat.ELEVEN:
+            self.headers = SeeYouFileFormat.HEADER_11
+        elif file_format == SeeYouFileFormat.TWELVE:
+            self.headers = SeeYouFileFormat.HEADER_12
+        elif file_format == SeeYouFileFormat.FORTEEN:
+            self.headers = SeeYouFileFormat.HEADER_14
+
+        self.write_fields(self.headers)
 
     def escape(self, field):
         if not field:
@@ -90,6 +103,11 @@ class Writer:
         else:
             return self.DISTANCE_FORMAT_OTHER % (distance, unit)
 
+    def format_pics(self, pics):
+        if pics is None or pics == []:
+            return u''
+        return self.escape(','.join(pics))
+
     def format_time(self, time):
         if isinstance(time, datetime.datetime):
             time = time.time()
@@ -113,10 +131,16 @@ class Writer:
     def write_fields(self, fields):
         self.write_line(u','.join(fields))
 
+    def set_field(self, field, key, value):
+        if key in self.headers:
+            field[self.headers.index(key)] = value
+        else:
+            raise RuntimeError("Writing value to non existing column '%s'. Check for correct SeeYouFileFormat when creating Writer." % key)
+
     def write_waypoint(
             self, name, shortname, country, latitude, longitude, elevation=u'',
             style=WaypointStyle.NORMAL, runway_direction=u'', runway_length=u'',
-            frequency=u'', description=u''):
+            frequency=u'', description=u'', runway_width=u'', userdata=u'', pics=u''):
 
         """
         Write a waypoint::
@@ -147,6 +171,12 @@ class Writer:
         :param frequency: radio frequency of the airport
         :param description: optional description of the waypoint (no length
             limit)
+        :param runway_width: width of the runway in meters or as ``(width,
+            unit)`` tuple if the waypoint is landable
+        :param userdata: arbitrary string with user data (no length
+            limit)
+        :param pics: list of filenames of pictures
+
         """
 
         if self.in_task_section:
@@ -155,19 +185,24 @@ class Writer:
         if not name:
             raise ValueError(u'Waypoint name must not be empty')
 
-        fields = [
-            self.escape(name),
-            self.escape(shortname),
-            country,
-            self.format_latitude(latitude),
-            self.format_longitude(longitude),
-            self.format_distance(elevation),
-            str(style),
-            str(runway_direction),
-            self.format_distance(runway_length),
-            self.escape(frequency),
-            self.escape(description),
-        ]
+        fields = [""] * len(self.headers)
+        self.set_field(fields, 'name', self.escape(name))
+        self.set_field(fields, 'code', self.escape(shortname))
+        self.set_field(fields, 'country', country)
+        self.set_field(fields, 'lat', self.format_latitude(latitude))
+        self.set_field(fields, 'lon', self.format_longitude(longitude))
+        self.set_field(fields, 'elev', self.format_distance(elevation))
+        self.set_field(fields, 'style', str(style))
+        self.set_field(fields, 'rwdir', str(runway_direction))
+        self.set_field(fields, 'rwlen', self.format_distance(runway_length))
+        if runway_width:
+            self.set_field(fields, 'rwwidth', self.format_distance(runway_width))
+        self.set_field(fields, 'freq', self.escape(frequency))
+        self.set_field(fields, 'desc', self.escape(description))
+        if userdata:
+            self.set_field(fields, 'userdata', self.escape(userdata))
+        if pics:
+            self.set_field(fields, 'pics', self.format_pics(pics))
 
         self.write_fields(fields)
 
