@@ -36,7 +36,7 @@ using::
 
 You can run the testsuite with::
 
-    $ tox
+    $ make test
 
 Building Docs
 -------------

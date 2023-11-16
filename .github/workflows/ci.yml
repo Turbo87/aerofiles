@@ -23,7 +23,7 @@ jobs:
           python-version: 3.x
 
       - run: pip install -r requirements-dev.txt
-      - run: flake8 --exclude=".git,docs" --ignore=E501,W504 .
+      - run: make lint
 
   vermin:
     name: Check that python 2.6/3.0 is supported
@@ -36,7 +36,7 @@ jobs:
           python-version: 3.x
 
       - run: pip install -r requirements-dev.txt
-      - run: vermin aerofiles
+      - run: make vermin
 
   tests:
     strategy:
@@ -58,7 +58,7 @@ jobs:
 
       - run: pip install -r requirements-dev.txt
       - run: ./download_test_data.sh
-      - run: pytest --cov aerofiles --cov-report term-missing --color=yes
+      - run: make test
 
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
