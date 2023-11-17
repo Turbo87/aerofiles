@@ -17,7 +17,7 @@ if_data_available = pytest.mark.skipif(
 )
 
 WAYPOINTS = [
-    ('"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"', {  # noqa
+    (['"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,130.125,"Flugplatz"'], {  # noqa
         'name': 'Meiersberg',
         'code': 'MEIER',
         'country': 'DE',
@@ -33,10 +33,13 @@ WAYPOINTS = [
             'value': 800,
             'unit': 'm',
         },
+        'runway_width': None,
         'frequency': '130.125',
         'description': 'Flugplatz',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Manosque Pont D9","MANOSQ",FR,4348.267N,00549.467E,295m,14,,,,"PONT D907"', {  # noqa
+    (['"Manosque Pont D9","MANOSQ",FR,4348.267N,00549.467E,295m,14,,,,"PONT D907"'], {  # noqa
         'name': 'Manosque Pont D9',
         'code': 'MANOSQ',
         'country': 'FR',
@@ -52,10 +55,13 @@ WAYPOINTS = [
             'value': None,
             'unit': None,
         },
+        'runway_width': None,
         'frequency': None,
         'description': 'PONT D907',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"MarcouX Champ 8","MARCO2",FR,4407.650N,00617.233E,694m,3,130,250m,,"Landefeld"', {  # noqa
+    (['"MarcouX Champ 8","MARCO2",FR,4407.650N,00617.233E,694m,3,130,250m,,"Landefeld"'], {  # noqa
         'name': 'MarcouX Champ 8',
         'code': 'MARCO2',
         'country': 'FR',
@@ -71,10 +77,13 @@ WAYPOINTS = [
             'value': 250,
             'unit': 'm',
         },
+        'runway_width': None,
         'frequency': None,
         'description': 'Landefeld',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Sydney Nsw Kinss","SYDNE",AU,3356.767S,15110.633E,6m,5,160,3950m,120.500,"Flugplatz"   ', {  # noqa
+    (['"Sydney Nsw Kinss","SYDNE",AU,3356.767S,15110.633E,6m,5,160,3950m,120.500,"Flugplatz"   '], {  # noqa
         'name': 'Sydney Nsw Kinss',
         'code': 'SYDNE',
         'country': 'AU',
@@ -90,10 +99,13 @@ WAYPOINTS = [
             'value': 3950,
             'unit': 'm',
         },
+        'runway_width': None,
         'frequency': '120.500',
         'description': 'Flugplatz',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Ulm H Bf","ULMHBF",DE,4823.967N,00958.983E,480m,1,,,,"BAHNHOF"', {
+    (['"Ulm H Bf","ULMHBF",DE,4823.967N,00958.983E,480m,1,,,,"BAHNHOF"'], {
         'name': 'Ulm H Bf',
         'code': 'ULMHBF',
         'country': 'DE',
@@ -109,10 +121,13 @@ WAYPOINTS = [
             'value': None,
             'unit': None,
         },
+        'runway_width': None,
         'frequency': None,
         'description': 'BAHNHOF',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Vettweiss Soller","VETTW2",DE,5044.850N,00634.033E,159m,3,150,380m,120.975,"Landefeld"', {  # noqa
+    (['"Vettweiss Soller","VETTW2",DE,5044.850N,00634.033E,159m,3,150,380m,120.975,"Landefeld"'], {  # noqa
         'name': 'Vettweiss Soller',
         'code': 'VETTW2',
         'country': 'DE',
@@ -128,10 +143,13 @@ WAYPOINTS = [
             'value': 380,
             'unit': 'm',
         },
+        'runway_width': None,
         'frequency': '120.975',
         'description': 'Landefeld',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Weisweiler Kw 10","WEISWE",DE,5050.383N,00619.367E,144m,15,,,,"KW1011FT"', {  # noqa
+    (['"Weisweiler Kw 10","WEISWE",DE,5050.383N,00619.367E,144m,15,,,,"KW1011FT"'], {  # noqa
         'name': 'Weisweiler Kw 10',
         'code': 'WEISWE',
         'country': 'DE',
@@ -147,10 +165,13 @@ WAYPOINTS = [
             'value': None,
             'unit': None,
         },
+        'runway_width': None,
         'frequency': None,
         'description': 'KW1011FT',
+        'userdata': None,
+        'pics': [],
     }),
-    ('"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"', {  # noqa
+    (['"Eddln0 Eddl N P","EDDLN0",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"'], {  # noqa
         'name': 'Eddln0 Eddl N P',
         'code': 'EDDLN0',
         'latitude': 51.406666666666666,
@@ -166,8 +187,91 @@ WAYPOINTS = [
             'value': None,
             'unit': None,
         },
+        'runway_width': None,
         'frequency': None,
         'description': 'EDDLN P',
+        'userdata': None,
+        'pics': [],
+    }),
+    # name and code columns swapped
+    (['code,name,country,lat,lon,elev,style,rwdir,rwlen,freq,desc',
+      '"EDDLN0","Eddln0 Eddl N P",DE,5124.400N,00644.900E,28m,1,,,,"EDDLN P"'], {  # noqa
+        'name': 'Eddln0 Eddl N P',
+        'code': 'EDDLN0',
+        'latitude': 51.406666666666666,
+        'longitude': 6.748333333333333,
+        'country': 'DE',
+        'elevation': {
+            'value': 28,
+            'unit': 'm',
+        },
+        'style': 1,
+        'runway_direction': None,
+        'runway_length': {
+            'value': None,
+            'unit': None,
+        },
+        'runway_width': None,
+        'frequency': None,
+        'description': 'EDDLN P',
+        'userdata': None,
+        'pics': [],
+    })
+]
+
+# These waypoints contain optional fields:
+WAYPOINTS2 = [
+    (['name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics',
+      '"Meiersberg","MEIER",DE,5117.983N,00657.383E,164m,4,130,800m,40m,130.125,"Flugplatz",ThisIsUserData,"Pic1"'], {  # noqa
+        'name': 'Meiersberg',
+        'code': 'MEIER',
+        'country': 'DE',
+        'latitude': 51.29972222222222,
+        'longitude': 6.956388888888889,
+        'elevation': {
+            'value': 164,
+            'unit': 'm',
+        },
+        'style': 4,
+        'runway_direction': 130,
+        'runway_length': {
+            'value': 800,
+            'unit': 'm',
+        },
+        'runway_width': {
+            'value': 40,
+            'unit': 'm',
+        },
+        'frequency': '130.125',
+        'description': 'Flugplatz',
+        'userdata': 'ThisIsUserData',
+        'pics': ['Pic1'],
+    }),
+    (['name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics',
+      '"Meiersberg","MEIER",DE,5117.983S,00657.383W,164m,4,130,800m,,130.125,"Flugplatz",,"Pic1,Pic2"'], {  # noqa
+        'name': 'Meiersberg',
+        'code': 'MEIER',
+        'country': 'DE',
+        'latitude': -51.29972222222222,
+        'longitude': -6.956388888888889,
+        'elevation': {
+            'value': 164,
+            'unit': 'm',
+        },
+        'style': 4,
+        'runway_direction': 130,
+        'runway_length': {
+            'value': 800,
+            'unit': 'm',
+        },
+        'runway_width': {
+            'value': None,
+            'unit': None,
+        },
+        'frequency': '130.125',
+        'description': 'Flugplatz',
+        'userdata': None,
+        'pics': ['Pic1', 'Pic2'],
     })
 ]
 
@@ -314,9 +418,20 @@ def waypoint(request):
 
 
 def test_parse_waypoint(waypoint):
-    waypoints = list(Reader([waypoint[0]]))
+    waypoints = list(Reader(waypoint[0]))
     assert len(waypoints) == 1
     assert_waypoint(waypoints[0], waypoint[1])
+
+
+@pytest.fixture(params=WAYPOINTS2)
+def waypoint2(request):
+    return request.param
+
+
+def test_parse_waypoint2(waypoint2):
+    waypoints = list(Reader(waypoint2[0]))
+    assert len(waypoints) == 1
+    assert_waypoint(waypoints[0], waypoint2[1])
 
 
 @if_data_available

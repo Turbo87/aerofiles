@@ -5,7 +5,7 @@ import datetime
 
 from io import BytesIO
 
-from aerofiles.seeyou import Writer, WaypointStyle, ObservationZoneStyle
+from aerofiles.seeyou import Writer, WaypointStyle, ObservationZoneStyle, SeeYouFileFormat
 
 
 @pytest.fixture()
@@ -16,6 +16,11 @@ def output():
 @pytest.fixture()
 def writer(output):
     return Writer(output)
+
+
+@pytest.fixture()
+def writer14(output):
+    return Writer(output, file_format=SeeYouFileFormat.FORTEEN)
 
 
 @pytest.fixture()
@@ -87,6 +92,52 @@ def test_write_waypoint(writer):
         b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,,\r\n'
 
 
+def test_write14_waypoint(writer14):
+    writer14.write_waypoint(
+        'Meiersberg',
+        'MEIER',
+        'DE',
+        (51 + 7.345 / 60.),
+        (6 + 24.765 / 60.),
+        userdata='ThisIsUserData',
+        runway_width=80,
+        pics=["A", "B", "C"]
+    )
+    assert writer14.fp.getvalue() == \
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics\r\n' \
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,80m,,,"ThisIsUserData","A,B,C"\r\n'
+
+
+def test_write14_waypoint_empty_pics_1(writer14):
+    writer14.write_waypoint(
+        'Meiersberg',
+        'MEIER',
+        'DE',
+        (51 + 7.345 / 60.),
+        (6 + 24.765 / 60.),
+        userdata='ThisIsUserData',
+        pics=[]
+    )
+    assert writer14.fp.getvalue() == \
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics\r\n' \
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,,,,"ThisIsUserData",\r\n'
+
+
+def test_write14_waypoint_empty_pics_2(writer14):
+    writer14.write_waypoint(
+        'Meiersberg',
+        'MEIER',
+        'DE',
+        (51 + 7.345 / 60.),
+        (6 + 24.765 / 60.),
+        userdata='ThisIsUserData',
+        pics=None
+    )
+    assert writer14.fp.getvalue() == \
+        b'name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics\r\n' \
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,,,,"ThisIsUserData",\r\n'
+
+
 def test_write_waypoint_with_negative_coordinates(writer):
     writer.write_waypoint(
         'Somewhere else',
@@ -98,6 +149,19 @@ def test_write_waypoint_with_negative_coordinates(writer):
     assert writer.fp.getvalue() == \
         b'name,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc\r\n' \
         b'"Somewhere else","ABCDEF42",NZ,1232.112S,17800.001W,,1,,,,\r\n'
+
+
+def test_write_waypoint_2(writer):
+    # Writer with standard SeeYouFileFormat.ELEVEN is unable to handle userdata
+    with pytest.raises(RuntimeError):
+        writer.write_waypoint(
+            'Somewhere else',
+            'ABCDEF42',
+            'NZ',
+            latitude=-(12 + 32.112 / 60.),
+            longitude=-(178 + .001 / 60.),
+            userdata='AAA'
+        )
 
 
 def test_write_waypoint_with_metadata(writer):

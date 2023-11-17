@@ -2,6 +2,7 @@ import re
 import csv
 
 from aerofiles.errors import ParserError
+from .common import SeeYouFileFormat
 
 
 RE_COUNTRY = re.compile(r'^([\w]{2})?$', re.I)
@@ -22,6 +23,7 @@ class Reader:
 
     def __init__(self, fp=None):
         self.fp = fp
+        self.headers = SeeYouFileFormat.HEADER_11
 
     def __iter__(self):
         return self.next()
@@ -61,9 +63,10 @@ class Reader:
         return dict(waypoints=waypoints, tasks=tasks)
 
     def decode_waypoint(self, fields):
-        # Ignore header line
-        if fields == ['name', 'code', 'country', 'lat', 'lon', 'elev',
-                      'style', 'rwdir', 'rwlen', 'freq', 'desc']:
+        # Identify header line
+        if all(f in fields for f in SeeYouFileFormat.HEADER_11):
+            # Take headers from file instead of standard headers
+            self.headers = fields
             return
 
         # Ignore empty lines
@@ -75,26 +78,23 @@ class Reader:
         if fields[0].startswith('*'):
             return
 
-        if num_fields < 11:
-            raise ParserError('Not enough fields provided. Expecting at minimum following 11 fileds:\nname,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc')
-
-        if num_fields > 13:
-            raise ParserError('Too many fields provided. Expecting at maximum following 13 fileds:\nname,code,country,lat,lon,elev,style,rwdir,rwlen,freq,desc,userdata,pics')
-
         fields = [field.strip() for field in fields]
 
         return {
-            'name': self.decode_name(fields[0]),
-            'code': self.decode_code(fields[1]),
-            'country': self.decode_country(fields[2]),
-            'latitude': self.decode_latitude(fields[3]),
-            'longitude': self.decode_longitude(fields[4]),
-            'elevation': self.decode_elevation(fields[5]),
-            'style': self.decode_style(fields[6]),
-            'runway_direction': self.decode_runway_direction(fields[7]),
-            'runway_length': self.decode_runway_length(fields[8]),
-            'frequency': self.decode_frequency(fields[9]),
-            'description': self.decode_description(fields[10]),
+            'name': self.decode_name(fields[self.headers.index('name')]),
+            'code': self.decode_code(fields[self.headers.index('code')]),
+            'country': self.decode_country(fields[self.headers.index('country')]),
+            'latitude': self.decode_latitude(fields[self.headers.index('lat')]),
+            'longitude': self.decode_longitude(fields[self.headers.index('lon')]),
+            'elevation': self.decode_elevation(fields[self.headers.index('elev')]),
+            'style': self.decode_style(fields[self.headers.index('style')]),
+            'runway_direction': self.decode_runway_direction(fields[self.headers.index('rwdir')]),
+            'runway_length': self.decode_runway_length(fields[self.headers.index('rwlen')]),
+            'runway_width': self.decode_runway_length(fields[self.headers.index('rwwidth')]) if 'rwwidth' in self.headers else None,
+            'frequency': self.decode_frequency(fields[self.headers.index('freq')]),
+            'description': self.decode_description(fields[self.headers.index('desc')]),
+            'userdata': self.decode_code(fields[self.headers.index('userdata')]) if 'userdata' in self.headers else None,
+            'pics': self.decode_pics(fields[self.headers.index('pics')]) if 'pics' in self.headers else [],
         }
 
     def decode_name(self, name):
@@ -195,7 +195,7 @@ class Reader:
 
         match = RE_RUNWAY_LENGTH.match(runway_length)
         if not match:
-            raise ParserError('Reading runway length failed')
+            raise ParserError('Reading runway length/width failed')
 
         try:
             value = float(match.group(1))
@@ -204,7 +204,7 @@ class Reader:
 
         unit = match.group(2)
         if unit and unit.lower() not in ('m', 'nm', 'ml'):
-            raise ParserError('Unknown runway length unit')
+            raise ParserError('Unknown runway length/width unit')
 
         return {
             'value': value,
@@ -225,6 +225,12 @@ class Reader:
             return None
 
         return description
+
+    def decode_pics(self, pics):
+        if not pics:
+            return []
+
+        return pics.split(",")
 
     def decode_task_options(self, fields):
         if not fields[0] == "Options":
