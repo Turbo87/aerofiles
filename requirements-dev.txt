@@ -3,5 +3,5 @@
 
 # Additional requirements for development
 sphinx==7.2.6
-tox==4.11.3
+tox==4.11.4
 setuptools==68.2.2
