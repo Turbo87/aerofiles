@@ -80,7 +80,7 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: python setup.py sdist
 
-      - uses: pypa/gh-action-pypi-publish@v1.8.10
+      - uses: pypa/gh-action-pypi-publish@v1.8.11
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
