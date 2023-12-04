@@ -3,7 +3,7 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-[Unreleased]
+aerofiles v1.2.0
 -------------
 - seeyou: handle newer file formats including rwwidth, userdata and pics.
 
