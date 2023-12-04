@@ -21,6 +21,7 @@ import os
 sys.path.append(os.path.abspath('_themes'))
 sys.path.append(os.path.abspath('_themes_flask'))
 sys.path.append(os.path.abspath('.'))
+sys.path.append(os.path.abspath('..'))
 
 # -- General configuration ------------------------------------------------
 
