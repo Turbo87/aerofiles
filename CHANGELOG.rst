@@ -3,6 +3,11 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.2.1
+-------------
+- seeyou/writer: fix in writer to use ";" as delimiter for pics
+
+
 aerofiles v1.2.0
 -------------
 - seeyou: handle newer file formats including rwwidth, userdata and pics.
