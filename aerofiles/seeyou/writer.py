@@ -106,7 +106,7 @@ class Writer:
     def format_pics(self, pics):
         if pics is None or pics == []:
             return u''
-        return self.escape(','.join(pics))
+        return self.escape(';'.join(pics))
 
     def format_time(self, time):
         if isinstance(time, datetime.datetime):
