@@ -105,7 +105,7 @@ def test_write14_waypoint(writer14):
     )
     assert writer14.fp.getvalue() == \
         b'name,code,country,lat,lon,elev,style,rwdir,rwlen,rwwidth,freq,desc,userdata,pics\r\n' \
-        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,80m,,,"ThisIsUserData","A,B,C"\r\n'
+        b'"Meiersberg","MEIER",DE,5107.345N,00624.765E,,1,,,80m,,,"ThisIsUserData","A;B;C"\r\n'
 
 
 def test_write14_waypoint_empty_pics_1(writer14):
