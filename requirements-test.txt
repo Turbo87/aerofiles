@@ -2,7 +2,7 @@
 -e .
 
 # Additional requirements for running the testsuite
-pytest==7.4.3
+pytest==7.4.4
 coverage==7.3.3
 pytest-cov==4.1.0
 flake8==6.1.0
