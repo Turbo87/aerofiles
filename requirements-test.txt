@@ -6,7 +6,7 @@ pytest==7.4.3
 coverage==7.3.3
 pytest-cov==4.1.0
 flake8==6.1.0
-freezegun==1.4.0
+freezegun==1.5.1
 six==1.16.0
 
 # Used to check, that we stick to a specific python minimum:
