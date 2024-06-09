@@ -19,7 +19,7 @@ Features
    (``aerofiles.flarmcfg``)
 -  `IGC <https://www.fai.org/commission/igc>`_ file reader and writer (``aerofiles.igc``)
 -  `OpenAir <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_ file
-   reader (``aerofiles.openair``)
+   reader and writer (``aerofiles.openair``)
 -  `SeeYou <http://www.naviter.com/products/seeyou/>`_ CUP file reader and
    writer (``aerofiles.seeyou``)
 -  `WELT2000 <http://www.segelflug.de/vereine/welt2000/>`_ file reader
