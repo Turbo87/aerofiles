@@ -1,15 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-
-import os.path
 import datetime
-
+import os.path
 from io import BytesIO
 
 from aerofiles.xcsoar import (
-    Writer, TaskType, PointType, ObservationZoneType, AltitudeReference
+    AltitudeReference, ObservationZoneType, PointType, TaskType, Writer
 )
+
+import pytest
 
 FOLDER = os.path.dirname(os.path.realpath(__file__))
 

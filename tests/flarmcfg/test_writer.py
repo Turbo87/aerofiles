@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-
 from io import BytesIO
 
 from aerofiles.flarmcfg import Writer
+
+import pytest
 
 
 @pytest.fixture()

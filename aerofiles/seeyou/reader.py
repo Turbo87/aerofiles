@@ -1,7 +1,8 @@
-import re
 import csv
+import re
 
 from aerofiles.errors import ParserError
+
 from .common import SeeYouFileFormat
 
 

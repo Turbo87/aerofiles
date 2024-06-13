@@ -33,6 +33,12 @@ def test_write_DP(writer):
     assert writer.fp.getvalue() == b'DP 39:35:00 S 118:59:20 W\r\n'
 
 
+def test_write_DP_round(writer):
+    element = {"location": [-39.999999999999, -118.9999999999]}
+    writer.write_DP(element)
+    assert writer.fp.getvalue() == b'DP 40:00:00 S 119:00:00 W\r\n'
+
+
 def test_write_DC(writer):
     element = {"center": [39.58333, 118.98888], "radius": 10}
     writer.write_DC(element)
@@ -60,6 +66,14 @@ def test_write_DB(writer):
     writer.write_DB(element)
 
     assert writer.fp.getvalue() == b'V X=39:29:42 N 119:46:30 W\r\nDB 39:36:48 N 119:46:06 W, 39:29:54 N 119:36:06 W\r\n'
+
+
+def test_invalid_record_type(writer):
+    record = {"type": "terrain"}
+    with pytest.raises(ValueError) as ex:
+        writer.write_record(record)
+
+    assert 'unknown record type' in str(ex)
 
 
 def test_write_record(writer):

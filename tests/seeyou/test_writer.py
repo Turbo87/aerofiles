@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import pytest
 import datetime
-
 from io import BytesIO
 
-from aerofiles.seeyou import Writer, WaypointStyle, ObservationZoneStyle, SeeYouFileFormat
+from aerofiles.seeyou import ObservationZoneStyle, SeeYouFileFormat, WaypointStyle, Writer
+
+import pytest
 
 
 @pytest.fixture()
