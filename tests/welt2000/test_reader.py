@@ -1,9 +1,9 @@
 from os import path
 
-import pytest
-
-from aerofiles.welt2000 import Reader, Converter
+from aerofiles.welt2000 import Converter, Reader
 from aerofiles.welt2000.reader import SURFACES
+
+import pytest
 
 from tests import assert_waypoint
 

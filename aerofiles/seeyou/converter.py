@@ -1,8 +1,8 @@
 from aerofiles.errors import ParserError
 from aerofiles.util import units
 
-from .reader import Reader
 from .common import WaypointStyle
+from .reader import Reader
 
 
 WAYPOINT_STYLE_MAPPING = {

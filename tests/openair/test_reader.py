@@ -1,14 +1,15 @@
-import pytest
-
-from os import path
 from json import load as load_json
+from os import path
 
 try:
     from itertools import zip_longest
 except ImportError:
     from itertools import izip_longest as zip_longest
 
-from aerofiles.openair.reader import Reader, LowLevelReader, coordinate
+from aerofiles.openair.reader import LowLevelReader, Reader, coordinate
+
+import pytest
+
 
 DATA = path.join(path.dirname(path.realpath(__file__)), 'data')
 

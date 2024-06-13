@@ -1,11 +1,11 @@
-import pytest
-from freezegun import freeze_time
-
 import datetime
-
 from io import BytesIO
 
 from aerofiles.igc import Writer
+
+from freezegun import freeze_time
+
+import pytest
 
 
 @pytest.fixture()

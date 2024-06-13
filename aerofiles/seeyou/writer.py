@@ -1,7 +1,7 @@
 import datetime
 
-from .converter import WaypointStyle
 from .common import SeeYouFileFormat
+from .converter import WaypointStyle
 
 
 class Writer:

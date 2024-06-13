@@ -3,10 +3,10 @@
 import datetime
 import os
 
-import pytest
-
-from aerofiles.igc.reader import Reader
 from aerofiles.igc.reader import LowLevelReader
+from aerofiles.igc.reader import Reader
+
+import pytest
 
 
 def test_decode_A_record():
