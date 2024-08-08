@@ -3,6 +3,11 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.3.0
+-------------
+- openair/writer: first implementation of type "airspace". Others are missing
+
+
 aerofiles v1.2.1
 -------------
 - seeyou/writer: fix in writer to use ";" as delimiter for pics
