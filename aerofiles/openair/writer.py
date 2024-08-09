@@ -117,9 +117,17 @@ class Writer:
     def write_airspace(self, record):
         self.reset_V()
         self.write_line('AC ' + record["class"])
+        if "ident" in record:
+            self.write_line('AI ' + record["ident"])
+        if "airspace_type" in record:
+            self.write_line('AY ' + record["airspace_type"])
         self.write_line('AN ' + record["name"])
         self.write_line('AH ' + record["ceiling"])
         self.write_line('AL ' + record["floor"])
+        if "ground_name" in record:
+            self.write_line('AG ' + record["ground_name"])
+        if "freq" in record:
+            self.write_line('AF ' + record["freq"])
         for element in record["elements"]:
             self.write_airspace_element(element)
 

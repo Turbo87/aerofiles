@@ -3,14 +3,14 @@ from aerofiles.openair import patterns
 
 class Reader:
 
-    """
-    A higher-level reader for the OpenAir airspace file format::
+    """A higher-level reader for the OpenAir airspace file format::
 
         with open('airspace.txt') as fp:
             reader = Reader(fp)
 
     see `OpenAir file format specification
-    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_
+    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`. It is able
+    to handle standard and extended file format.
 
     This class should be used as a generator and will return ``(record,
     error)`` tuples for each airspace or terrain record::
@@ -32,6 +32,10 @@ class Reader:
             "type": "airspace",
             "class": "C",
             "name": "Sacramento",
+            "ident": "b3836bab-6bc3-48c1-b918-01c2559e26fa",
+            "ground_name": "Sacramento Radio",
+            "freq": "123.456",
+            "airspace_type": "CTR",
             "floor": "500ft",
             "ceiling": "UNLIM",
             "labels": [
@@ -41,6 +45,10 @@ class Reader:
                 ...
             ],
         }
+
+    where "ident", "ground_name", "freq", and "airspace_type" is only
+    used on extended openair file format by using "AI", "AG", "AF",
+    and "AY".
 
     Terrain records have the following structure::
 
@@ -152,8 +160,20 @@ class Reader:
         if line_type == 'AC':
             state.record["class"] = line["value"]
 
+        elif line_type == 'AF':
+            state.record["freq"] = line["value"]
+
+        elif line_type == 'AG':
+            state.record["ground_name"] = line["value"]
+
+        elif line_type == 'AY':
+            state.record["airspace_type"] = line["value"]
+
         elif line_type == 'AN':
             state.record["name"] = line["value"]
+
+        elif line_type == 'AI':
+            state.record["ident"] = line["value"]
 
         elif line_type == 'TC':
             state.record["name"] = line["value"]
@@ -254,6 +274,10 @@ class Reader:
                 "name": None,
                 "floor": None,
                 "ceiling": None,
+                "ident": None,
+                "ground_name": None,
+                "freq": None,
+                "airspace_type": None,
                 "labels": [],
                 "elements": []
             }
@@ -394,8 +418,20 @@ class LowLevelReader:
     def handle_AN_record(self, value):
         return {'type': 'AN', 'value': value}
 
+    def handle_AF_record(self, value):
+        return {'type': 'AF', 'value': value}
+
+    def handle_AG_record(self, value):
+        return {'type': 'AG', 'value': value}
+
+    def handle_AY_record(self, value):
+        return {'type': 'AY', 'value': value}
+
     def handle_AH_record(self, value):
         return {'type': 'AH', 'value': value}
+
+    def handle_AI_record(self, value):
+        return {'type': 'AI', 'value': value}
 
     def handle_AL_record(self, value):
         return {'type': 'AL', 'value': value}

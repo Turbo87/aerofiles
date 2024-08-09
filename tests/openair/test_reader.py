@@ -116,6 +116,10 @@ def assert_block(value, expected):
 
     if value['type'] == 'airspace':
         assert value['class'] == expected['class']
+        assert value['ident'] == expected['ident']
+        assert value['ground_name'] == expected['ground_name']
+        assert value['freq'] == expected['freq']
+        assert value['airspace_type'] == expected['airspace_type']
         assert value['floor'] == expected['floor']
         assert value['ceiling'] == expected['ceiling']
 
