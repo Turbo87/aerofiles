@@ -80,9 +80,13 @@ def test_write_record(writer):
     record = {
         "type": "airspace",
         "class": "C",
+        "airspace_type": "CTR",
         "name": "RENO",
+        "ident": "Reno-1234-5678",
         "floor": "7200 ft",
         "ceiling": "8400 ft",
+        "ground_name": "Reno Radio",
+        "freq": "123.456",
         "elements": [{
             "type": "arc",
             "center": [39.495, -119.775],
@@ -115,9 +119,13 @@ def test_write_record(writer):
     writer.write_record(record)
     assert writer.fp.getvalue() == b'\r\n'.join([
         b'AC C',
+        b'AI Reno-1234-5678',
+        b'AY CTR',
         b'AN RENO',
         b'AH 8400 ft',
         b'AL 7200 ft',
+        b'AG Reno Radio',
+        b'AF 123.456',
         b'V X=39:29:42 N 119:46:30 W',
         b'DA 10,270,290',
         b'V D=-',

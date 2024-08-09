@@ -1,11 +1,16 @@
 [
     {"type": "AC", "value": "C"},
+    {"type": "AI", "value": "Reno-C-1"},
+    {"type": "AF", "value": "123.456"},
+    {"type": "AG", "value": "Reno Radio"},
     {"type": "AN", "value": "RENO-C"},
     {"type": "AL", "value": "SFC"},
     {"type": "AH", "value": "8400 ft"},
     {"type": "V", "name": "X", "value": [39.495, -119.775]},
     {"type": "DC", "value": 5},
+
     {"type": "AC", "value": "C"},
+    {"type": "AI", "value": "Reno-C-2"},
     {"type": "AN", "value": "RENO"},
     {"type": "AL", "value": "7200 ft"},
     {"type": "AH", "value": "8400 ft"},
@@ -18,7 +23,9 @@
     {"type": "DB", "start": [39.61333, -119.76833], "end": [39.49833, -119.60166]},
     {"type": "V", "name": "D", "value": false},
     {"type": "DA", "radius": 5, "start": 200, "end": 270},
+
     {"type": "AC", "value": "C"},
+    {"type": "AY", "value": "CTR"},
     {"type": "AN", "value": "BEALE AFB"},
     {"type": "AL", "value": "SFC"},
     {"type": "AH", "value": "4100 ft"},

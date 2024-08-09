@@ -60,6 +60,9 @@
 
 * Reno Class C
 AC C
+AI Reno-C-1
+AF 123.456
+AG Reno Radio
 AN RENO-C
 AL SFC
 AH 8400 ft
@@ -68,6 +71,7 @@ DC 5
 
 * Reno Class C
 AC C
+AI Reno-C-2
 AN RENO
 AL 7200 ft
 AH 8400 ft
@@ -82,8 +86,8 @@ DB 39:36.8 N 119:46.1W, 39:29.9 N 119:36.1W
 V D=-
 DA 5,200,270
 
-
 AC C
+AY CTR
 AN BEALE AFB
 AL SFC
 AH 4100 ft
