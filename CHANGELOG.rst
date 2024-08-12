@@ -3,7 +3,7 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-aerofiles v1.3.0
+aerofiles v1.3.0, 2024-08-12
 -------------
 - openair/writer: first implementation of type "airspace". Others are missing
 - openair: implement extended openair format
