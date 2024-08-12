@@ -59,7 +59,7 @@
 
 
 * Reno Class C
-AC C
+AC C                       * This is a comment
 AI Reno-C-1
 AF 123.456
 AG Reno Radio
