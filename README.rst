@@ -63,7 +63,8 @@ How to release
 --------------
 
 Make sure, that all tests succeed and CHANGELOG.rst is up to date
-including the (next) version number.
+including the (next) version number. Also check, that (next) version
+number is included in setup.py.
 
 Use browser with https://github.com/Turbo87/aerofiles/releases and
 "Draft a new release". Use "Choose a tag" to create a new tag
