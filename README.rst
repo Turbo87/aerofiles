@@ -59,6 +59,22 @@ This code is published under the MIT license. See the
 `LICENSE <https://github.com/Turbo87/aerofiles/blob/master/LICENSE>`__ file
 for the full text.
 
+How to release
+--------------
+
+Make sure, that all tests succeed and CHANGELOG.rst is up to date
+including the (next) version number.
+
+Use browser with https://github.com/Turbo87/aerofiles/releases and
+"Draft a new release". Use "Choose a tag" to create a new tag
+following the structure "v1.2.1". The release title should be
+"aerofiles v1.2.1". Use text from CHANGELOG.rst to describe this
+release.
+
+Finally use "Set as the latest release" and publish release.
+
+Then go to https://readthedocs.org/projects/aerofiles/ and hit
+"Build-Version" to update the documentation from github.com.
 
 .. |aerofiles| image:: https://github.com/Turbo87/aerofiles/raw/master/img/logo.png
     :alt: aerofiles
