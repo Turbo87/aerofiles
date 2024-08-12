@@ -1,3 +1,6 @@
+import sys
+from pprint import pprint
+
 from aerofiles.openair import patterns
 
 
@@ -549,3 +552,24 @@ def coordinate(value):
         return [lat, lon]
 
     raise ValueError('invalid coordinate format: %s' % value)
+
+
+def main(files):
+    # Read every file and print result
+    for file in files:
+        with open(file, 'r') as fp:
+            reader = Reader(fp)
+            for record, error in reader:
+                if error:
+                    print("Error in file", file, error)
+                else:
+                    pprint(record)
+
+
+if __name__ == "__main__":
+    files = sys.argv[1:]
+    if not files:
+        print("Please give at least 1 openair file to read.")
+        sys.exit(1)
+
+    main(files)
