@@ -20,7 +20,7 @@ class Writer:
 
         writer.write_record(record)
 
-    Currently on airspace records are implemented. Terrain is missing.
+    Currently only airspace records are implemented. Terrain is missing.
 
     """
 
