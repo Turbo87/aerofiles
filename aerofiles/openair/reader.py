@@ -380,8 +380,9 @@ class LowLevelReader:
 
     def parse_line(self, line):
         # Ignore comments
-        if line.startswith('*'):
-            return None
+        pos = line.find('*')
+        if pos >= 0:
+            line = line[:pos]
 
         # Strip whitespace
         line = line.strip()
