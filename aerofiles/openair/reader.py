@@ -551,7 +551,7 @@ def coordinate(value):
 
         return [lat, lon]
 
-    raise ValueError('invalid coordinate format: %s' % value)
+    raise ValueError('invalid coordinate format: "%s"' % value)
 
 
 def main(files):
