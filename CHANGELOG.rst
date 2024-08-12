@@ -3,6 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.3.1, 2024-08-12
+-------------
+- messed up v1.3.0 deployment. Redeploy as v1.3.1 without any changes.
+
 aerofiles v1.3.0, 2024-08-12
 -------------
 - openair/writer: first implementation of type "airspace". Others are missing
