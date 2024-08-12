@@ -6,7 +6,8 @@ Here you can see the full list of changes between each aerofiles release.
 aerofiles v1.3.0
 -------------
 - openair/writer: first implementation of type "airspace". Others are missing
-
+- openair: implement extended openair format
+- openair: various smaller bug fixes
 
 aerofiles v1.2.1
 -------------
