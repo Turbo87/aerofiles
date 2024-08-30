@@ -17,11 +17,12 @@ class Reader:
     def __init__(self):
         self.reader = None
 
-    def read(self, file_obj):
+    def read(self, file_obj, skip_duplicates = False):
         """
         Read the specified file object and return a dictionary with the parsed data.
 
         :param file_obj: a Python file object
+        :param skip_duplicates: if True, entries with the same time stamp are skipped
 
         """
         self.reader = LowLevelReader(file_obj)
