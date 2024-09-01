@@ -653,16 +653,7 @@ class LowLevelReader:
         elif date_str == '000000':
             return None
 
-        dd = int(date_str[0:2])
-        mm = int(date_str[2:4])
-        yy = int(date_str[4:6])
-
-        current_year_yyyy = datetime.date.today().year
-        current_year_yy = current_year_yyyy % 100
-        current_century = current_year_yyyy - current_year_yy
-        yyyy = current_century + yy if yy <= current_year_yy else current_century - 100 + yy
-
-        return datetime.date(yyyy, mm, dd)
+        return datetime.datetime.strptime(date_str, "%d%m%y").date()
 
     @staticmethod
     def decode_time(time_str):
@@ -670,11 +661,7 @@ class LowLevelReader:
         if len(time_str) != 6:
             raise ValueError('Time string does not have correct size')
 
-        h = int(time_str[0:2])
-        m = int(time_str[2:4])
-        s = int(time_str[4:6])
-
-        return datetime.time(h, m, s)
+        return datetime.datetime.strptime(time_str, "%H%M%S").time()
 
     @staticmethod
     def decode_extension_record(line):
