@@ -57,6 +57,16 @@ class Reader:
                         fix_records[0].append(MissingExtensionsError)
 
                     fix_record = LowLevelReader.process_B_record(line, fix_record_extensions[1])
+                    # Set time entry as datetime. If entry is less than the first record, shift datetime to next day
+                    fix_record["time"] = datetime.datetime.combine(
+                        date=header[1]["utc_date"] + datetime.timedelta(
+                            days=1
+                            if len(fix_records[1]) > 0 and fix_record["time"] < fix_records[1][-1]["time"].time()
+                            else 0
+                        ),
+                        time=fix_record["time"],
+                        tzinfo=datetime.timezone.utc
+                    )
                     fix_records[1].append(fix_record)
             elif record_type == 'C':
                 task_item = line
