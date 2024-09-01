@@ -612,7 +612,9 @@ def test_highlevel_reader():
         'manufacturer': 'XXX'
     }
 
-    assert len(result['fix_records'][1]) == 9
+    assert len(result['fix_records'][1]) == 10
+    assert result['fix_records'][1][0]["time"].day == 16  # Assert equal to header day
+    assert result['fix_records'][1][9]["time"].day == 17  # Assert next day
 
     assert result['task'][1]['declaration_date'] == datetime.date(2001, 7, 15)
     assert result['task'][1]['declaration_time'] == datetime.time(21, 38, 41)
