@@ -72,7 +72,11 @@ class Reader:
                         time=fix_record["time"],
                         tzinfo=datetime.timezone.utc
                     )
-                    if not fix_records[1] or (abs((fix_record["time"] - fix_records[1][-1]["time"]).total_seconds()) >= 1 or not self.skip_duplicates):
+                    if not fix_records[1] or (
+                        abs((
+                            fix_record["time"] - fix_records[1][-1]["time"]
+                        ).total_seconds()) >= 1 or not self.skip_duplicates
+                    ):
                         fix_records[1].append(fix_record)
             elif record_type == 'C':
                 task_item = line
