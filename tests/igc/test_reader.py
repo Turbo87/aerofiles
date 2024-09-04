@@ -612,9 +612,9 @@ def test_highlevel_reader():
         'manufacturer': 'XXX'
     }
 
-    assert len(result['fix_records'][1]) == 10
+    assert len(result['fix_records'][1]) == 11
     assert result['fix_records'][1][0]["time"].day == 16  # Assert equal to header day
-    assert result['fix_records'][1][9]["time"].day == 17  # Assert next day
+    assert result['fix_records'][1][-1]["time"].day == 17  # Assert next day
 
     assert result['task'][1]['declaration_date'] == datetime.date(2001, 7, 15)
     assert result['task'][1]['declaration_time'] == datetime.time(21, 38, 41)
@@ -674,6 +674,14 @@ def test_highlevel_reader():
     assert len(result['k_records'][1]) == 1
 
     assert len(result['comment_records'][1]) == 2
+
+
+def test_highlevel_reader_skip_duplicates():
+    reader = Reader(skip_duplicates=True)
+    cur_dir = os.path.dirname(__file__)
+    with open(os.path.join(cur_dir, 'data', 'example.igc'), 'r') as f:
+        result = reader.read(f)
+    assert len(result['fix_records'][1]) == 10
 
 
 def test_highlevel_reader_examples():
