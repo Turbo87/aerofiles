@@ -578,7 +578,7 @@ class LowLevelReader:
 
     @staticmethod
     def decode_H_time_zone_offset(value):
-        return {'time_zone_offset': int(float(value))}
+        return {'time_zone_offset': float(value)}
 
     @staticmethod
     def decode_H_mop_sensor(value):
