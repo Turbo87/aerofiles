@@ -518,6 +518,26 @@ def test_decode_H_time_zone_offset2():
     assert LowLevelReader.decode_H_record(line) == expected_result
 
 
+def test_decode_H_time_zone_offset3():
+    line = 'HFTZNTIMEZONE:4.5\r\n'
+    expected_result = {
+        'source': 'F',
+        'time_zone_offset': 4.5
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+
+def test_decode_H_time_zone_offset4():
+    line = 'HFTZNTIMEZONE:-4.5\r\n'
+    expected_result = {
+        'source': 'F',
+        'time_zone_offset': -4.5
+    }
+
+    assert LowLevelReader.decode_H_record(line) == expected_result
+
+
 def test_decode_H_mop_sensor():
     line = 'HFMOPSENSOR:MOP-(SN:1,ET=1375,0,1375,0,3.05V,p=0),Ver:0\r\n'
     expected_result = {

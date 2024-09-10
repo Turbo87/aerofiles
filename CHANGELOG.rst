@@ -3,6 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles vXXX, 2024-XX-YYYY
+----------------------------
+- igc/reader: fix for HFTZN to handle timezone that is not integer
+
 aerofiles v1.3.1, 2024-08-12
 ----------------------------
 - messed up v1.3.0 deployment. Redeploy as v1.3.1 without any changes.
