@@ -7,17 +7,20 @@ class Reader:
     """
     A reader for the IGC flight log file format.
 
+    skip_duplicates flag removes trailing duplicate time entries
+
     Example:
 
     .. sourcecode:: python
 
         >>> with open('track.igc', 'r') as f:
-        ...     parsed = Reader().read(f)
+        ...     parsed = Reader(skip_duplicates=True).read(f)
 
     """
 
-    def __init__(self):
+    def __init__(self, skip_duplicates=False):
         self.reader = None
+        self.skip_duplicates = skip_duplicates
 
     def read(self, file_obj):
         """
@@ -70,6 +73,8 @@ class Reader:
                         # If time of next fix is _before_ last fix, we are now on next day
                         if fix_record["time"] < time:
                             date = date + datetime.timedelta(days=1)
+                        if fix_record["time"] == time and self.skip_duplicates:
+                            continue
 
                     fix_record["datetime"] = datetime.datetime.combine(date, fix_record["time"]).replace(tzinfo=TimeZoneFix(0))
                     if "time_zone_offset" in header[1]:

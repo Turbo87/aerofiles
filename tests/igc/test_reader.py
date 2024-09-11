@@ -633,7 +633,7 @@ def test_highlevel_reader():
     }
 
     fixes = result['fix_records'][1]
-    assert len(fixes) == 9
+    assert len(fixes) == 10
 
     assert fixes[0]["datetime"] == datetime.datetime(2001, 7, 16, 16, 2, 40, tzinfo=datetime.timezone(datetime.timedelta(0)))
     # check that timezone is +3
@@ -701,6 +701,14 @@ def test_highlevel_reader():
     assert len(result['k_records'][1]) == 1
 
     assert len(result['comment_records'][1]) == 2
+
+
+def test_highlevel_reader_skip_duplicates():
+    reader = Reader(skip_duplicates=True)
+    cur_dir = os.path.dirname(__file__)
+    with open(os.path.join(cur_dir, 'data', 'example.igc'), 'r') as f:
+        result = reader.read(f)
+    assert len(result['fix_records'][1]) == 9
 
 
 def test_highlevel_reader_examples():
