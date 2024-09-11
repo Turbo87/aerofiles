@@ -632,7 +632,15 @@ def test_highlevel_reader():
         'manufacturer': 'XXX'
     }
 
-    assert len(result['fix_records'][1]) == 9
+    fixes = result['fix_records'][1]
+    assert len(fixes) == 9
+
+    assert fixes[0]["datetime"] == datetime.datetime(2001, 7, 16, 16, 2, 40, tzinfo=datetime.UTC)
+    # check that timezone is +3
+    assert fixes[0]["datetime_local"].time() == datetime.time(19, 2, 40)
+
+    # Check, that we have the next day, because the time is lower than the previous fix
+    assert fixes[8]["datetime"].date() == datetime.date(2001, 7, 17)
 
     assert result['task'][1]['declaration_date'] == datetime.date(2001, 7, 15)
     assert result['task'][1]['declaration_time'] == datetime.time(21, 38, 41)
@@ -674,6 +682,7 @@ def test_highlevel_reader():
         'pressure_sensor_max_alt': {
             'unit': 'm',
             'value': 11000},
+        'time_zone_offset': 3,
         'utc_date': datetime.date(2001, 7, 16)
     }
 

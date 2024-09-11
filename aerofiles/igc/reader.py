@@ -1,5 +1,7 @@
 import datetime
 
+from aerofiles.util.timezone import TimeZoneFix
+
 
 class Reader:
     """
@@ -57,6 +59,23 @@ class Reader:
                         fix_records[0].append(MissingExtensionsError)
 
                     fix_record = LowLevelReader.process_B_record(line, fix_record_extensions[1])
+
+                    # To create "datetime" we need a date. Take it from header or previous fix:
+                    if len(fix_records[1]) == 0:
+                        date = header[1]["utc_date"]
+                    else:
+                        previous_fix = fix_records[1][-1]
+                        date = previous_fix["datetime"].date()
+                        time = previous_fix["datetime"].time()
+                        # If time of next fix is _before_ last fix, we are now on next day
+                        if fix_record["time"] < time:
+                            date = date + datetime.timedelta(days=1)
+
+                    fix_record["datetime"] = datetime.datetime.combine(date, fix_record["time"]).replace(tzinfo=TimeZoneFix(0))
+                    if "time_zone_offset" in header[1]:
+                        timezone = TimeZoneFix(header[1]["time_zone_offset"])
+                        fix_record["datetime_local"] = fix_record["datetime"].astimezone(timezone)
+
                     fix_records[1].append(fix_record)
             elif record_type == 'C':
                 task_item = line
@@ -653,16 +672,7 @@ class LowLevelReader:
         elif date_str == '000000':
             return None
 
-        dd = int(date_str[0:2])
-        mm = int(date_str[2:4])
-        yy = int(date_str[4:6])
-
-        current_year_yyyy = datetime.date.today().year
-        current_year_yy = current_year_yyyy % 100
-        current_century = current_year_yyyy - current_year_yy
-        yyyy = current_century + yy if yy <= current_year_yy else current_century - 100 + yy
-
-        return datetime.date(yyyy, mm, dd)
+        return datetime.datetime.strptime(date_str, "%d%m%y").date()
 
     @staticmethod
     def decode_time(time_str):
@@ -670,11 +680,7 @@ class LowLevelReader:
         if len(time_str) != 6:
             raise ValueError('Time string does not have correct size')
 
-        h = int(time_str[0:2])
-        m = int(time_str[2:4])
-        s = int(time_str[4:6])
-
-        return datetime.time(h, m, s)
+        return datetime.datetime.strptime(time_str, "%H%M%S").time()
 
     @staticmethod
     def decode_extension_record(line):

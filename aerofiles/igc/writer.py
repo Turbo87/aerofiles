@@ -1,6 +1,7 @@
 import datetime
 
 from aerofiles.igc import patterns
+from aerofiles.util.timezone import TimeZoneFix
 
 
 class Writer:
@@ -513,7 +514,7 @@ class Writer:
         """
 
         if declaration_datetime is None:
-            declaration_datetime = datetime.datetime.utcnow()
+            declaration_datetime = datetime.datetime.now(TimeZoneFix(0))
 
         if isinstance(declaration_datetime, datetime.datetime):
             declaration_datetime = (
@@ -687,7 +688,7 @@ class Writer:
         """
 
         if time is None:
-            time = datetime.datetime.utcnow()
+            time = datetime.datetime.now(TimeZoneFix(0))
 
         record = self.format_time(time)
         record += self.format_latitude(latitude)
@@ -754,7 +755,7 @@ class Writer:
             time = None
 
         if time is None:
-            time = datetime.datetime.utcnow()
+            time = datetime.datetime.now(TimeZoneFix(0))
 
         if not patterns.THREE_LETTER_CODE.match(code):
             raise ValueError('Invalid event code')
@@ -790,7 +791,7 @@ class Writer:
             time, satellites = args
 
         if time is None:
-            time = datetime.datetime.utcnow()
+            time = datetime.datetime.now(TimeZoneFix(0))
 
         record = self.format_time(time)
 
