@@ -7,6 +7,7 @@ This part of the documentation explains typical use cases with `aerofiles`.
    :maxdepth: 2
 
    installation
+   guide/igc-reading
    guide/igc-writing
 
 API Reference
