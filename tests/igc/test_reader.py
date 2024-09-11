@@ -635,7 +635,7 @@ def test_highlevel_reader():
     fixes = result['fix_records'][1]
     assert len(fixes) == 9
 
-    assert fixes[0]["datetime"] == datetime.datetime(2001, 7, 16, 16, 2, 40, tzinfo=datetime.UTC)
+    assert fixes[0]["datetime"] == datetime.datetime(2001, 7, 16, 16, 2, 40, tzinfo=datetime.timezone(datetime.timedelta(0)))
     # check that timezone is +3
     assert fixes[0]["datetime_local"].time() == datetime.time(19, 2, 40)
 
