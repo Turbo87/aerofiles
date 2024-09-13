@@ -3,7 +3,7 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-aerofiles vXXX, 2024-XX-YYYY
+aerofiles v1.4.0, 2024-09-13
 ----------------------------
 * igc/reader: fix for HFTZN to handle timezone that is not integer
 * igc/reader: add "datetime" and "datetime_local" to fix_records to
@@ -11,6 +11,7 @@ aerofiles vXXX, 2024-XX-YYYY
   to read an IGC file" for a detailed explanation.
 * igc/reader: added flag "skip_duplicates" to remove B records with
   identical time.
+* improved documentation for IGC
   
 aerofiles v1.3.1, 2024-08-12
 ----------------------------
