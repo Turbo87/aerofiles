@@ -30,13 +30,21 @@ Development Environment
 -----------------------
 
 If you want to work on aerofiles you should install the necessary dependencies
-using::
+using pip, preferably in a virtual environment::
 
+    $ python -m venv .env
+    $ source .env/bin/activate
     $ pip install -r requirements-dev.txt
 
 You can run the testsuite with::
 
     $ make test
+
+If you close the current shell, the virtual python environment will
+also be deactivated. To continue working in the environment and using
+the installed requirements, you must use this again::
+  
+    $ source .env/bin/activate
 
 Building Docs
 -------------
