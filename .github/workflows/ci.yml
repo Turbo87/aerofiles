@@ -48,7 +48,7 @@ jobs:
           python-version: 3.x
 
       - run: pip install -r requirements-dev.txt
-      - run: cd docs ; make html
+      - run: make doc-test
 
   tests:
     strategy:
