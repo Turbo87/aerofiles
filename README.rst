@@ -71,8 +71,8 @@ How to release
 
 Make sure, that all succeed::
 
- * make test
- * make doc-test
+ $ make test
+ $ make doc-test
 
 Ensure CHANGELOG.rst is up to date including the (next) version
 number. Also check, that (next) version number is included in
