@@ -55,10 +55,9 @@ Make sure that you have checked out git submodules::
 
 Then build docs using Sphinx and Make::
 
-   $ cd docs
-   $ make html
+   $ make doc
 
-The HTML output can be found in the `_build/html` directory.
+The HTML output can be found in the `docs/_build/html` directory.
 
 License
 -------
@@ -70,9 +69,14 @@ for the full text.
 How to release
 --------------
 
-Make sure, that all tests succeed and CHANGELOG.rst is up to date
-including the (next) version number. Also check, that (next) version
-number is included in setup.py.
+Make sure, that all succeed::
+
+ * make test
+ * make doc-test
+
+Ensure CHANGELOG.rst is up to date including the (next) version
+number. Also check, that (next) version number is included in
+setup.py.
 
 Use browser with https://github.com/Turbo87/aerofiles/releases and
 "Draft a new release". Use "Choose a tag" to create a new tag

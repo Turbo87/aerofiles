@@ -8,9 +8,7 @@ class Writer:
             writer = Writer(fp)
 
     see `FTD-14 FLARM Configuration Specification
-    <http://flarm.com/support/manuals-documents/>`_ and
-    annotated example `flarmcfg.txt
-    <http://www.ftv-spandau.de/streckenfluege/flarm-informationen/flarmcfg.txt>`_
+    <https://www.flarm.com/de/support/downloads/>`.
     """
 
     def __init__(self, fp=None):

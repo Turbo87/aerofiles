@@ -29,7 +29,7 @@ class Reader:
     """
     A reader for the WELT2000 waypoint file format.
 
-    see http://www.segelflug.de/vereine/welt2000/download/WELT2000-SPEC.TXT
+    see https://github.com/skylines-project/welt2000
     """
 
     def __init__(self, fp=None):
