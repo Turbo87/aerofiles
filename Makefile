@@ -1,7 +1,7 @@
 test: lint vermin pytest
 
 lint:
-	flake8 --exclude=".env,.git,docs" --ignore=E501,W504 .
+	flake8 --exclude=".env,.git,docs" --ignore=E501,W504 aerofiles tests
 
 vermin:
 	vermin aerofiles
