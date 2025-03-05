@@ -2,6 +2,7 @@
 
 import datetime
 import os
+import copy
 
 from aerofiles.igc.reader import LowLevelReader
 from aerofiles.igc.reader import Reader
@@ -709,6 +710,15 @@ def test_highlevel_reader_skip_duplicates():
     with open(os.path.join(cur_dir, 'data', 'example.igc'), 'r') as f:
         result = reader.read(f)
     assert len(result['fix_records'][1]) == 9
+
+
+def test_highlevel_reader_deepcopy():
+    reader = Reader(skip_duplicates=True)
+    cur_dir = os.path.dirname(__file__)
+    with open(os.path.join(cur_dir, 'data', 'example.igc'), 'r') as f:
+        result1 = reader.read(f)
+    result2 = copy.deepcopy(result1)
+    assert result1 == result2
 
 
 def test_highlevel_reader_examples():
