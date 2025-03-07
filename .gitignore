@@ -52,3 +52,7 @@ tests/welt2000/data/WELT2000.TXT
 
 # Virtual Environment for python
 .env
+
+# Editor backup files
+*~
+

@@ -3,6 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.4.1, 2025-03-07
+----------------------------
+* igc/reader: fix for timezone not being able for deepcopy
+
 aerofiles v1.4.0, 2024-09-13
 ----------------------------
 * igc/reader: fix for HFTZN to handle timezone that is not integer
