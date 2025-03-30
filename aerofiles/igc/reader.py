@@ -250,9 +250,12 @@ class LowLevelReader:
             start_byte = start_byte - i - 1
             end_byte = end_byte - i - 1
 
-            b_record.update(
-                {extension['extension_type']: int(ext[start_byte:end_byte + 1])}
-            )
+            try:
+                b_record.update(
+                    {extension['extension_type']: int(ext[start_byte:end_byte + 1])}
+                )
+            except ValueError:  # Some lines can be malformatted with unexpected string values. Skip these
+                continue
 
         return b_record
 
