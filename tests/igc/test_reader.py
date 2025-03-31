@@ -1,8 +1,8 @@
 # This Python file uses the following encoding: utf-8
 
+import copy
 import datetime
 import os
-import copy
 
 from aerofiles.igc.reader import LowLevelReader
 from aerofiles.igc.reader import Reader
@@ -729,10 +729,13 @@ def test_highlevel_reader_examples():
     cur_dir = os.path.dirname(__file__)
     directory = os.path.join(cur_dir, 'data')
     for entry in os.listdir(directory):
-        filename = os.path.join(directory, entry)
-        with open(os.path.join(filename), 'r') as f:
-            result = reader.read(f)
-            for key in result:
-                # Assert, that there are no parse errors
-                if len(result[key][0]) != 0:
-                    assert len(result[key][0]) == 0, "%s %s" % (filename, key)
+        basename, ext = os.path.splitext(entry)
+        if ext == ".igc":
+            filename = os.path.join(directory, entry)
+            print(filename)
+            with open(os.path.join(filename), 'r') as f:
+                result = reader.read(f)
+                for key in result:
+                    # Assert, that there are no parse errors
+                    if len(result[key][0]) != 0:
+                        assert len(result[key][0]) == 0, "%s %s" % (filename, key)
