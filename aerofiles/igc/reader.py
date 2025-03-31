@@ -618,6 +618,8 @@ class LowLevelReader:
 
     @staticmethod
     def decode_H_gnss_alt(value):
+        if value == "WGS84 ELLIPSOID":
+            value = "ELL"          # Fix for LXNAV recorders
         if value not in ["ELL", "GEO", "NKM", "NIL"]:
             raise ValueError('Invalid HFALG value "%s"' % value)
         return {'gnss_altitude': value}
