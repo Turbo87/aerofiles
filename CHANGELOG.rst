@@ -3,6 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.4.2, 2025-05-12
+----------------------------
+* igc/reader: ignore invalid extensions in B record
+
 aerofiles v1.4.1, 2025-03-07
 ----------------------------
 * igc/reader: fix for timezone not being able for deepcopy
