@@ -570,13 +570,28 @@ def test_decode_H_units_of_measure():
 
 
 def test_decode_I_record():
-    line = 'I033638FXA3940SIU4143ENL\r\n'
+    # Test complex case with 18 extensions and variable-length byte positions
+    line = 'I183638FXA3940SIU4143ENL4448TAS4953GSP5456TRT5761VAT6265OAT6670NET7173MOP7477ACZ7881AOR8284AOP8588AOA8993RPM9496EGT9799FFL100104FLE\r\n'
     expected_result = [
-        {'bytes': (36, 38), 'extension_type': 'FXA'},
-        {'bytes': (39, 40), 'extension_type': 'SIU'},
-        {'bytes': (41, 43), 'extension_type': 'ENL'}
+        {'bytes': (36, 38), 'extension_type': 'FXA'},  # Fix Accuracy
+        {'bytes': (39, 40), 'extension_type': 'SIU'},  # Satellites In Use
+        {'bytes': (41, 43), 'extension_type': 'ENL'},  # Environmental Noise Level
+        {'bytes': (44, 48), 'extension_type': 'TAS'},  # True Airspeed
+        {'bytes': (49, 53), 'extension_type': 'GSP'},  # Ground Speed
+        {'bytes': (54, 56), 'extension_type': 'TRT'},  # True Track
+        {'bytes': (57, 61), 'extension_type': 'VAT'},  # Compensated Variometer
+        {'bytes': (62, 65), 'extension_type': 'OAT'},  # Outside Air Temperature
+        {'bytes': (66, 70), 'extension_type': 'NET'},  # Netto Variometer
+        {'bytes': (71, 73), 'extension_type': 'MOP'},  # Means of Propulsion
+        {'bytes': (74, 77), 'extension_type': 'ACZ'},  # Linear Acceleration Z-axis
+        {'bytes': (78, 81), 'extension_type': 'AOR'},  # Angular acceleration Roll
+        {'bytes': (82, 84), 'extension_type': 'AOP'},  # Angular acceleration Pitch
+        {'bytes': (85, 88), 'extension_type': 'AOA'},  # Angle of Attack
+        {'bytes': (89, 93), 'extension_type': 'RPM'},  # Engine RPM
+        {'bytes': (94, 96), 'extension_type': 'EGT'},  # Exhaust Gas Temperature
+        {'bytes': (97, 99), 'extension_type': 'FFL'},  # Fuel Flow
+        {'bytes': (100, 104), 'extension_type': 'FLE'} # Fuel Level
     ]
-
     assert LowLevelReader.decode_I_record(line) == expected_result
 
 
