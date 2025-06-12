@@ -693,22 +693,54 @@ class LowLevelReader:
         return datetime.datetime.strptime(time_str, "%H%M%S").time()
 
     @staticmethod
-    def decode_extension_record(line):
-
-        no_extensions = int(line[1:3])
-
-        if no_extensions * 7 + 3 != len(line.strip()):
-            raise ValueError('I record contains incorrect number of digits')
-
+    def decode_extension_record(line: str) -> list[dict[str, tuple[int, int] | str]]:
+        """
+        Decode an IGC file extension record (I-record).
+        
+        Args:
+            line: The I-record line from an IGC file
+            
+        Returns:
+            List of extension definitions with 'bytes' and 'extension_type' keys
+            
+        Raises:
+            ValueError: If the record format is invalid
+        """
+        line = line.strip()
+        extension_count = int(line[1:3])
         extensions = []
-        for extension_index in range(no_extensions):
-            extension_str = line[extension_index * 7 + 3:(extension_index + 1) * 7 + 3]
-            start_byte = int(extension_str[0:2])
-            end_byte = int(extension_str[2:4])
-            tlc = extension_str[4:7]
-
-            extensions.append({'bytes': (start_byte, end_byte), 'extension_type': tlc})
-
+        position = 3
+        
+        for _ in range(extension_count):
+            # Extract numeric characters for byte positions
+            numeric_start = position
+            while position < len(line) and line[position].isdigit():
+                position += 1
+            
+            numeric_section = line[numeric_start:position]
+            if not numeric_section:
+                raise ValueError("Missing byte positions in extension record")
+            
+            # Split numeric section in half for start/end bytes
+            midpoint = len(numeric_section) // 2
+            start_byte = int(numeric_section[:midpoint])
+            end_byte = int(numeric_section[midpoint:])
+            
+            # Extract three-letter code
+            if position + 3 > len(line):
+                raise ValueError("Incomplete extension record: missing TLC")
+            
+            tlc = line[position:position + 3]
+            position += 3
+            
+            extensions.append({
+                'bytes': (start_byte, end_byte),
+                'extension_type': tlc
+            })
+        
+        if position != len(line):
+            raise ValueError('I record contains incorrect number of digits')
+        
         return extensions
 
     @staticmethod
