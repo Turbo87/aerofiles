@@ -533,6 +533,16 @@ def test_fix_with_extensions(writer):
     ]) + b'\r\n'
 
 
+def test_fix_with_long_extensions(writer):
+    writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 100)])
+    writer.write_fix(datetime.time(2, 3, 4), extensions=['023', 13, 2])
+
+    assert writer.fp.getvalue() == b'\r\n'.join([
+        b'I033638FXA3940SIU41140ENL',
+        b'B0203040000000N00000000EV0000000000023130000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002',
+    ]) + b'\r\n'
+
+
 def test_fix_with_missing_extensions(writer):
     writer.write_fix_extensions([('FXA', 3), ('SIU', 2), ('ENL', 3)])
 

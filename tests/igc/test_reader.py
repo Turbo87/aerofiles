@@ -590,7 +590,7 @@ def test_decode_I_record():
         {'bytes': (89, 93), 'extension_type': 'RPM'},  # Engine RPM
         {'bytes': (94, 96), 'extension_type': 'EGT'},  # Exhaust Gas Temperature
         {'bytes': (97, 99), 'extension_type': 'FFL'},  # Fuel Flow
-        {'bytes': (100, 104), 'extension_type': 'FLE'} # Fuel Level
+        {'bytes': (100, 104), 'extension_type': 'FLE'}  # Fuel Level
     ]
     assert LowLevelReader.decode_I_record(line) == expected_result
 
