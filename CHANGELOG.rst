@@ -6,6 +6,7 @@ Here you can see the full list of changes between each aerofiles release.
 aerofiles v1.4.3, 2025-XX-XX
 ----------------------------
 * openair/writer: skip duplicate DP entries
+* igc/reader: fix I record with offset > 99 (sylvainvdm)
 
 aerofiles v1.4.2, 2025-05-12
 ----------------------------
