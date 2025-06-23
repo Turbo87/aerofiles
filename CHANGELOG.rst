@@ -3,6 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.4.3, 2025-XX-XX
+----------------------------
+* openair/writer: skip duplicate DP entries
+
 aerofiles v1.4.2, 2025-05-12
 ----------------------------
 * igc/reader: ignore invalid extensions in B record
