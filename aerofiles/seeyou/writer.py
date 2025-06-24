@@ -135,13 +135,13 @@ class Writer:
         if key in self.headers:
             field[self.headers.index(key)] = value
         else:
-            raise RuntimeError("Writing value to non existing column '%s'. Check for correct SeeYouFileFormat when creating Writer." % key)
+            raise RuntimeError(
+                "Writing value to non existing column '%s'. Check for correct SeeYouFileFormat when creating Writer." % key)
 
     def write_waypoint(
             self, name, shortname, country, latitude, longitude, elevation=u'',
             style=WaypointStyle.NORMAL, runway_direction=u'', runway_length=u'',
             frequency=u'', description=u'', runway_width=u'', userdata=u'', pics=u''):
-
         """
         Write a waypoint::
 
@@ -196,7 +196,8 @@ class Writer:
         self.set_field(fields, 'rwdir', str(runway_direction))
         self.set_field(fields, 'rwlen', self.format_distance(runway_length))
         if runway_width:
-            self.set_field(fields, 'rwwidth', self.format_distance(runway_width))
+            self.set_field(fields, 'rwwidth',
+                           self.format_distance(runway_width))
         self.set_field(fields, 'freq', self.escape(frequency))
         self.set_field(fields, 'desc', self.escape(description))
         if userdata:
@@ -209,7 +210,6 @@ class Writer:
         self.wps.add(name)
 
     def write_task(self, description, waypoints):
-
         """
         Write a task definition::
 
@@ -250,7 +250,6 @@ class Writer:
         self.write_fields(fields)
 
     def write_task_options(self, **kw):
-
         """
         Write an options line for a task definition::
 
@@ -297,7 +296,8 @@ class Writer:
             fields.append(u'NoStart=' + self.format_time(kw['start_time']))
 
         if 'task_time' in kw:
-            fields.append(u'TaskTime=' + self.format_timedelta(kw['task_time']))
+            fields.append(
+                u'TaskTime=' + self.format_timedelta(kw['task_time']))
 
         if 'waypoint_distance' in kw:
             fields.append(u'WpDis=%s' % kw['waypoint_distance'])
@@ -331,7 +331,6 @@ class Writer:
         self.write_fields(fields)
 
     def write_observation_zone(self, num, **kw):
-
         """
         Write observation zone information for a taskpoint::
 

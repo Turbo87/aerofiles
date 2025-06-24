@@ -1,7 +1,12 @@
-test: lint vermin pytest
+all: lint vermin pytest
+
+test: pytest
 
 lint:
-	flake8 --exclude=".env,.git,docs" --ignore=E501,W504 aerofiles tests
+	flake8 --exclude=".env,.git,docs" --ignore=E501,W503,W504 aerofiles tests
+
+lint-fix:
+	autopep8 --in-place --recursive aerofiles tests
 
 vermin:
 	vermin aerofiles

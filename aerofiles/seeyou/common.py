@@ -36,6 +36,9 @@ class SeeYouFileFormat:
     TWELVE = 1
     FORTEEN = 2
 
-    HEADER_11 = ['name', 'code', 'country', 'lat', 'lon', 'elev', 'style', 'rwdir', 'rwlen', 'freq', 'desc']
-    HEADER_12 = ['name', 'code', 'country', 'lat', 'lon', 'elev', 'style', 'rwdir', 'rwlen', 'rwwidth', 'freq', 'desc']
-    HEADER_14 = ['name', 'code', 'country', 'lat', 'lon', 'elev', 'style', 'rwdir', 'rwlen', 'rwwidth', 'freq', 'desc', 'userdata', 'pics']
+    HEADER_11 = ['name', 'code', 'country', 'lat', 'lon',
+                 'elev', 'style', 'rwdir', 'rwlen', 'freq', 'desc']
+    HEADER_12 = ['name', 'code', 'country', 'lat', 'lon', 'elev',
+                 'style', 'rwdir', 'rwlen', 'rwwidth', 'freq', 'desc']
+    HEADER_14 = ['name', 'code', 'country', 'lat', 'lon', 'elev', 'style',
+                 'rwdir', 'rwlen', 'rwwidth', 'freq', 'desc', 'userdata', 'pics']

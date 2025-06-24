@@ -46,7 +46,8 @@ class Reader:
                 if fields[0].lower() == 'options':
                     tasks[-1]['Options'] = self.decode_task_options(fields)
                 elif fields[0].lower().startswith('obszone'):
-                    tasks[-1]['obs_zones'].append(self.decode_task_obs_zone(fields))
+                    tasks[-1]['obs_zones'].append(
+                        self.decode_task_obs_zone(fields))
                 else:
                     tasks.append(
                         {
@@ -319,7 +320,8 @@ class Reader:
             elif field_type == 'Reduce' and field_entry == "1":
                 task_obs_zone['reduce'] = True
             else:
-                raise Exception('A taskpoint may not contain key %s' % field_type)
+                raise Exception(
+                    'A taskpoint may not contain key %s' % field_type)
 
         return task_obs_zone
 

@@ -90,7 +90,8 @@ class Writer:
     def write_DA(self, element):
         self.write_V_X(element["center"])
         self.write_V_D(element["clockwise"])
-        self.write_line('DA %s,%s,%s' % (str(element["radius"]), str(element["start"]), str(element["end"])))
+        self.write_line('DA %s,%s,%s' % (str(element["radius"]), str(
+            element["start"]), str(element["end"])))
 
     def write_DB(self, element):
         self.write_V_X(element["center"])

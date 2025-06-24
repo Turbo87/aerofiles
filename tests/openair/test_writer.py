@@ -55,7 +55,8 @@ def test_write_DA(writer):
     element["clockwise"] = False
     writer.write_DA(element)
 
-    assert writer.fp.getvalue() == b'V X=39:35:00 N 118:59:20 E\r\nDA 10.1,44.9,88\r\nV D=-\r\nDA 10.1,44.9,88\r\n'
+    assert writer.fp.getvalue(
+    ) == b'V X=39:35:00 N 118:59:20 E\r\nDA 10.1,44.9,88\r\nV D=-\r\nDA 10.1,44.9,88\r\n'
 
 
 def test_write_DB(writer):
@@ -65,7 +66,8 @@ def test_write_DB(writer):
                "clockwise": True}
     writer.write_DB(element)
 
-    assert writer.fp.getvalue() == b'V X=39:29:42 N 119:46:30 W\r\nDB 39:36:48 N 119:46:06 W, 39:29:54 N 119:36:06 W\r\n'
+    assert writer.fp.getvalue(
+    ) == b'V X=39:29:42 N 119:46:30 W\r\nDB 39:36:48 N 119:46:06 W, 39:29:54 N 119:36:06 W\r\n'
 
 
 def test_invalid_record_type(writer):
