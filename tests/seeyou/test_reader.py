@@ -303,7 +303,8 @@ def assert_value(resulted_value, expected_value):
 def assert_task_options(resuling_task_options, expected_task_options):
     for key in expected_task_options.keys():
         if key in ('near_dis', 'near_alt'):
-            assert_value_and_unit(resuling_task_options[key], expected_task_options[key]['value'], expected_task_options[key]['unit'])
+            assert_value_and_unit(
+                resuling_task_options[key], expected_task_options[key]['value'], expected_task_options[key]['unit'])
         else:
             assert resuling_task_options[key] == expected_task_options[key]
 
@@ -311,7 +312,8 @@ def assert_task_options(resuling_task_options, expected_task_options):
 def assert_task_obs_zones(resulting_task_obs_zones, expected_task_obs_zones):
     for key in expected_task_obs_zones.keys():
         if key in ('r1', 'r2') and resulting_task_obs_zones[key] is not None:
-            assert_value_and_unit(resulting_task_obs_zones[key], expected_task_obs_zones[key]['value'], expected_task_obs_zones[key]['unit'])
+            assert_value_and_unit(
+                resulting_task_obs_zones[key], expected_task_obs_zones[key]['value'], expected_task_obs_zones[key]['unit'])
         else:
             assert resulting_task_obs_zones[key] == expected_task_obs_zones[key]
 
@@ -551,5 +553,7 @@ def test_task():
             "reduce": False
         }
 
-        assert_task_obs_zones(tasks[0]['obs_zones'][0], expected_task_obs_zones_1)
-        assert_task_obs_zones(tasks[0]['obs_zones'][2], expected_task_obs_zones_2)
+        assert_task_obs_zones(tasks[0]['obs_zones']
+                              [0], expected_task_obs_zones_1)
+        assert_task_obs_zones(tasks[0]['obs_zones']
+                              [2], expected_task_obs_zones_2)

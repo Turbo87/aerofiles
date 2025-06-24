@@ -71,6 +71,11 @@ How to release
 
 Make sure, that all succeed::
 
+ $ make lint
+
+(and use `make lint-fix` for automatic fixing)
+
+ $ make vermin
  $ make test
  $ make doc-test
 

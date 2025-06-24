@@ -61,7 +61,8 @@ class Reader:
                     if len(fix_record_extensions[0]) > 0 and MissingExtensionsError not in fix_records[0]:
                         fix_records[0].append(MissingExtensionsError)
 
-                    fix_record = LowLevelReader.process_B_record(line, fix_record_extensions[1])
+                    fix_record = LowLevelReader.process_B_record(
+                        line, fix_record_extensions[1])
 
                     # To create "datetime" we need a date. Take it from header or previous fix:
                     if len(fix_records[1]) == 0:
@@ -76,10 +77,12 @@ class Reader:
                         if fix_record["time"] == time and self.skip_duplicates:
                             continue
 
-                    fix_record["datetime"] = datetime.datetime.combine(date, fix_record["time"]).replace(tzinfo=TimeZoneFix(0))
+                    fix_record["datetime"] = datetime.datetime.combine(
+                        date, fix_record["time"]).replace(tzinfo=TimeZoneFix(0))
                     if "time_zone_offset" in header[1]:
                         timezone = TimeZoneFix(header[1]["time_zone_offset"])
-                        fix_record["datetime_local"] = fix_record["datetime"].astimezone(timezone)
+                        fix_record["datetime_local"] = fix_record["datetime"].astimezone(
+                            timezone)
 
                     fix_records[1].append(fix_record)
             elif record_type == 'C':
@@ -150,7 +153,8 @@ class Reader:
                     if len(k_record_extensions[0]) > 0 and MissingExtensionsError not in k_records[0]:
                         k_records[0].append(MissingExtensionsError)
 
-                    k_record = LowLevelReader.process_K_record(line, k_record_extensions[1])
+                    k_record = LowLevelReader.process_K_record(
+                        line, k_record_extensions[1])
                     k_records[1].append(k_record)
             elif record_type == 'L':
                 if error:
@@ -195,7 +199,9 @@ class LowLevelReader:
             record_type = line[0]
 
             try:
-                result = self.parse_line(record_type, line) if line.strip() else None  # skip empty lines
+                result = self.parse_line(
+                    # skip empty lines
+                    record_type, line) if line.strip() else None
                 if result:
                     yield (record_type, result, None)
             except Exception as e:
@@ -252,7 +258,8 @@ class LowLevelReader:
 
             try:
                 b_record.update(
-                    {extension['extension_type']: int(ext[start_byte:end_byte + 1])}
+                    {extension['extension_type']: int(
+                        ext[start_byte:end_byte + 1])}
                 )
             except ValueError:  # Some lines can be malformatted with unexpected string values. Skip these
                 continue
@@ -550,9 +557,11 @@ class LowLevelReader:
         pressure_sensor = value.split(',')
 
         if len(pressure_sensor) == 1:
-            manufacturer = pressure_sensor[0].strip() if pressure_sensor[0] != '' else None
+            manufacturer = pressure_sensor[0].strip(
+            ) if pressure_sensor[0] != '' else None
         elif len(pressure_sensor) == 2:
-            manufacturer_model = pressure_sensor[0].strip().split(' ') if pressure_sensor[0] != '' else None
+            manufacturer_model = pressure_sensor[0].strip().split(
+                ' ') if pressure_sensor[0] != '' else None
 
             if len(manufacturer_model) == 2:
                 manufacturer = manufacturer_model[0]
@@ -560,11 +569,15 @@ class LowLevelReader:
             else:
                 manufacturer = manufacturer_model[0]
 
-            max_alt = pressure_sensor[1].strip() if pressure_sensor[1] != '' else None
+            max_alt = pressure_sensor[1].strip(
+            ) if pressure_sensor[1] != '' else None
         elif len(pressure_sensor) == 3:
-            manufacturer = pressure_sensor[0].strip() if pressure_sensor[0] != '' else None
-            model = pressure_sensor[1].strip() if pressure_sensor[1] != '' else None
-            max_alt = pressure_sensor[2].strip() if pressure_sensor[2] != '' else None
+            manufacturer = pressure_sensor[0].strip(
+            ) if pressure_sensor[0] != '' else None
+            model = pressure_sensor[1].strip(
+            ) if pressure_sensor[1] != '' else None
+            max_alt = pressure_sensor[2].strip(
+            ) if pressure_sensor[2] != '' else None
 
         # stripping of max from 'max10000m'
         if max_alt is not None and max_alt.startswith('max'):

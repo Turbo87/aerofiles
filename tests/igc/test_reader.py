@@ -38,18 +38,20 @@ def test_decode_B_record():
 
 
 def test_process_B_record():
-
     """Check whether correct extension information is taken from B record"""
 
     # split up per extension for easy reading
-    i_record = 'I08' + '3638FXA' + '3941ENL' + '4246TAS' + '4751GSP' + '5254TRT' + '5559VAT' + '6063OAT' + '6467ACZ'
+    i_record = 'I08' + '3638FXA' + '3941ENL' + '4246TAS' + \
+        '4751GSP' + '5254TRT' + '5559VAT' + '6063OAT' + '6467ACZ'
     fix_record_extensions = LowLevelReader.decode_I_record(i_record)
 
     # split up per 10 to enable easy counting
-    b_record = 'B093232520' + '2767N00554' + '786EA00128' '0019600600' '1145771529' + '3177005930' + '2770090'
+    b_record = 'B093232520' + '2767N00554' + \
+        '786EA00128' '0019600600' '1145771529' + '3177005930' + '2770090'
 
     decoded_b_record = LowLevelReader.decode_B_record(b_record)
-    processed_b_record = LowLevelReader.process_B_record(decoded_b_record, fix_record_extensions)
+    processed_b_record = LowLevelReader.process_B_record(
+        decoded_b_record, fix_record_extensions)
 
     # split per extension: 006 001 14577 15293 177 00593 0277 0090
     expected_values = [
@@ -64,7 +66,8 @@ def test_process_B_record():
     ]
 
     for extension, bytes, expected_value in expected_values:
-        assert {'bytes': bytes, 'extension_type': extension} in fix_record_extensions
+        assert {'bytes': bytes,
+                'extension_type': extension} in fix_record_extensions
         assert extension in processed_b_record
         assert expected_value == processed_b_record[extension]
 
@@ -575,20 +578,26 @@ def test_decode_I_record():
     expected_result = [
         {'bytes': (36, 38), 'extension_type': 'FXA'},  # Fix Accuracy
         {'bytes': (39, 40), 'extension_type': 'SIU'},  # Satellites In Use
-        {'bytes': (41, 43), 'extension_type': 'ENL'},  # Environmental Noise Level
+        # Environmental Noise Level
+        {'bytes': (41, 43), 'extension_type': 'ENL'},
         {'bytes': (44, 48), 'extension_type': 'TAS'},  # True Airspeed
         {'bytes': (49, 53), 'extension_type': 'GSP'},  # Ground Speed
         {'bytes': (54, 56), 'extension_type': 'TRT'},  # True Track
         {'bytes': (57, 61), 'extension_type': 'VAT'},  # Compensated Variometer
-        {'bytes': (62, 65), 'extension_type': 'OAT'},  # Outside Air Temperature
+        # Outside Air Temperature
+        {'bytes': (62, 65), 'extension_type': 'OAT'},
         {'bytes': (66, 70), 'extension_type': 'NET'},  # Netto Variometer
         {'bytes': (71, 73), 'extension_type': 'MOP'},  # Means of Propulsion
-        {'bytes': (74, 77), 'extension_type': 'ACZ'},  # Linear Acceleration Z-axis
-        {'bytes': (78, 81), 'extension_type': 'AOR'},  # Angular acceleration Roll
-        {'bytes': (82, 84), 'extension_type': 'AOP'},  # Angular acceleration Pitch
+        # Linear Acceleration Z-axis
+        {'bytes': (74, 77), 'extension_type': 'ACZ'},
+        # Angular acceleration Roll
+        {'bytes': (78, 81), 'extension_type': 'AOR'},
+        # Angular acceleration Pitch
+        {'bytes': (82, 84), 'extension_type': 'AOP'},
         {'bytes': (85, 88), 'extension_type': 'AOA'},  # Angle of Attack
         {'bytes': (89, 93), 'extension_type': 'RPM'},  # Engine RPM
-        {'bytes': (94, 96), 'extension_type': 'EGT'},  # Exhaust Gas Temperature
+        # Exhaust Gas Temperature
+        {'bytes': (94, 96), 'extension_type': 'EGT'},
         {'bytes': (97, 99), 'extension_type': 'FFL'},  # Fuel Flow
         {'bytes': (100, 104), 'extension_type': 'FLE'}  # Fuel Level
     ]
@@ -651,7 +660,8 @@ def test_highlevel_reader():
     fixes = result['fix_records'][1]
     assert len(fixes) == 10
 
-    assert fixes[0]["datetime"] == datetime.datetime(2001, 7, 16, 16, 2, 40, tzinfo=datetime.timezone(datetime.timedelta(0)))
+    assert fixes[0]["datetime"] == datetime.datetime(
+        2001, 7, 16, 16, 2, 40, tzinfo=datetime.timezone(datetime.timedelta(0)))
     # check that timezone is +3
     assert fixes[0]["datetime_local"].time() == datetime.time(19, 2, 40)
 
@@ -753,4 +763,5 @@ def test_highlevel_reader_examples():
                 for key in result:
                     # Assert, that there are no parse errors
                     if len(result[key][0]) != 0:
-                        assert len(result[key][0]) == 0, "%s %s" % (filename, key)
+                        assert len(result[key][0]) == 0, "%s %s" % (
+                            filename, key)
