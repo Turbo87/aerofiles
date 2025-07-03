@@ -9,7 +9,8 @@ lint-fix:
 	autopep8 --in-place --recursive aerofiles tests
 
 vermin:
-	vermin aerofiles
+	vermin --target=2.6 --target=3.0 aerofiles/{igc,flarmcfg,openair,seeyou,util,welt2000,xcsoar}
+	vermin --target=3.7 aerofiles/aixm
 
 pytest:
 	pytest --cov aerofiles --cov-report term-missing --color=yes

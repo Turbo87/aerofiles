@@ -1,12 +1,12 @@
 |aerofiles|
 ===========
 
-**waypoint, task, tracklog readers and writers for aviation**
+**airspace, waypoint, task, tracklog readers and writers for aviation**
 
 This is a python library to read and write many important file formats
-for aviation. It is compatible with python 3.0 (and newer) and
-2.6. Please read the documentation under
-https://aerofiles.readthedocs.io for further information.
+for aviation. It is compatible with python 3.0 (and newer) and 2.6
+(except AIXM which needs python 3.7). Please read the documentation
+under https://aerofiles.readthedocs.io for further information.
 
 .. image:: ../../actions/workflows/ci.yml/badge.svg
    :target: ../../actions/workflows/ci.yml
@@ -15,10 +15,12 @@ https://aerofiles.readthedocs.io for further information.
 Features
 --------
 
+-  `AIXM <http://aixm.aero/>`_ read AIXM airspaces (and convert to openair)
+   (``aerofiles.aixm``)
 -  `Flarm <http://flarm.com/>`_ configuration file writer
    (``aerofiles.flarmcfg``)
 -  `IGC <https://www.fai.org/commission/igc>`_ file reader and writer (``aerofiles.igc``)
--  `OpenAir <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_ file
+-  `OpenAir <https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md>`_ file
    reader and writer (``aerofiles.openair``)
 -  `SeeYou <http://www.naviter.com/products/seeyou/>`_ CUP file reader and
    writer (``aerofiles.seeyou``)
