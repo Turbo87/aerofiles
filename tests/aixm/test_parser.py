@@ -1,13 +1,12 @@
 import decimal
 import urllib.request
 import xml.etree.ElementTree as ET
-from json import load as load_json
 from os import path
 
 import aerofiles.aixm
 import aerofiles.aixm.aixm
 
-import pytest
+# import pytest
 
 
 def download_aixm_example(data_dir: str):
