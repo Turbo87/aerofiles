@@ -10,6 +10,7 @@ This part of the documentation covers all the public APIs of aerofiles.
    :maxdepth: 2
 
    flarmcfg
+   aixm
    igc
    openair
    seeyou

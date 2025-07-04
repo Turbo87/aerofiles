@@ -9,6 +9,7 @@ This part of the documentation explains typical use cases with `aerofiles`.
    installation
    guide/igc-reading
    guide/igc-writing
+   guide/aixm
 
 API Reference
 -------------

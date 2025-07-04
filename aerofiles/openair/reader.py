@@ -12,7 +12,7 @@ class Reader:
             reader = Reader(fp)
 
     see `OpenAir file format specification
-    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`. It is able
+    <https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md>`. It is able
     to handle standard and extended file format.
 
     This class should be used as a generator and will return ``(record,

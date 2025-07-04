@@ -3,8 +3,9 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-aerofiles v1.4.X, 2025-06-XX
+aerofiles v1.5.X, 2025-07-XX
 ----------------------------
+* AIXM airspace reader.
 * "make lint-fix" for autopep8 and applied to all sources
 
 aerofiles v1.4.3, 2025-06-23
