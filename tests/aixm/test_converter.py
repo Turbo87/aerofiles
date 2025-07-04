@@ -28,18 +28,6 @@ download_aixm_example(DATA)
 
 # Fixtures ####################################################################
 
-@pytest.fixture
-def json():
-    with open(path.join(DATA, 'sample.json')) as fp:
-        return load_json(fp)
-
-
-@pytest.fixture
-def low_level_json():
-    with open(path.join(DATA, 'sample-low-level.json')) as fp:
-        return load_json(fp)
-
-
 # Tests #######################################################################
 
 def test_converter():
