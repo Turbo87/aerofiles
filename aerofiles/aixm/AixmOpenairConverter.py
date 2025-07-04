@@ -135,8 +135,7 @@ class AixmOpenairConverter:
                 for volume_dependency in volume.dependencies:
                     airspace_dep = self.find_airspace(volume_dependency.xlink)
                     if airspace_dep is None:
-                        print(f'Unable to find dependant airspace "{
-                              volume_dependency.xlink}" for AirspaceVolume "{volume.gml_id}"')
+                        print(f'Unable to find dependant airspace "{volume_dependency.xlink}" for AirspaceVolume "{volume.gml_id}"')
                         continue
                     airspace_dep.is_referenced = True
                     components.extend(
