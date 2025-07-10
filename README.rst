@@ -15,8 +15,9 @@ under https://aerofiles.readthedocs.io for further information.
 Features
 --------
 
--  `AIXM <http://aixm.aero/>`_ read AIXM airspaces (and convert to openair)
+-  `AIXM <http://aixm.aero/>`_ read AIXM 5.1.1 airspaces (and convert to openair)
    (``aerofiles.aixm``)
+   - use `aerofiles.axim.aixm-to-openair.py` to converte AIXM into openair
 -  `Flarm <http://flarm.com/>`_ configuration file writer
    (``aerofiles.flarmcfg``)
 -  `IGC <https://www.fai.org/commission/igc>`_ file reader and writer (``aerofiles.igc``)
@@ -75,7 +76,7 @@ Make sure, that all succeed::
 
  $ make lint
 
-(and use `make lint-fix` for automatic fixing)
+(and use `make lint-fix` for automatic fixing)::
 
  $ make vermin
  $ make test

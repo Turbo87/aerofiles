@@ -38,7 +38,8 @@ def main():
         resolver.resolve_airspaces(airspaces)
         # resolver.crop_borders(airspaces, borders)
 
-    converter = AixmOpenairConverter(airspaces, borders)
+    converter = AixmOpenairConverter(
+        airspaces, borders, convert_DA_to_DB=False)
     openairs = converter.convert_airspaces()
 
     fp = open(args.output, 'wb')

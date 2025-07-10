@@ -236,6 +236,25 @@ class AixmAirspaceParser:
                                        )
         return timesheet
 
+    def parseAirspaceActivation(self, element):
+        activation = aixm.AirspaceActivation()
+        activation.activity = element.find(AIXM + "activity").text
+        activation.status = element.find(AIXM + "status").text
+
+        count = 0
+        for timesheet in element.iter(AIXM + "Timesheet"):
+            count += 1
+            sheet = self.parseTimesheet(timesheet)
+            if sheet is not None:
+                # ic(sheet)
+                activation.add_timesheet(sheet)
+
+        # AirspaceActivation without Timesheet is invalid
+        if count == 0:
+            return None
+
+        return activation
+
     def parseAirspaceGeometryComponent(self, airspace: aixm.Airspace, airspaceGeometryComponent):
 
         component = aixm.AirspaceGeometryComponent()
@@ -288,12 +307,14 @@ class AixmAirspaceParser:
         # ic(airspace)
 
         count = 0
-        for timesheet in element.iter(AIXM + "Timesheet"):
-            count += 1
-            sheet = self.parseTimesheet(timesheet)
-            if sheet is not None:
+        for activation in element.iter(AIXM + "AirspaceActivation"):
+            act = self.parseAirspaceActivation(activation)
+            if act is not None:
                 # ic(sheet)
-                airspace.add_timesheet(timesheet)
+                count += 1
+                airspace.activation = act
+
+        assert count <= 1, f'More than 1 AirspaceActivation in {airspace}'
 
         return airspace
 

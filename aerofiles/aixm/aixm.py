@@ -133,6 +133,20 @@ class AixmTimesheet:
 
 
 @dataclass
+class AirspaceActivation:
+    """
+    AIXM Airspace Activation
+    """
+    activity: Optional[str] = None           # UAV, ...
+    status: Optional[str] = None           # ACTIVE
+
+    timesheets: List[AixmTimesheet] = field(default_factory=list)
+
+    def add_timesheet(self, timesheet: AixmTimesheet):
+        self.timesheets.append(timesheet)
+
+
+@dataclass
 class Airspace:
     """AIXM Airspace Feature"""
     # Mandatory attributes
@@ -153,7 +167,7 @@ class Airspace:
     class_airspace: Optional[str] = None  # A, B, C, D, E, F, G
 
     # Activation properties
-    timesheets: List[AixmTimesheet] = field(default_factory=list)
+    activation: Optional[AirspaceActivation] = None
 
     # Airspace volumes
     components: List[AirspaceGeometryComponent] = field(default_factory=list)
@@ -161,9 +175,6 @@ class Airspace:
     def add_component(self, component: AirspaceGeometryComponent):
         """Add an AirspaceVolume to this Airspace"""
         self.components.append(component)
-
-    def add_timesheet(self, timesheet: AixmTimesheet):
-        self.timesheets.append(timesheet)
 
 
 @dataclass
