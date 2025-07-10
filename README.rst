@@ -15,9 +15,10 @@ under https://aerofiles.readthedocs.io for further information.
 Features
 --------
 
--  `AIXM <http://aixm.aero/>`_ read AIXM 5.1.1 airspaces (and convert to openair)
-   (``aerofiles.aixm``)
-   - use `aerofiles.axim.aixm-to-openair.py` to converte AIXM into openair
+-  `AIXM <http://aixm.aero/>`_ read AIXM 5.1.1 airspaces (``aerofiles.aixm``)
+
+   -  use [aixm-to-openair.py](aerofiles/aixm/aixm-to-openair.py) to convert AIXM into openair
+
 -  `Flarm <http://flarm.com/>`_ configuration file writer
    (``aerofiles.flarmcfg``)
 -  `IGC <https://www.fai.org/commission/igc>`_ file reader and writer (``aerofiles.igc``)
