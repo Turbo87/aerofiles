@@ -49,6 +49,7 @@ coverage.xml
 docs/_build/
 
 tests/welt2000/data/WELT2000.TXT
+tests/aixm/data/aixm-airspace.xml
 
 # Virtual Environment for python
 .env
