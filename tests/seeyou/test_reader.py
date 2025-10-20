@@ -341,6 +341,7 @@ def test_decode_runway_length():
     assert_value_and_unit(Reader().decode_runway_length('2.4NM'), 2.4, 'NM')
     assert_value_and_unit(Reader().decode_runway_length('23'), 23, None)
     assert_value_and_unit(Reader().decode_runway_length(''), None, None)
+    assert_value_and_unit(Reader().decode_runway_length('3270ft'), 3270, 'ft')
 
     with pytest.raises(ParserError):
         Reader().decode_runway_length('x')
