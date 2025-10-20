@@ -380,6 +380,8 @@ def test_decode_longitude():
 
 def test_decode_frequency():
     assert Reader().decode_frequency('120.500') == '120.500'
+    assert Reader().decode_frequency('253.3') == '253.3'
+    assert Reader().decode_frequency('355.6') == '355.6'
     assert Reader().decode_frequency('') is None
 
     with pytest.raises(ParserError):

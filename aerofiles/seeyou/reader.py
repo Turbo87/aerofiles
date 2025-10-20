@@ -11,7 +11,7 @@ RE_LATITUDE = re.compile(r'^([\d]{2})([\d]{2}\.[\d]{3})([NS])$', re.I)
 RE_LONGITUDE = re.compile(r'^([\d]{3})([\d]{2}\.[\d]{3})([EW])$', re.I)
 RE_ELEVATION = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft)?$', re.I)
 RE_RUNWAY_LENGTH = re.compile(r'^(?:([\d]+(?:\.[\d]+)?)\s?(ml|nm|m|ft)?)?$', re.I)
-RE_FREQUENCY = re.compile(r'^1[\d]{2}\.[\d]+?$')
+RE_FREQUENCY = re.compile(r'^[123][\d]{2}\.[\d]+?$')
 RE_DISTANCE = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft|km|ml|nm)?$', re.I)
 
 
