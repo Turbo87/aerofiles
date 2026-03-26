@@ -3,9 +3,13 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.5.3, 2026-03-26
+----------------------------
+* no changes to v1.5.2, re-done because pypy publish failed
+
 aerofiles v1.5.2, 2026-03-26
 ----------------------------
-* no changes to v1.5.1, redone because pypy publish failed
+* no changes to v1.5.1, re-done because pypy publish failed
 
 aerofiles v1.5.1, 2026-03-26
 ----------------------------
