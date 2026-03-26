@@ -348,7 +348,7 @@ AH 8800ft
 AA NONE
 AA line2
 AA 2023-12-16T12:00Z/2023-12-16T13:00Z   * Active from 12:00 to 13:00 UTC
-AA 2024-12-17T00:00Z/2024-12-17T24:00Z   * Active for the entire UTC day
+AA 2024-12-17T00:00Z/2024-12-17T23:05Z   * Active for the entire UTC day
 AA 2024-12-17T00:00Z/NONE                * Active from midnight UTC until unspecified end
 AA NONE/2024-12-18T00:00Z                * Active until midnight UTC, with unknown start
 AA illegal1

@@ -725,7 +725,7 @@
 	{ "start": null, "end": null },
 	{ "value": "line2" },
 	{ "start": "2023-12-16T12:00Z", "end": "2023-12-16T13:00Z" },
-	{ "start": "2024-12-17T00:00Z", "end": "2024-12-17T24:00Z" },
+	{ "start": "2024-12-17T00:00Z", "end": "2024-12-17T23:05Z" },
 	{ "start": "2024-12-17T00:00Z", "end": null },
 	{ "start": null, "end": "2024-12-18T00:00Z" },
 	{ "value": "illegal1" },
