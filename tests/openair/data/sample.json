@@ -78,6 +78,52 @@
     }]
 }, {
     "type": "airspace",
+    "class": "G",
+    "floor": "GND",
+    "ceiling": "2100ft MSL",
+    "ident": null,
+    "ground_name": null,
+    "freq": null,
+    "airspace_type": null,
+    "name": null,
+    "activation": [],
+    "labels": [],
+    "elements": [
+        {
+            "type": "point",
+            "location": [
+                49.63138888888889,
+                7.209722222222222
+            ],
+            "lineno": 102
+        },
+        {
+            "type": "point",
+            "location": [
+                49.61138888888889,
+                7.23
+            ],
+            "lineno": 103
+        },
+        {
+            "type": "point",
+            "location": [
+                49.6025,
+                7.209722222222222
+            ],
+            "lineno": 104
+        },
+        {
+            "type": "point",
+            "location": [
+                49.63138888888889,
+                7.209722222222222
+            ],
+            "lineno": 105
+        }
+    ]
+}, {
+    "type": "airspace",
     "class": "C",
     "name": "BEALE AFB",
     "floor": "2600ft",

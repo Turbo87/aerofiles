@@ -94,6 +94,15 @@ AH 4100 ft
 V X=39:08.4 N 121:26.1 W
 DC 5
 
+AC G
+* here is no AN like in https://github.com/bubeck/airspace_germany/blob/55007fc1a260d094697b4c82eef1265b58b42b9a/source/airspace_germany.txt#L1142-L1148
+AH 2100ft MSL
+AL GND
+DP 49:37:53 N 007:12:35 E
+DP 49:36:41 N 007:13:48 E
+DP 49:36:09 N 007:12:35 E
+DP 49:37:53 N 007:12:35 E
+
 AC C
 AN BEALE AFB
 AL 2600ft
@@ -113,8 +122,8 @@ V D=-5
 DA 5,9,130
 
 
-AN SACRAMENTO/MCCLEAN
 AC C
+AN SACRAMENTO/MCCLEAN
 AL 1600 ft
 AH 4100 ft
 V X=38:41.7 N 121:35.4 W
