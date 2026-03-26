@@ -3,10 +3,17 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+<<<<<<< HEAD
 aerofiles v1.5.1-pre, 2026-XX-XX
 ----------------------------
 * add "AA" (activation times) handling to openair
   
+=======
+aerofiles v1.5.1, 2026-XX-XX
+----------------------------
+* add "AA" (activation times) handling to openair
+
+>>>>>>> d7c4b3b (v1.5.1-pre)
 aerofiles v1.5.0, 2025-07-10
 ----------------------------
 * AIXM airspace reader.
