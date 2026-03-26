@@ -4,7 +4,7 @@
 # Additional requirements for development
 sphinx==8.0.2
 tox==4.17.1
-setuptools==72.1.0
+setuptools==78.1.1
 autopep8==2.3.2
 build==1.4.2
 twine==6.2.0
