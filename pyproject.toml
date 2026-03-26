@@ -36,5 +36,3 @@ Homepage = "https://github.com/Turbo87/aerofiles/"
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
 
-[tool.setuptools.bdist_wheel]
-universal = true
