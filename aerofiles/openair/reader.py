@@ -1,5 +1,6 @@
 import sys
 from pprint import pprint
+from dateutil import parser
 
 from aerofiles.openair import patterns
 
@@ -41,6 +42,13 @@ class Reader:
             "airspace_type": "CTR",
             "floor": "500ft",
             "ceiling": "UNLIM",
+            "activations": [
+               { "start": null, "end": null },
+               { "start": "2023-12-16T12:00Z", "end": "2023-12-16T13:00Z" },
+               { "start": "2024-12-17T00:00Z", "end": "2024-12-17T24:00Z" },
+               { "start": "2024-12-17T00:00Z", "end": null },
+               { "value": "text that is not parsable" },
+            ],
             "labels": [
                 [39.61333, -119.76833],
             ],
@@ -154,6 +162,7 @@ class Reader:
                     yield None, e
                     state.reset()
 
+        # We finished low level parsing. Yield last record iff ready:
         if state.is_ready():
             yield state.record, None
 
@@ -192,6 +201,10 @@ class Reader:
 
         elif line_type == 'AT':
             state.record['labels'].append(line["value"])
+
+        elif line_type == 'AA':
+            del line["type"]
+            state.record['activation'].append(line)
 
         elif line_type == 'SP':
             state.record["outline"] = line["value"]
@@ -281,6 +294,7 @@ class Reader:
                 "ground_name": None,
                 "freq": None,
                 "airspace_type": None,
+                "activation": [],
                 "labels": [],
                 "elements": []
             }
@@ -313,7 +327,7 @@ class LowLevelReader:
             reader = LowLevelReader(fp)
 
     see `OpenAir file format specification
-    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_
+    <https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md>`.
 
     Instances of this class read OpenAir files line by line and extract the
     information in each line as a dictionary. A line like ``AN Sacramento`` for
@@ -417,6 +431,26 @@ class LowLevelReader:
 
         return handler
 
+    def handle_AA_record(self, value):
+        start = None
+        end = None
+        if (value == "NONE"):
+            return {'type': 'AA', 'start': None, 'end': None}
+
+        if "/" in value:
+            parts = value.split("/")
+            if len(parts) != 2:
+                return {'type': 'AA', 'value': value}
+            try:
+                start = parse_AA_time(parts[0])
+                end = parse_AA_time(parts[1])
+            except Exception:
+                return {'type': 'AA', 'value': value}
+
+            return {'type': 'AA', 'start': start, 'end': end}
+        else:
+            return {'type': 'AA', 'value': value}
+
     def handle_AC_record(self, value):
         return {'type': 'AC', 'value': value}
 
@@ -501,6 +535,13 @@ class LowLevelReader:
 
     def handle_DY_record(self, value):
         return {'type': 'DY', 'value': coordinate(value)}
+
+
+def parse_AA_time(s):
+    if s == "NONE":
+        return None
+
+    return parser.isoparse(s)
 
 
 def split(value, separator, num, *types):

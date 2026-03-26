@@ -9,6 +9,7 @@
     "airspace_type": null,
     "ceiling": "8400 ft",
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "circle",
         "center": [39.495, -119.775],
@@ -29,6 +30,7 @@
         [39.38, -119.75166],
         [39.49833, -119.60166]
     ],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.495, -119.775],
@@ -68,6 +70,7 @@
     "ground_name": null,
     "freq": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "circle",
         "center": [39.14, -121.435],
@@ -84,6 +87,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": ["39:10.2 N 121:17.2 W"],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.14, -121.435],
@@ -110,6 +114,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": ["39:06.2 N 121:35.5 W"],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.14, -121.435],
@@ -136,6 +141,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [38.695, -121.59],
@@ -162,6 +168,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.225, -118.225],
@@ -188,6 +195,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.33333, -118.86666],
@@ -213,6 +221,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": [36.68333, -115.93611]
@@ -258,6 +267,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": [37.28194, -115.30277]
@@ -285,6 +295,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": ["37:28:00 N 116:36:00 W"],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "37:53:00 N 117:06:00 W"
@@ -381,6 +392,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "37:16:00 N 116:11:10 W    c12"
@@ -414,6 +426,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "37:28:00 N 115:48:00 W    c9"
@@ -477,6 +490,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "36:46:00 N 116:26:45 W    c27"
@@ -498,6 +512,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "37:53:00 N 116:55:30 W    c1"
@@ -525,6 +540,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.17222, -118.61666],
@@ -551,6 +567,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "circle",
         "center": [38.24444, -118.64444],
@@ -567,6 +584,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "arc",
         "center": [39.85555, -118.35],
@@ -598,6 +616,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "39:17:20 N 118:20:30 W"
@@ -637,6 +656,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "39:34:00 N 118:12:30 W"
@@ -661,6 +681,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": ["36:21.0 N 115:22.0 W"],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "36:14.2 N 115:02.0 W"
@@ -683,6 +704,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "circle",
         "center": [39.41666, -118.7],
@@ -699,6 +721,17 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [
+	{ "start": null, "end": null },
+	{ "value": "line2" },
+	{ "start": "2023-12-16T12:00Z", "end": "2023-12-16T13:00Z" },
+	{ "start": "2024-12-17T00:00Z", "end": "2024-12-17T24:00Z" },
+	{ "start": "2024-12-17T00:00Z", "end": null },
+	{ "start": null, "end": "2024-12-18T00:00Z" },
+	{ "value": "illegal1" },
+	{ "value": "illegal2/illegal3" },
+	{ "value": "illegal4/illegal5/illegal6" }
+    ],
     "elements": [{
         "type": "circle",
         "center": [38.89333, -119.995],
@@ -715,6 +748,7 @@
     "freq": null,
     "airspace_type": null,
     "labels": [],
+    "activation": [],
     "elements": [{
         "type": "point",
         "location": "39:04:00 N 119:57:00 W"
