@@ -1,6 +1,6 @@
 import sys
-from pprint import pprint
 from dateutil import parser
+import json
 
 from aerofiles.openair import patterns
 
@@ -604,7 +604,7 @@ def main(files):
                 if error:
                     print("Error in file", file, error)
                 else:
-                    pprint(record)
+                    print(json.dumps(record, indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":

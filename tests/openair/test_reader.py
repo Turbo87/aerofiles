@@ -83,6 +83,20 @@ def test_reader(json):
             assert_block(record, expected)
 
 
+def test_reader_germany(json):
+    with open(path.join(DATA, '2026_03_Airspace_Germany_OA1.txt')) as fp:
+        reader = Reader(fp)
+
+        count = 0
+        for record_err, expected in zip_longest(reader, json):
+            record, error = record_err
+
+            assert error is None
+            count += 1
+
+        assert count == 678
+
+
 def test_reader_error():
     with open(path.join(DATA, 'broken.txt')) as fp:
         reader = Reader(fp)
