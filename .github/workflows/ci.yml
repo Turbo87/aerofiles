@@ -69,7 +69,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - run: pip install -r requirements-test.txt
-      - run: ./download_test_data.sh
       - run: make test
 
   release:
