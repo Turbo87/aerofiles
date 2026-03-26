@@ -8,7 +8,6 @@ version = "1.5.1"
 description = "waypoint, task, tracklog readers and writers for aviation"
 readme = "README.rst"
 license = {text = "MIT"}
-requires-python = ">=2.6"
 
 authors = [
   {name = "Tobias Bieniek", email = "tobias.bieniek@gmx.de"},
@@ -29,7 +28,6 @@ classifiers = [
   "Programming Language :: Python :: 2.6",
   "Programming Language :: Python :: 2.7",
   "Programming Language :: Python :: 3",
-  "Programming Language :: Python :: 3 :: Only :: No",
 ]
 
 [project.urls]
