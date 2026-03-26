@@ -243,7 +243,7 @@
     {"type": "AA", "start": null, "end": null },
     {"type": "AA", "value": "line2"},
     {"type": "AA", "start": "2023-12-16T12:00Z", "end": "2023-12-16T13:00Z"},
-    {"type": "AA", "start": "2024-12-17T00:00Z", "end": "2024-12-17T24:00Z"},
+    {"type": "AA", "start": "2024-12-17T00:00Z", "end": "2024-12-17T23:05Z"},
     {"type": "AA", "start": "2024-12-17T00:00Z", "end": null},
     {"type": "AA", "start": null, "end": "2024-12-18T00:00Z" },
     {"type": "AA", "value": "illegal1" },
