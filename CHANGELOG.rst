@@ -3,9 +3,10 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-aerofiles v1.5.1-pre, 2026-XX-XX
---------------------------------
-* add "AA" (activation times) handling to openair
+aerofiles v1.5.1, 2026-03-26
+----------------------------
+* openair: add "AA" (activation times) handling
+* openair: AN is now optional and does not start a new record
   
 aerofiles v1.5.0, 2025-07-10
 ----------------------------

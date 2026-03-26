@@ -83,9 +83,9 @@ Make sure, that all succeed::
  $ make test
  $ make doc-test
 
-Ensure CHANGELOG.rst is up to date including the (next) version
+Ensure `CHANGELOG.rst` is up to date including the (next) version
 number. Also check, that (next) version number is included in
-setup.py.
+`pyproject.toml`.
 
 Use browser with https://github.com/Turbo87/aerofiles/releases and
 "Draft a new release". Use "Choose a tag" to create a new tag

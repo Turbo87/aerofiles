@@ -141,12 +141,12 @@ class Reader:
 
             line_type = line['type']
 
-            if line_type in ('AC', 'AN', 'TC', 'TO') and state.is_ready():
+            if line_type in ('AC', 'TC', 'TO') and state.is_ready():
                 yield state.record, None
                 state.reset()
 
             if not state.record:
-                if line_type in ('AC', 'AN'):
+                if line_type in ('AC'):
                     state.reset_airspace()
                 elif line_type == 'TC':
                     state.reset_terrain(False)
@@ -280,8 +280,7 @@ class Reader:
 
             record_type = self.record.get("type")
 
-            return record_type == "terrain" or (record_type == "airspace" and
-                self.record.get("name") and self.record.get("class"))  # noqa
+            return record_type == "terrain" or (record_type == "airspace" and self.record.get("class"))  # noqa
 
         def reset_airspace(self):
             self.record = {
