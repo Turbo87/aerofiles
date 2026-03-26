@@ -13,7 +13,8 @@ class Writer:
     :param encoding: the encoding used for the output
 
     see `OpenAir file format specification
-    <http://www.winpilot.com/UsersGuide/UserAirspace.asp>`_
+    <https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md>`_
+
 
     This class should be used to write records as described under Reader
     into a file.
@@ -65,14 +66,33 @@ class Writer:
             result = result + "W"
         return result
 
+    def write(self, line):
+        self.fp.write((line).encode(self.encoding))
+
     def write_line(self, line):
-        self.fp.write((line + u'\r\n').encode(self.encoding))
+        self.write(line + u'\r\n')
 
     def write_V_X(self, center):
         if center != self.V_X:
             self.V_X = center
             center = self.format_coord(center)
             self.write_line('V X=' + center)
+
+    def write_AA_datetime(self, dt):
+        if dt is None:
+            self.write("NONE")
+        else:
+            self.write(dt.strftime("%Y-%m-%dT%H:%MZ"))
+
+    def write_AA(self, activation):
+        if "value" in activation:
+            self.write_line('AA ' + activation["value"])
+        else:
+            self.write("AA ")
+            self.write_AA_datetime(activation["start"])
+            self.write("/")
+            self.write_AA_datetime(activation["end"])
+            self.write_line("")
 
     def write_V_D(self, clockwise):
         if clockwise != self.V_D:
@@ -129,6 +149,9 @@ class Writer:
             self.write_line('AG ' + record["ground_name"])
         if "freq" in record and record["freq"]:
             self.write_line('AF ' + record["freq"])
+        if "activation" in record and record["activation"]:
+            for activation in record["activation"]:
+                self.write_AA(activation)
         element_prev = None
         for element in record["elements"]:
             if element_prev != element:
