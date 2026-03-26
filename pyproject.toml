@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aerofiles"
-version = "1.5.3"
+version = "1.5.4"
 description = "waypoint, task, tracklog readers and writers for aviation"
 readme = "README.rst"
 license = {text = "MIT"}
