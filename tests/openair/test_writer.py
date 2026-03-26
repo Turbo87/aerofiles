@@ -72,8 +72,8 @@ def test_write_DB(writer):
 
 
 def test_write_AA_1(writer):
-    element = {"start": datetime.fromisoformat("2023-12-16T12:00+00"),
-               "end": datetime.fromisoformat("2023-12-16T16:23+00"),
+    element = {"start": datetime.fromisoformat("2023-12-16T12:00Z"),
+               "end": datetime.fromisoformat("2023-12-16T16:23Z"),
                }
     writer.write_AA(element)
 
@@ -83,7 +83,7 @@ def test_write_AA_1(writer):
 
 def test_write_AA_2(writer):
     element = {"start": None,
-               "end": datetime.fromisoformat("2024-02-29T23:59+00"),
+               "end": datetime.fromisoformat("2024-02-29T23:59Z"),
                }
     writer.write_AA(element)
 

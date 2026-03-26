@@ -23,7 +23,7 @@ ISO_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$")
 def convert_datetime(obj):
     for k, v in obj.items():
         if isinstance(v, str) and ISO_RE.match(v):
-            obj[k] = datetime.fromisoformat(v.replace("Z", "+00:00"))
+            obj[k] = datetime.fromisoformat(v)
     return obj
 
 # Fixtures ####################################################################
