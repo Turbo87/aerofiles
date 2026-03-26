@@ -341,6 +341,7 @@ def test_decode_runway_length():
     assert_value_and_unit(Reader().decode_runway_length('2.4NM'), 2.4, 'NM')
     assert_value_and_unit(Reader().decode_runway_length('23'), 23, None)
     assert_value_and_unit(Reader().decode_runway_length(''), None, None)
+    assert_value_and_unit(Reader().decode_runway_length('3270ft'), 3270, 'ft')
 
     with pytest.raises(ParserError):
         Reader().decode_runway_length('x')
@@ -379,6 +380,8 @@ def test_decode_longitude():
 
 def test_decode_frequency():
     assert Reader().decode_frequency('120.500') == '120.500'
+    assert Reader().decode_frequency('253.3') == '253.3'
+    assert Reader().decode_frequency('355.6') == '355.6'
     assert Reader().decode_frequency('') is None
 
     with pytest.raises(ParserError):
