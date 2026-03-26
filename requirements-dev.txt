@@ -2,7 +2,7 @@
 -r requirements-test.txt
 
 # Additional requirements for development
-sphinx==8.0.2
+sphinx==8.2.3
 tox==4.17.1
 setuptools==72.1.0
 autopep8==2.3.2
