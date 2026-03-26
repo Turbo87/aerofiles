@@ -3,11 +3,14 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
-aerofiles v1.5.0, 2026-03-XX
+aerofiles v1.5.1, 2026-XX-XX
+----------------------------
+* add "AA" (activation times) handling to openair
+
+aerofiles v1.5.0, 2025-07-10
 ----------------------------
 * AIXM airspace reader.
 * "make lint-fix" for autopep8 and applied to all sources
-* add "AA" (activation times) handling to openair
 
 aerofiles v1.4.3, 2025-06-23
 ----------------------------
