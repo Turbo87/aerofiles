@@ -1,5 +1,6 @@
 from io import BytesIO
 from os import path
+from datetime import datetime
 
 from aerofiles.openair.writer import Writer
 
@@ -68,6 +69,45 @@ def test_write_DB(writer):
 
     assert writer.fp.getvalue(
     ) == b'V X=39:29:42 N 119:46:30 W\r\nDB 39:36:48 N 119:46:06 W, 39:29:54 N 119:36:06 W\r\n'
+
+
+def test_write_AA_1(writer):
+    element = {"start": datetime.fromisoformat("2023-12-16T12:00+00:00"),
+               "end": datetime.fromisoformat("2023-12-16T16:23+00:00"),
+               }
+    writer.write_AA(element)
+
+    assert writer.fp.getvalue(
+    ) == b'AA 2023-12-16T12:00Z/2023-12-16T16:23Z\r\n'
+
+
+def test_write_AA_2(writer):
+    element = {"start": None,
+               "end": datetime.fromisoformat("2024-02-29T23:59+00:00"),
+               }
+    writer.write_AA(element)
+
+    assert writer.fp.getvalue(
+    ) == b'AA NONE/2024-02-29T23:59Z\r\n'
+
+
+def test_write_AA_3(writer):
+    element = {"start": None,
+               "end": None
+               }
+    writer.write_AA(element)
+
+    assert writer.fp.getvalue(
+    ) == b'AA NONE/NONE\r\n'
+
+
+def test_write_AA_4(writer):
+    element = {"value": "some text",
+               }
+    writer.write_AA(element)
+
+    assert writer.fp.getvalue(
+    ) == b'AA some text\r\n'
 
 
 def test_invalid_record_type(writer):

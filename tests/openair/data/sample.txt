@@ -345,6 +345,15 @@ AC D
 AN LAKE TAHOE
 AL 0
 AH 8800ft
+AA NONE
+AA line2
+AA 2023-12-16T12:00Z/2023-12-16T13:00Z   * Active from 12:00 to 13:00 UTC
+AA 2024-12-17T00:00Z/2024-12-17T23:05Z   * Active for the entire UTC day
+AA 2024-12-17T00:00Z/NONE                * Active from midnight UTC until unspecified end
+AA NONE/2024-12-18T00:00Z                * Active until midnight UTC, with unknown start
+AA illegal1
+AA illegal2/illegal3
+AA illegal4/illegal5/illegal6
 V X=38:53.6 N 119:59.7 W
 DC 5
 
