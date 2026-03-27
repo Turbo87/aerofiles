@@ -1,5 +1,6 @@
 import sys
 from dateutil import parser
+import datetime
 import json
 
 from aerofiles.openair import patterns
@@ -595,6 +596,14 @@ def coordinate(value):
     raise ValueError('invalid coordinate format: "%s"' % value)
 
 
+def json_default(obj):
+    if isinstance(obj, datetime.datetime):
+        if obj.utcoffset() == datetime.timedelta(0):
+            return obj.strftime("%Y-%m-%dT%H:%MZ")
+        return obj.isoformat()
+    raise TypeError
+
+
 def main(files):
     # Read every file and print result
     for file in files:
@@ -604,7 +613,7 @@ def main(files):
                 if error:
                     print("Error in file", file, error)
                 else:
-                    print(json.dumps(record, indent=2, sort_keys=True))
+                    print(json.dumps(record, indent=2, sort_keys=True, default=json_default))
 
 
 if __name__ == "__main__":
