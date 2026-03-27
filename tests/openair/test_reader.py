@@ -97,6 +97,20 @@ def test_reader_germany(json):
         assert count == 678
 
 
+def test_reader_slovenia(json):
+    with open(path.join(DATA, 'si_asp_230525.openair')) as fp:
+        reader = Reader(fp)
+
+        count = 0
+        for record_err, expected in zip_longest(reader, json):
+            record, error = record_err
+
+            assert error is None
+            count += 1
+
+        assert count == 58
+
+
 def test_reader_error():
     with open(path.join(DATA, 'broken.txt')) as fp:
         reader = Reader(fp)
