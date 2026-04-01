@@ -16,7 +16,7 @@ from . import aixm
 from . import gml
 from . import geocalc
 
-from icecream import ic
+# from icecream import ic
 
 
 class AixmOpenairConverter:
@@ -339,13 +339,14 @@ class AixmOpenairConverter:
         if len(times) > 1:
             # debug = True
             if debug:
-                ic(activation)
-                ic(times)
+                print(times)
+                #ic(activation)
+                #ic(times)
             times = self.combine_times(times)
             # ic(times)
 
-        if debug:
-            ic(times)
+        #if debug:
+        #    ic(times)
 
         # Ensure, that all time lines have identical dates
         if False:
@@ -378,8 +379,8 @@ class AixmOpenairConverter:
             if s != "":
                 lines.append(s.strip())
 
-        if debug:
-            ic(lines)
+        #if debug:
+        #    ic(lines)
 
         # Combine each line into a single string
         # result = []
@@ -408,9 +409,6 @@ class AixmOpenairConverter:
 
         parents2 = list(parents)
         parents2.append(airspace)
-
-        if airspace.name == "FRANKFURT ARRIVAL SUED-off":
-            ic(airspace)
 
         for component in airspace.components:
             volume = component.volume
@@ -452,8 +450,8 @@ class AixmOpenairConverter:
                     for line in activation:
                         openair["activation"].append({"value": line})
                 openair["elements"] = self.convert_volume_curves(volume)
-                if openair["name"] == "MUENSTER-off":
-                    ic(openair)
+                #if openair["name"] == "MUENSTER-off":
+                #    ic(openair)
                 openairs.append(openair)
 
         # ic(openairs)
