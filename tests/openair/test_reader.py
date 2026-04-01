@@ -18,13 +18,43 @@ DATA = path.join(path.dirname(path.realpath(__file__)), 'data')
 ISO_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$")
 
 
-# hook used during load_json: whenever we find a string like "2023-12-16T12:00Z"
-# we convert it into datetime:
-def convert_datetime(obj):
+# hook used during load_json:
+# 1. Convert string like "2023-12-16T12:00Z" into datetime:
+# 2. Location coordinates should be written in JSON as [lat,lon] but
+#    for convenience, it is sometimes written as "37:53:00 N 117:06:00 W"
+#    If found, convert to [lat,lon]
+def fix_json(obj):
     for k, v in obj.items():
-        if isinstance(v, str) and ISO_RE.match(v):
+        if k in ["start", "end"] and isinstance(v, str) and ISO_RE.match(v):
             obj[k] = datetime.fromisoformat(v.replace("Z", "+00:00"))
+        elif "type" in obj and obj["type"] == "point" and k == "location" and isinstance(v, str):
+            obj[k] = coordinate(v)
+        elif k == "labels":
+            v_new = []
+            for label in v:
+                if isinstance(label, str):
+                    v_new.append(coordinate(label))
+                else:
+                    v_new.append(label)
+            obj[k] = v_new
+
     return obj
+
+
+# hook used during load_json:
+# 1. Convert string like "2023-12-16T12:00Z" into datetime:
+# 2. Location coordinates should be written in JSON as [lat,lon] but
+#    for convenience, it is sometimes written as "37:53:00 N 117:06:00 W"
+#    If found, convert to [lat,lon]
+def fix_json_low_level(obj):
+    for k, v in obj.items():
+        if k in ["start", "end"] and isinstance(v, str) and ISO_RE.match(v):
+            obj[k] = datetime.fromisoformat(v.replace("Z", "+00:00"))
+        elif "type" in obj and obj["type"] in ["DP", "AT"] and k == "value" and isinstance(v, str):
+            obj[k] = coordinate(v)
+
+    return obj
+
 
 # Fixtures ####################################################################
 
@@ -32,13 +62,13 @@ def convert_datetime(obj):
 @pytest.fixture
 def json():
     with open(path.join(DATA, 'sample.json')) as fp:
-        return load_json(fp, object_hook=convert_datetime)
+        return load_json(fp, object_hook=fix_json)
 
 
 @pytest.fixture
 def low_level_json():
     with open(path.join(DATA, 'sample-low-level.json')) as fp:
-        return load_json(fp, object_hook=convert_datetime)
+        return load_json(fp, object_hook=fix_json_low_level)
 
 
 # Tests #######################################################################
@@ -140,10 +170,6 @@ def assert_float(value, expected, threshold):
 
 
 def assert_location(value, expected):
-    # fallback because we're lazy
-    if not isinstance(expected, list):
-        expected = coordinate(expected)
-
     assert isinstance(value, list)
     assert len(value) == 2
     assert_float(value[0], expected[0], 0.0001)
