@@ -40,6 +40,7 @@ def fix_json(obj):
 
     return obj
 
+
 # hook used during load_json:
 # 1. Convert string like "2023-12-16T12:00Z" into datetime:
 # 2. Location coordinates should be written in JSON as [lat,lon] but
