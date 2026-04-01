@@ -170,6 +170,7 @@ class AixmAirspaceParser:
                     href = href[9:]
                 avd = aixm.AirspaceVolumeDependency()
                 avd.type_dependency = dependency.text
+                assert avd.type_dependency == "FULL_GEOMETRY"
                 avd.xlink = href
                 volume.add_dependency(avd)
 
@@ -211,17 +212,34 @@ class AixmAirspaceParser:
             limitRef = airspace.find(AIXM + key + "Reference")
             ref = limitRef.text
             value = limit_element.text
-            return (aixm.ValDistanceVertical(value=value, uom=uom), ref)
+            return (aixm.ValUom(value=value, uom=uom), ref)
 
         return (None, None)
 
     def parseTimesheet(self, timesheet_element):
         time_reference = timesheet_element.find(AIXM + "timeReference")
         start_date = timesheet_element.find(AIXM + "startDate")
+        # ic(start_date.text)
         end_date = timesheet_element.find(AIXM + "endDate")
+        # ic(end_date.text)
         start_time = timesheet_element.find(AIXM + "startTime")
         end_time = timesheet_element.find(AIXM + "endTime")
+        start_event = timesheet_element.find(AIXM + "startEvent")
+        end_event = timesheet_element.find(AIXM + "endEvent")
+        element = timesheet_element.find(AIXM + "startTimeRelativeEvent")
+        if element.text is not None and element.get("uom") is not None:
+            start_time_relative_event = aixm.ValUom(
+                value=int(element.text), uom=element.get("uom"))
+        else:
+            start_time_relative_event = None
+        element = timesheet_element.find(AIXM + "endTimeRelativeEvent")
+        if element.text is not None and element.get("uom") is not None:
+            end_time_relative_event = aixm.ValUom(
+                value=int(element.text), uom=element.get("uom"))
+        else:
+            end_time_relative_event = None
         day = timesheet_element.find(AIXM + "day")
+        day_til = timesheet_element.find(AIXM + "dayTil")
         daylightSavingAdjust = timesheet_element.find(
             AIXM + "daylightSavingAdjust").text
         daylightSavingAdjust = daylightSavingAdjust == "YES"
@@ -231,8 +249,13 @@ class AixmAirspaceParser:
                                        end_date=end_date.text,
                                        start_time=start_time.text,
                                        end_time=end_time.text,
+                                       start_event=start_event.text,
+                                       end_event=end_event.text,
+                                       start_time_relative_event=start_time_relative_event,
+                                       end_time_relative_event=end_time_relative_event,
                                        daylight_saving_adjust=daylightSavingAdjust,
-                                       day=day.text
+                                       day=day.text,
+                                       day_til=day_til.text
                                        )
         return timesheet
 
@@ -254,6 +277,20 @@ class AixmAirspaceParser:
             return None
 
         return activation
+
+    def parseAnnotation(self, element):
+        # ET.dump(element)
+        el = element.find(".//" + AIXM + "purpose")
+        purpose = el.text if el is not None else None
+        el = element.find(".//" + AIXM + "propertyName")
+        property_name = el.text if el is not None else None
+        note = element.find(".//" + AIXM + "note").text
+
+        annotation = aixm.Annotation(purpose=purpose,
+                                     property_name=property_name,
+                                     note=note
+                                     )
+        return annotation
 
     def parseAirspaceGeometryComponent(self, airspace: aixm.Airspace, airspaceGeometryComponent):
 
@@ -295,14 +332,16 @@ class AixmAirspaceParser:
             if classification is not None:
                 airspace.class_airspace = classification.text
 
-        # ic(as_name, as_type)
+        # ic(airspace.name, airspace.type_airspace)
         # ic(airspace)
 
         count = 0
         for airspaceGeometryComponent in element.iter(AIXM + "AirspaceGeometryComponent"):
             count += 1
-            airspace.add_component(self.parseAirspaceGeometryComponent(
-                airspace, airspaceGeometryComponent))
+            component = self.parseAirspaceGeometryComponent(
+                airspace, airspaceGeometryComponent)
+            # ic(component)
+            airspace.add_component(component)
 
         # ic(airspace)
 
@@ -315,6 +354,14 @@ class AixmAirspaceParser:
                 airspace.activation = act
 
         assert count <= 1, f'More than 1 AirspaceActivation in {airspace}'
+
+        count = 0
+        for anno in element.iter(AIXM + "annotation"):
+            annotation = self.parseAnnotation(anno)
+            if annotation is not None:
+                # ic(sheet)
+                count += 1
+                airspace.annotations.append(annotation)
 
         return airspace
 
@@ -334,33 +381,19 @@ class AixmAirspaceParser:
                 return airspace
         return None
 
-    def get_dependant_components(self, airspace):
-        components = []
+    def resolve_airspace(self, airspace):
+        # ic(airspace)
         for component in airspace.components:
             volume = component.volume
             if len(volume.dependencies) > 0:
-                assert (len(volume.curves) == 0)
                 for volume_dependency in volume.dependencies:
-                    airspace_dep = self.find_airspace(volume_dependency.xlink)
-                    if airspace_dep is None:
+                    volume_dependency.dependency_airspace = self.find_airspace(
+                        volume_dependency.xlink)
+                    if volume_dependency.dependency_airspace is not None:
+                        volume_dependency.dependency_airspace.reference_count += 1
+                    else:
                         print(
                             f'Unable to find dependant airspace "{volume_dependency.xlink}" for AirspaceVolume "{volume.gml_id}"')
-                        continue
-                    airspace_dep.is_referenced = True
-                    components.extend(
-                        self.get_dependant_components(airspace_dep))
-            else:
-                components.append(component)
-
-        return components
-
-    def mark_referenced_airspaces(self):
-        for airspace in self.airspaces:
-            _ = self.get_dependant_components(airspace)
-
-    def resolve_airspace(self, airspace):
-        # ic(airspace)
-        airspace.components = self.get_dependant_components(airspace)
 
     def resolve(self):
         """
@@ -398,6 +431,6 @@ class AixmAirspaceParser:
             if airspace is not None:
                 self.airspaces.append(airspace)
 
-        self.mark_referenced_airspaces()
+        self.resolve()
 
         return (self.airspaces, self.borders)

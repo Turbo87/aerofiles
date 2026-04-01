@@ -14,14 +14,10 @@ from . import gml
 
 
 @dataclass
-class ValDistanceVertical:
-    """Vertical Distance Value"""
+class ValUom:
+    """Value with a unit of measure"""
     value: float
-    uom: str = "M"  # Unit of Measure (M=Meters, FT=Feet, FL=Flight Level)
-
-    def __post_init__(self):
-        if self.uom not in ["M", "FT", "FL"]:
-            raise ValueError("UOM must be M, FT, or FL")
+    uom: str = "FT"  # Unit of Measure (M=Meters, FT=Feet, FL=Flight Level)
 
 
 @dataclass
@@ -31,9 +27,9 @@ class AirspaceVolume:
     gml_id: str = field(default_factory=lambda: f"asv_{uuid.uuid4().hex[:8]}")
 
     # Elements
-    upper_limit: Optional[ValDistanceVertical] = None
+    upper_limit: Optional[ValUom] = None
     upper_limit_reference: Optional[str] = None           # AMSL, AGL, ...
-    lower_limit: Optional[ValDistanceVertical] = None
+    lower_limit: Optional[ValUom] = None
     lower_limit_reference: Optional[str] = None           # AMSL, AGL, ...
 
     # Dependency relationships
@@ -107,6 +103,13 @@ class AixmTimesheet:
     daylight_saving_adjust: bool  # True for "YES", False for "NO"
 
     # Optional fields
+    # "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
+    day_til: Optional[str] = None
+    start_event: Optional[str] = None     # SR
+    end_event: Optional[str] = None       # SS
+    start_time_relative_event: Optional[ValUom] = None
+    end_time_relative_event: Optional[ValUom] = None
+
     # day_til: Optional[str] = None
     # start_event: Optional[str] = None
     # start_time_relative_event: Optional[str] = None
@@ -147,13 +150,22 @@ class AirspaceActivation:
 
 
 @dataclass
+class Annotation:
+    # Mandatory attributes
+    purpose: str             # DESCRIPTION, REMARK
+    note: str                # ....
+
+    property_name: Optional[str]    # activation
+
+
+@dataclass
 class Airspace:
     """AIXM Airspace Feature"""
     # Mandatory attributes
     gml_id: str = field(default_factory=lambda: f"as_{uuid.uuid4().hex[:8]}")
 
     # Is this Airspace referenced by another AirspaceVolume?
-    is_referenced: Optional[bool] = False
+    reference_count: Optional[int] = 0
 
     # Elements
     designator: Optional[str] = None
@@ -168,6 +180,8 @@ class Airspace:
 
     # Activation properties
     activation: Optional[AirspaceActivation] = None
+
+    annotations: List[Annotation] = field(default_factory=list)
 
     # Airspace volumes
     components: List[AirspaceGeometryComponent] = field(default_factory=list)
