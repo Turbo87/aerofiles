@@ -19,7 +19,7 @@ def main():
     parser.add_argument('-x', '--xml', required=True, help='AIXM filename to read from',
                         default="ED_Airspace_StrokedBorders_2024-03-21_2024-03-21_snapshot.xml")
     parser.add_argument('-o', '--output', required=True,
-                        help='openair filename for ourpur')
+                        help='openair filename for ourput')
     parser.add_argument('-r', '--resolve', required=False,
                         help='Resolve all arcs to points with given degree step.')
     parser.add_argument('-b', '--borders', required=False,

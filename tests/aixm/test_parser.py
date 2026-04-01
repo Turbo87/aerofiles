@@ -49,7 +49,7 @@ def test_parseTimesheet():
     timesheet = parser.parseTimesheet(timesheet_element)
 
     timesheet_expected = aerofiles.aixm.aixm.AixmTimesheet(
-        time_reference='UTC', start_date=None, end_date=None, day='ANY', start_time='00:00', end_time='00:00', daylight_saving_adjust=False)
+        time_reference='UTC', start_date=None, end_date=None, day='ANY', day_til='ANY', start_time='00:00', end_time='00:00', daylight_saving_adjust=False)
 
     assert (timesheet == timesheet_expected)
 
@@ -66,10 +66,10 @@ def test_parseAirspaceVolume():
     volume = parser.parseAirspaceVolume(volume_element)
 
     volume_expected = aerofiles.aixm.aixm.AirspaceVolume(gml_id='id.asevol.48ceb197-a37a-46c6-941f-0733a1cf9141',
-                                                         upper_limit=aerofiles.aixm.aixm.ValDistanceVertical(
+                                                         upper_limit=aerofiles.aixm.aixm.ValUom(
                                                              value='1500', uom='FT'),
                                                          upper_limit_reference='SFC',
-                                                         lower_limit=aerofiles.aixm.aixm.ValDistanceVertical(
+                                                         lower_limit=aerofiles.aixm.aixm.ValUom(
                                                              value='0', uom='FT'),
                                                          lower_limit_reference='SFC',
                                                          dependencies=[],

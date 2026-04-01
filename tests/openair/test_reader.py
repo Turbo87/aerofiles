@@ -190,7 +190,8 @@ def assert_block(value, expected):
         assert value['floor'] == expected['floor']
         assert value['ceiling'] == expected['ceiling']
         for i in range(len(expected["activation"])):
-            assert_dict_value_expected(value['activation'][i], expected['activation'][i])
+            assert_dict_value_expected(
+                value['activation'][i], expected['activation'][i])
 
         for x in zip(value['labels'], expected['labels']):
             assert_location(*x)

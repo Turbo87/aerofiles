@@ -613,7 +613,8 @@ def main(files):
                 if error:
                     print("Error in file", file, error)
                 else:
-                    print(json.dumps(record, indent=2, sort_keys=True, default=json_default))
+                    print(json.dumps(record, indent=2,
+                          sort_keys=True, default=json_default))
 
 
 if __name__ == "__main__":
