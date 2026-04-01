@@ -340,12 +340,12 @@ class AixmOpenairConverter:
             # debug = True
             if debug:
                 print(times)
-                #ic(activation)
-                #ic(times)
+                # ic(activation)
+                # ic(times)
             times = self.combine_times(times)
             # ic(times)
 
-        #if debug:
+        # if debug:
         #    ic(times)
 
         # Ensure, that all time lines have identical dates
@@ -379,7 +379,7 @@ class AixmOpenairConverter:
             if s != "":
                 lines.append(s.strip())
 
-        #if debug:
+        # if debug:
         #    ic(lines)
 
         # Combine each line into a single string
@@ -450,7 +450,7 @@ class AixmOpenairConverter:
                     for line in activation:
                         openair["activation"].append({"value": line})
                 openair["elements"] = self.convert_volume_curves(volume)
-                #if openair["name"] == "MUENSTER-off":
+                # if openair["name"] == "MUENSTER-off":
                 #    ic(openair)
                 openairs.append(openair)
 
