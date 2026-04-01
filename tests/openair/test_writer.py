@@ -1,8 +1,11 @@
+import re
 from io import BytesIO
 from os import path
 from datetime import datetime
+from json import load as load_json
 
 from aerofiles.openair.writer import Writer
+from aerofiles.openair.reader import coordinate
 
 import pytest
 
@@ -10,6 +13,38 @@ DATA = path.join(path.dirname(path.realpath(__file__)), 'data')
 
 
 # Fixtures ####################################################################
+
+ISO_RE = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?Z$")
+
+
+# hook used during load_json:
+# 1. Convert string like "2023-12-16T12:00Z" into datetime:
+# 2. Location coordinates should be written in JSON as [lat,lon] but
+#    for convenience, it is sometimes written as "37:53:00 N 117:06:00 W"
+#    If found, convert to [lat,lon]
+def fix_json(obj):
+    for k, v in obj.items():
+        if k in ["start", "end"] and isinstance(v, str) and ISO_RE.match(v):
+            obj[k] = datetime.fromisoformat(v.replace("Z", "+00:00"))
+        elif "type" in obj and obj["type"] == "point" and k == "location" and isinstance(v, str):
+            obj[k] = coordinate(v)
+        elif k == "labels":
+            v_new = []
+            for label in v:
+                if isinstance(label, str):
+                    v_new.append(coordinate(label))
+                else:
+                    v_new.append(label)
+            obj[k] = v_new
+
+    return obj
+
+
+@pytest.fixture
+def json():
+    with open(path.join(DATA, 'sample.json')) as fp:
+        return load_json(fp, object_hook=fix_json)
+
 
 @pytest.fixture()
 def output():
@@ -178,5 +213,11 @@ def test_write_record(writer):
         b'DC 5',
     ]) + b'\r\n'
 
+
+def test_writer_json(json, writer):
+    # Check if we are able to write everything wo exceptions
+    for record in json:
+        if record["type"] == "airspace":
+            writer.write_record(record)
 
 # Assertions ##################################################################

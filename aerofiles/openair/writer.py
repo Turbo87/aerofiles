@@ -142,7 +142,8 @@ class Writer:
             self.write_line('AI ' + record["ident"])
         if "airspace_type" in record and record["airspace_type"]:
             self.write_line('AY ' + record["airspace_type"])
-        self.write_line('AN ' + record["name"])
+        if "name" in record and record["name"]:
+            self.write_line('AN ' + record["name"])
         self.write_line('AH ' + record["ceiling"])
         self.write_line('AL ' + record["floor"])
         if "ground_name" in record and record["ground_name"]:
