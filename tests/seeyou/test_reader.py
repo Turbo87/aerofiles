@@ -597,3 +597,36 @@ def test_decode_task_obs_zone_ignores_unknown_keys():
     zone = Reader().decode_task_obs_zone(['ObsZone=2', 'Nonesuch=7'])
 
     assert zone['obs_zone'] == 2
+
+
+def test_decode_runway_direction():
+    """rwdir is a heading in degrees, not a runway designator."""
+    assert Reader().decode_runway_direction('070') == 70
+    assert Reader().decode_runway_direction('270') == 270
+    assert Reader().decode_runway_direction('360') == 360
+    assert Reader().decode_runway_direction('') is None
+
+    # Files in the wild write 0 for "not specified".
+    assert Reader().decode_runway_direction('0') == 0
+
+    # A designator written into the degrees field is indistinguishable from a
+    # small heading, so 5 has to be accepted even though it usually means 05.
+    assert Reader().decode_runway_direction('5') == 5
+
+
+def test_decode_runway_direction_rejects_impossible_headings():
+    with pytest.raises(ParserError):
+        Reader().decode_runway_direction('361')
+
+    with pytest.raises(ParserError):
+        Reader().decode_runway_direction('-5')
+
+    # Seen in the wild: a heading with a zero too many.
+    with pytest.raises(ParserError):
+        Reader().decode_runway_direction('2200')
+
+    with pytest.raises(ParserError):
+        Reader().decode_runway_direction('3000')
+
+    with pytest.raises(ParserError):
+        Reader().decode_runway_direction('north')

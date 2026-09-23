@@ -15,6 +15,13 @@ RE_RUNWAY_LENGTH = re.compile(
 RE_FREQUENCY = re.compile(r'^[123][\d]{2}\.[\d]+?$')
 RE_DISTANCE = re.compile(r'^(-?[\d]*(?:\.[\d]+)?)\s?(m|ft|km|ml|nm)?$', re.I)
 
+# rwdir holds the runway heading in degrees, not the runway designator: the
+# format gives it as three characters with the first in 0-3, example "070".
+# ICAO Annex 14 derives the designator 01-36 from that heading in tens of
+# degrees, north being 36 rather than 00, so a heading runs 1 to 360.  Zero is
+# accepted as well because files in the wild use it for "not specified".
+MAX_RUNWAY_DIRECTION = 360
+
 
 class Reader:
     """
@@ -213,6 +220,11 @@ class Reader:
             runway_direction = int(runway_direction)
         except ValueError:
             raise ParserError('Reading runway direction failed')
+
+        if not 0 <= runway_direction <= MAX_RUNWAY_DIRECTION:
+            raise ParserError(
+                'Runway direction %d is not a heading in degrees'
+                % runway_direction)
 
         return runway_direction
 
