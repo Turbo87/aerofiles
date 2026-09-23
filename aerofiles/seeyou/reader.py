@@ -314,15 +314,15 @@ class Reader:
                 task_obs_zone['r1'] = self.decode_distance(field_entry)
             elif field_type == 'R2':
                 task_obs_zone['r2'] = self.decode_distance(field_entry)
-            elif field_type == 'Line' and field_entry == "1":
-                task_obs_zone['line'] = True
-            elif field_type == 'Move' and field_entry == "1":
-                task_obs_zone['move'] = True
-            elif field_type == 'Reduce' and field_entry == "1":
-                task_obs_zone['reduce'] = True
+            elif field_type in ('Line', 'Move', 'Reduce'):
+                task_obs_zone[field_type.lower()] = field_entry == "1"
             else:
-                raise Exception(
-                    'A taskpoint may not contain key %s' % field_type)
+                # SeeYou writes observation zone keys that no edition of the
+                # CUP specification lists -- SpeedStyle and MaxAlt among them,
+                # as Line, Move and Reduce above are also undocumented.  Skip
+                # what this reader does not model instead of discarding an
+                # otherwise readable file.
+                continue
 
         return task_obs_zone
 
