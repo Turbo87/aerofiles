@@ -31,11 +31,11 @@ class Reader:
     - `SeeYou_CUP_file_format.pdf, (c) 2023
       <https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf>`_
       (`archived <https://web.archive.org/web/20240715193119/
-      http://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf>`_)
+      http://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf>`__)
     - `CUP-file-format-description.pdf, (c) 2018
       <http://download.naviter.com/docs/CUP-file-format-description.pdf>`_
       (`archived <https://web.archive.org/web/20250218061657/
-      http://download.naviter.com/docs/CUP-file-format-description.pdf>`_)
+      http://download.naviter.com/docs/CUP-file-format-description.pdf>`__)
       -- the edition previously cited here
     - `cup_format.pdf <https://web.archive.org/web/20161019222630/
       http://www.keepitsoaring.com:80/LKSC/Downloads/cup_format.pdf>`_
