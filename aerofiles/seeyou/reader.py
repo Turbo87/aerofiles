@@ -20,7 +20,34 @@ class Reader:
     """
     A reader for the SeeYou CUP waypoint file format.
 
-    see http://download.naviter.com/docs/CUP-file-format-description.pdf
+    The format is published by Naviter.  The canonical text is now versioned
+    and kept in a repository; the PDF editions are listed as well because the
+    URL cited here has already gone dead once (see #124), and because the
+    older editions are what this module was written against:
+
+    - `CUP_file_format.md, v1.2.0 (2025-10-07)
+      <https://github.com/naviter/seeyou_file_formats/blob/main/CUP_file_format.md>`_
+      -- canonical
+    - `SeeYou_CUP_file_format.pdf, (c) 2023
+      <https://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf>`_
+      (`archived <https://web.archive.org/web/20240715193119/
+      http://downloads.naviter.com/docs/SeeYou_CUP_file_format.pdf>`__)
+    - `CUP-file-format-description.pdf, (c) 2018
+      <http://download.naviter.com/docs/CUP-file-format-description.pdf>`_
+      (`archived <https://web.archive.org/web/20250218061657/
+      http://download.naviter.com/docs/CUP-file-format-description.pdf>`__)
+      -- the edition previously cited here
+    - `cup_format.pdf <https://web.archive.org/web/20161019222630/
+      http://www.keepitsoaring.com:80/LKSC/Downloads/cup_format.pdf>`_
+      -- the original citation, reachable only from the archive
+
+    Note that every edition above documents the same seven observation zone
+    keys -- ObsZone, Style, R1, A1, R2, A2 and A12 -- and that the list has
+    not changed since 2016.  Line, Move, Reduce, SpeedStyle and MaxAlt are
+    written by SeeYou but are documented in none of them; Line appears only
+    inside worked examples, and the SeeYou desktop Help names Line, Move and
+    Reduce solely as dialog options ("Line only", "Move origin", "Reduce leg
+    distance") without defining them.
     """
 
     def __init__(self, fp=None):
