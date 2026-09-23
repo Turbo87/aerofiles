@@ -560,3 +560,40 @@ def test_task():
                               [0], expected_task_obs_zones_1)
         assert_task_obs_zones(tasks[0]['obs_zones']
                               [2], expected_task_obs_zones_2)
+
+
+def test_decode_task_obs_zone_flags():
+    """Line, Move and Reduce are switches; 0 means off, not malformed."""
+    zone = Reader().decode_task_obs_zone(
+        ['ObsZone=0', 'Style=2', 'R1=500m', 'A1=180',
+         'Line=0', 'Move=0', 'Reduce=0'])
+
+    assert zone['line'] is False
+    assert zone['move'] is False
+    assert zone['reduce'] is False
+
+    zone = Reader().decode_task_obs_zone(
+        ['ObsZone=1', 'Style=2', 'Line=1', 'Move=1', 'Reduce=1'])
+
+    assert zone['line'] is True
+    assert zone['move'] is True
+    assert zone['reduce'] is True
+
+
+def test_decode_task_obs_zone_ignores_unknown_keys():
+    """SeeYou writes keys no edition of the specification lists."""
+    zone = Reader().decode_task_obs_zone(
+        ['ObsZone=0', 'Style=2', 'SpeedStyle=0', 'R1=500m', 'A1=180',
+         'R2=0m', 'A2=0', 'MaxAlt=0.0m', 'Line=1'])
+
+    assert zone['obs_zone'] == 0
+    assert zone['style'] == 2
+    assert zone['a1'] == 180
+    assert zone['line'] is True
+    assert 'speedstyle' not in zone
+    assert 'maxalt' not in zone
+
+    # An unknown key on its own must not cost the rest of the zone either.
+    zone = Reader().decode_task_obs_zone(['ObsZone=2', 'Nonesuch=7'])
+
+    assert zone['obs_zone'] == 2
