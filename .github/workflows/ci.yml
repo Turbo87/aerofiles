@@ -92,7 +92,7 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: python setup.py sdist
 
-      - uses: pypa/gh-action-pypi-publish@v1.13.0
+      - uses: pypa/gh-action-pypi-publish@v1.14.2
         with:
           user: __token__
           password: ${{ secrets.PYPI_TOKEN }}
