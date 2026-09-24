@@ -3,6 +3,23 @@ Changelog
 
 Here you can see the full list of changes between each aerofiles release.
 
+aerofiles v1.5.6, 2026-09-23
+----------------------------
+* aixm: extended for TimeSheet
+* openair: command line reader prints records as JSON instead of pprint
+* openair: fix JSON output of datetime values
+* openair/writer: do not bail out when AN is missing
+* seeyou: accept runway lengths in feet
+* seeyou: accept US military radio frequencies (200 and 300 MHz bands)
+* seeyou: do not discard a CUP file over an unknown observation zone key
+  (SpeedStyle, MaxAlt); skip what the reader does not model instead
+* seeyou: read Line, Move and Reduce as the booleans they are, instead of
+  raising when they are set to 0
+* seeyou: reject a runway direction outside 0-360 degrees, the field being
+  a heading rather than a runway designator
+* docs: cite the current CUP specification editions and give an archived
+  copy of each
+
 aerofiles v1.5.5, 2026-03-26
 ----------------------------
 * no changes to v1.5.4, re-done because pypy publish failed
