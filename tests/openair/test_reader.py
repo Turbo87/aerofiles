@@ -73,6 +73,29 @@ def low_level_json():
 
 # Tests #######################################################################
 
+def test_reader_empty_class():
+    # An "AC" line without a class opens a record that can never become
+    # ready.  It has to be reported, and only its own block may be lost:
+    # the airspace before it is still yielded, and so is the one after.
+    with open(path.join(DATA, 'empty_class.txt')) as fp:
+        results = list(Reader(fp))
+
+    assert len(results) == 3
+
+    record, error = results[0]
+    assert error is None
+    assert record['name'] == 'Muenchen'
+
+    record, error = results[1]
+    assert record is None
+    assert isinstance(error, ValueError)
+    assert error.lineno == 8
+
+    record, error = results[2]
+    assert error is None
+    assert record['name'] == 'Danach'
+
+
 def test_low_level_reader(low_level_json):
     with open(path.join(DATA, 'sample.txt')) as fp:
         reader = LowLevelReader(fp)
