@@ -171,6 +171,11 @@ class Reader:
         line_type = line['type']
 
         if line_type == 'AC':
+            if not line["value"]:
+                # A bare "AC" would open a record that never becomes
+                # ready and so is never yielded -- and nothing would
+                # say so.  Report it like any other unreadable value.
+                raise ValueError('empty airspace class')
             state.record["class"] = line["value"]
 
         elif line_type == 'AF':
